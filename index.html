@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="en-US">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2.5DUMLhtml · 等角流程圖編輯器</title>
+<title>2.5DUMLhtml · Isometric flow editor</title>
 
 <!-- ===================================================================
      核心樣式：編輯器畫布與匯出的 HTML 檢視器共用（匯出時會整段複製過去）
@@ -34,7 +34,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 #app.hideR{grid-template-columns:200px minmax(0,1fr) 0}
 #app.hideL.hideR{grid-template-columns:0 minmax(0,1fr) 0}
 .tb{grid-area:tb;display:flex;align-items:center;gap:6px;padding:0 10px;border-bottom:2px solid var(--soft);background:var(--card);overflow-x:auto;white-space:nowrap}
-.tb .logo{font-weight:700;font-size:15px;margin-right:6px}
+.tb .logo{font-weight:700;font-size:15px;margin-right:2px}
+#langSel{padding:3px 6px;margin-right:6px}
 .tb .sep{width:2px;height:24px;background:var(--soft);margin:0 4px;flex:none}
 .btn{border:2px solid var(--ink);border-radius:8px;background:var(--card);padding:4px 10px;cursor:pointer;font-weight:700;flex:none}
 .btn:hover{background:var(--soft)}
@@ -113,31 +114,32 @@ button,input,select,textarea{font:inherit;color:inherit}
 <div id="app">
   <div class="tb">
     <span class="logo">🧊 2.5DUMLhtml</span>
-    <button class="btn" id="bTpl" title="套用範本（可 Ctrl+Z 復原）">範本 ▾</button>
-    <button class="btn" id="bOpen" title="開啟 JSON">開啟</button>
-    <button class="btn" id="bSave" title="匯出 JSON（Ctrl+S）">存 JSON</button>
-    <button class="btn" id="bHtml" title="匯出可播放的 HTML 檢視器">匯出 HTML</button>
-    <button class="btn" id="bPng" title="匯出 PNG（2 倍解析度）">匯出 PNG</button>
+    <select class="btn" id="langSel" data-i18n-title="app.lang" title="Language"></select>
+    <button class="btn" id="bTpl" data-i18n="tb.tpl" data-i18n-title="tb.tplTitle">Templates ▾</button>
+    <button class="btn" id="bOpen" data-i18n="tb.open" data-i18n-title="tb.openTitle">Open</button>
+    <button class="btn" id="bSave" data-i18n="tb.save" data-i18n-title="tb.saveTitle">Save JSON</button>
+    <button class="btn" id="bHtml" data-i18n="tb.html" data-i18n-title="tb.htmlTitle">Export HTML</button>
+    <button class="btn" id="bPng" data-i18n="tb.png" data-i18n-title="tb.pngTitle">Export PNG</button>
     <span class="sep"></span>
-    <button class="btn" id="bUndo" title="復原（Ctrl+Z）">↶</button>
-    <button class="btn" id="bRedo" title="重做（Ctrl+Y）">↷</button>
+    <button class="btn" id="bUndo" data-i18n-title="tb.undo">↶</button>
+    <button class="btn" id="bRedo" data-i18n-title="tb.redo">↷</button>
     <span class="sep"></span>
-    <button class="btn" id="bRotL" title="視角往左轉 90°（Shift+R）">⟲</button>
-    <button class="btn" id="bRotR" title="視角往右轉 90°（R）">⟳</button>
-    <button class="btn" id="bFit" title="縮放至全部（F）">適配</button>
-    <button class="btn" id="zoomLbl" title="回到 100%">100%</button>
-    <select class="btn" id="selTheme" title="切換主題（T 依序切換）"></select>
+    <button class="btn" id="bRotL" data-i18n-title="tb.rotL">⟲</button>
+    <button class="btn" id="bRotR" data-i18n-title="tb.rotR">⟳</button>
+    <button class="btn" id="bFit" data-i18n="tb.fit" data-i18n-title="tb.fitTitle">Fit</button>
+    <button class="btn" id="zoomLbl" data-i18n-title="tb.zoom100">100%</button>
+    <select class="btn" id="selTheme" data-i18n-title="tb.theme"></select>
     <span class="sep"></span>
-    <button class="btn" id="bSideL" title="收合左側（[）">☰</button>
-    <button class="btn" id="bSideR" title="收合右側（]）">◧</button>
-    <button class="btn pri" id="bPlay" title="播放預覽（P）">▶ 播放預覽</button>
+    <button class="btn" id="bSideL" data-i18n-title="tb.sideL">☰</button>
+    <button class="btn" id="bSideR" data-i18n-title="tb.sideR">◧</button>
+    <button class="btn pri" id="bPlay" data-i18n="tb.play" data-i18n-title="tb.playTitle">▶ Play preview</button>
     <input type="file" id="fileIn" accept=".json,application/json" hidden>
   </div>
 
   <aside id="left">
-    <div class="sec">圖形（點擊或拖到畫布）</div>
+    <div class="sec" data-i18n="left.shapes">SHAPES (click or drag onto the canvas)</div>
     <div class="pal" id="pal"></div>
-    <div class="sec">區域</div>
+    <div class="sec" data-i18n="left.zones">ZONES</div>
     <div class="pal" id="pal2"></div>
   </aside>
 
@@ -149,24 +151,24 @@ button,input,select,textarea{font:inherit;color:inherit}
 
   <aside id="right">
     <div class="tabs" id="tabs">
-      <button data-tab="prop" class="on">屬性</button>
-      <button data-tab="step">步驟</button>
-      <button data-tab="doc">文件</button>
+      <button data-tab="prop" class="on" data-i18n="tab.prop">Properties</button>
+      <button data-tab="step" data-i18n="tab.step">Steps</button>
+      <button data-tab="doc" data-i18n="tab.doc">Document</button>
     </div>
     <div id="panel"></div>
   </aside>
 
   <footer id="tl">
-    <div class="tlh"><b style="color:var(--ink)">步驟時間軸</b><span id="tlInfo"></span>
-      <button class="btn sm" id="bAddStep" style="margin-left:auto">＋ 新增步驟</button></div>
+    <div class="tlh"><b style="color:var(--ink)" data-i18n="tl.title">Step timeline</b><span id="tlInfo"></span>
+      <button class="btn sm" id="bAddStep" style="margin-left:auto" data-i18n="tl.add">＋ Add step</button></div>
     <div id="tlSteps"></div>
   </footer>
 </div>
 
 <div id="ov" hidden>
-  <div class="bar"><b>▶ 播放預覽</b><span class="muted">這就是「匯出 HTML」的樣子</span>
-    <button class="btn" id="ovClose" style="margin-left:auto">✕ 回到編輯（Esc）</button></div>
-  <iframe id="ovf" title="播放預覽"></iframe>
+  <div class="bar"><b data-i18n="tb.play">▶ Play preview</b><span class="muted" data-i18n="ov.note">This is exactly what "Export HTML" produces</span>
+    <button class="btn" id="ovClose" style="margin-left:auto" data-i18n="ov.close">✕ Back to editor (Esc)</button></div>
+  <iframe id="ovf" data-i18n-title="tb.play" title="Play preview"></iframe>
 </div>
 
 <!-- ===================================================================
@@ -180,48 +182,49 @@ const C = Math.cos(Math.PI / 6), S = 0.5;
 
 const STEP_TYPES = {
   req:    { c: '#2f7fd6', n: 'request' },
-  crypto: { c: '#e8871a', n: '加解密' },
-  ext:    { c: '#8a5cd6', n: '外部' },
+  crypto: { c: '#e8871a', n: 'crypto' },
+  ext:    { c: '#8a5cd6', n: 'external' },
   resp:   { c: '#2e9e5b', n: 'response' },
-  err:    { c: '#d64545', n: '錯誤' },
-  job:    { c: '#6b7a8f', n: '其他' },
+  err:    { c: '#d64545', n: 'error' },
+  job:    { c: '#6b7a8f', n: 'other' },
 };
 const THEMES = {
-  paper: { name: '紙本', bg: '#f4efe4', card: '#fbf8f1', ink: '#2d2a24', muted: '#7a7366', soft: '#e4dccb', dot: '#e2d9c6',
+  paper: { name: 'Paper', bg: '#f4efe4', card: '#fbf8f1', ink: '#2d2a24', muted: '#7a7366', soft: '#e4dccb', dot: '#e2d9c6',
            stroke: '#2d2a24', plate: '#ece5d5', grid: '#dcd3bf', plateText: '#8f8572', pill: '#fffdf8',
            edge: '#8a8172', future: '#bdb39f', accent: '#2f7fd6' },
-  night: { name: '夜間', bg: '#1b1e25', card: '#232731', ink: '#e9e5db', muted: '#9aa1ad', soft: '#353a46', dot: '#2c313b',
+  night: { name: 'Night', bg: '#1b1e25', card: '#232731', ink: '#e9e5db', muted: '#9aa1ad', soft: '#353a46', dot: '#2c313b',
            stroke: '#0c0e12', plate: '#2a2f3a', grid: '#363c4a', plateText: '#8d95a5', pill: '#2a2f39',
            edge: '#9aa1ad', future: '#4a5060', accent: '#6aa8ff' },
 };
 Object.assign(THEMES, {
-  light:     { name: '淺色', bg: '#f4f6fa', card: '#ffffff', ink: '#1c2331', muted: '#6b7688', soft: '#d8dee8', dot: '#e2e7f0',
+  light:     { name: 'Light', bg: '#f4f6fa', card: '#ffffff', ink: '#1c2331', muted: '#6b7688', soft: '#d8dee8', dot: '#e2e7f0',
                stroke: '#2a3242', plate: '#e9edf4', grid: '#d5dce8', plateText: '#8a94a6', pill: '#ffffff',
                edge: '#69748a', future: '#c3cad6', accent: '#2f6fe0' },
-  midnight:  { name: '深邃', bg: '#12151c', card: '#1a1f2b', ink: '#e6ebf5', muted: '#8b95ab', soft: '#2e3648', dot: '#232a39',
+  midnight:  { name: 'Midnight', bg: '#12151c', card: '#1a1f2b', ink: '#e6ebf5', muted: '#8b95ab', soft: '#2e3648', dot: '#232a39',
                stroke: '#0a0c10', plate: '#202736', grid: '#2c3447', plateText: '#7d88a0', pill: '#222836',
                edge: '#8d9ab5', future: '#3a4458', accent: '#4c8dff' },
-  graphite:  { name: '石墨', bg: '#17181a', card: '#1f2123', ink: '#ececed', muted: '#9a9ea3', soft: '#3a3e42', dot: '#2a2d30',
+  graphite:  { name: 'Graphite', bg: '#17181a', card: '#1f2123', ink: '#ececed', muted: '#9a9ea3', soft: '#3a3e42', dot: '#2a2d30',
                stroke: '#0b0c0d', plate: '#26292c', grid: '#34383c', plateText: '#8a8f95', pill: '#292c2f',
                edge: '#9aa0a6', future: '#45494e', accent: '#f0a03c' },
-  blueprint: { name: '藍圖', bg: '#0a2444', card: '#0d2e56', ink: '#dbeaff', muted: '#7fa8d6', soft: '#1d4f80', dot: '#164274',
+  blueprint: { name: 'Blueprint', bg: '#0a2444', card: '#0d2e56', ink: '#dbeaff', muted: '#7fa8d6', soft: '#1d4f80', dot: '#164274',
                stroke: '#061a33', plate: '#0f3463', grid: '#1d4f80', plateText: '#7fa8d6', pill: '#12385f',
                edge: '#9fd0ff', future: '#2a5a8c', accent: '#4fd1e6' },
-  forest:    { name: '森林', bg: '#101a15', card: '#16241d', ink: '#e2f0e7', muted: '#84a394', soft: '#2b4438', dot: '#1e3129',
+  forest:    { name: 'Forest', bg: '#101a15', card: '#16241d', ink: '#e2f0e7', muted: '#84a394', soft: '#2b4438', dot: '#1e3129',
                stroke: '#07100b', plate: '#1b2c23', grid: '#29413a', plateText: '#7c9a8c', pill: '#1d2f26',
                edge: '#8bb5a0', future: '#34503f', accent: '#4ec98a' },
 });
 const THEME_ORDER = ['paper', 'light', 'night', 'midnight', 'graphite', 'blueprint', 'forest'];
 
 /* 自訂主題：只調 6 個主色，其餘次要色自動推導 */
-const CUSTOM_FIELDS = [['bg', '畫布底色'], ['ink', '文字'], ['accent', '強調色'], ['plate', '區域平台'], ['edge', '連線'], ['stroke', '圖形外框']];
+const CUSTOM_FIELDS = [['bg', 'Canvas'], ['ink', 'Text'], ['accent', 'Accent'], ['plate', 'Zone plate'], ['edge', 'Lines'], ['stroke', 'Shape outline']];
+const TXT = { untitled: 'Untitled' };   // 編輯器會依語言改掉
 const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
 const mixHex = (a, b, t) => { const pa = hexRgb(a), pb = hexRgb(b); return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
 const lum = h => { const [r, g, b] = hexRgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
 function customFrom(key) { const t = THEMES[key] || THEMES.paper; const o = {}; CUSTOM_FIELDS.forEach(([k]) => o[k] = t[k]); return o; }
 function expandCustom(c) {
   const { bg, ink, plate, edge } = c, dark = lum(bg) < 0.45;
-  return { name: '自訂', bg, ink, accent: c.accent, plate, edge, stroke: c.stroke,
+  return { name: 'Custom', bg, ink, accent: c.accent, plate, edge, stroke: c.stroke,
     card: dark ? mixHex(bg, '#ffffff', .04) : mixHex(bg, '#ffffff', .55), muted: mixHex(ink, bg, .42), soft: mixHex(bg, ink, .15),
     dot: mixHex(bg, ink, .09), grid: mixHex(plate, ink, .12), plateText: mixHex(plate, ink, .45),
     pill: dark ? mixHex(bg, ink, .08) : mixHex(bg, '#ffffff', .75), future: mixHex(edge, bg, .55) };
@@ -319,28 +322,35 @@ function Draw(pj, th) {
 const rect = (x, y, w, dd) => [[x, y], [x + w, y], [x + w, y + dd], [x, y + dd]];
 const longest = faces => faces.reduce((m, f) => Math.hypot(f.b[0] - f.a[0], f.b[1] - f.a[1]) > Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]) ? f : m);
 const SHAPES = {
-  hex:    { name: '應用程式', desc: '六角柱', def: { color: '#9cc3ec', h: 48, icon: '⚙' }, foot: 58, top: n => n.h,
+  hex:    { name: 'App', desc: 'hex prism', def: { color: '#9cc3ec', h: 48, icon: '⚙' }, foot: 58, top: n => n.h,
             draw: (d, n, s) => d.prism([0, 1, 2, 3, 4, 5].map(k => [n.x + 58 * s * Math.cos(k * Math.PI / 3), n.y + 58 * s * Math.sin(k * Math.PI / 3)]), 0, n.h, n.color).svg },
-  box:    { name: '服務', desc: '方塊', def: { color: '#f0b070', h: 58, icon: '🔐' }, foot: 42, top: n => n.h,
+  box:    { name: 'Service', desc: 'block', def: { color: '#f0b070', h: 58, icon: '🔐' }, foot: 42, top: n => n.h,
             draw: (d, n, s) => d.prism(rect(n.x - 42 * s, n.y - 42 * s, 84 * s, 84 * s), 0, n.h, n.color).svg },
-  cyl:    { name: '資料庫', desc: '圓柱', def: { color: '#8fd0a8', h: 84, icon: '🛢' }, foot: 50, top: n => n.h,
+  cyl:    { name: 'Database', desc: 'cylinder', def: { color: '#8fd0a8', h: 84, icon: '🛢' }, foot: 50, top: n => n.h,
             draw: (d, n, s) => d.cyl(n.x, n.y, 50 * s, 0, n.h, n.color) },
-  server: { name: '伺服器', desc: '機櫃', def: { color: '#c9d3e0', h: 110, icon: '🖥' }, foot: 42, top: n => n.h,
+  server: { name: 'Server', desc: 'rack', def: { color: '#c9d3e0', h: 110, icon: '🖥' }, foot: 42, top: n => n.h,
             draw: (d, n, s) => {
               const pr = d.prism(rect(n.x - 35 * s, n.y - 25 * s, 70 * s, 50 * s), 0, n.h, n.color); let o = pr.svg;
               for (const f of pr.faces) for (let i = 1; i <= 4; i++) { const z = n.h * i / 5; o += `<polygon points="${d.inset(f, .12, .88, z - 3, z + 1)}" fill="${shade(n.color, .45)}"/>`; }
               return o; } },
-  phone:  { name: '前端', desc: '手機', def: { color: '#f2c98a', h: 92, icon: '📱' }, foot: 30, top: n => n.h + 14,
+  phone:  { name: 'Client', desc: 'phone', def: { color: '#f2c98a', h: 92, icon: '📱' }, foot: 30, top: n => n.h + 14,
             draw: (d, n, s) => {
               const pr = d.prism(rect(n.x - 25 * s, n.y - 7 * s, 50 * s, 14 * s), 0, n.h, n.color);
               return pr.svg + `<polygon points="${d.inset(longest(pr.faces), .12, .88, 12, n.h - 10)}" fill="#2b3a55" stroke="${d.stroke}" stroke-width="1.2"/>`; } },
-  gate:   { name: '閘道', desc: '閘門', def: { color: '#b9a6e8', h: 74, icon: 'GATEWAY' }, foot: 56, top: n => n.h + 16,
+  desktop: { name: 'Client', desc: 'desktop', def: { color: '#cfd6de', h: 84, icon: '' }, foot: 50, top: n => n.h,
+            draw: (d, n, s) => {
+              const neck = n.h * 0.32;
+              let o = d.prism(rect(n.x - 24 * s, n.y - 16 * s, 48 * s, 32 * s), 0, 5, shade(n.color, .85)).svg;   // 底座
+              o += d.prism(rect(n.x - 4 * s, n.y - 3 * s, 8 * s, 6 * s), 5, neck - 5, shade(n.color, .8)).svg;    // 支架
+              const scr = d.prism(rect(n.x - 50 * s, n.y - 5 * s, 100 * s, 10 * s), neck, n.h - neck, n.color);  // 螢幕
+              return o + scr.svg + `<polygon points="${d.inset(longest(scr.faces), .06, .94, neck + 5, n.h - 5)}" fill="#2b3a55" stroke="${d.stroke}" stroke-width="1.2"/>`; } },
+  gate:   { name: 'Gateway', desc: 'gate', def: { color: '#b9a6e8', h: 74, icon: 'GATEWAY' }, foot: 56, top: n => n.h + 16,
             draw: (d, n, s) => {
               const parts = [[n.x - 46 * s, n.y - 16 * s], [n.x + 30 * s, n.y - 16 * s]]
                 .sort((p, q) => d.depth(p[0] + 8 * s, p[1] + 16 * s) - d.depth(q[0] + 8 * s, q[1] + 16 * s));
               return parts.map(p => d.prism(rect(p[0], p[1], 16 * s, 32 * s), 0, n.h, n.color).svg).join('') +
                 d.prism(rect(n.x - 54 * s, n.y - 20 * s, 108 * s, 40 * s), n.h, 16, n.color).svg; } },
-  users:  { name: '使用者', desc: '人群', def: { color: '#e9d8b4', h: 8, icon: '' }, foot: 62, top: n => n.h + 34,
+  users:  { name: 'Users', desc: 'crowd', def: { color: '#e9d8b4', h: 8, icon: '' }, foot: 62, top: n => n.h + 34,
             draw: (d, n, s) => {
               let o = d.prism(rect(n.x - 60 * s, n.y - 45 * s, 120 * s, 90 * s), 0, n.h, n.color).svg;
               const cols = ['#9cc3ec', '#f2c98a', '#b9a6e8', '#8fd0a8', '#f0b070', '#e8a0a0'], ppl = [];
@@ -352,7 +362,7 @@ const SHAPES = {
                 o += `<circle cx="${hx}" cy="${hy}" r="${7 * s}" fill="${shade(c, 1.15)}" stroke="${d.stroke}" stroke-width="1.4"/>`;
               }
               return o; } },
-  file:   { name: '檔案', desc: '文件堆', def: { color: '#f5f1e6', h: 24, icon: '📄' }, foot: 48, top: n => n.h,
+  file:   { name: 'File', desc: 'file stack', def: { color: '#f5f1e6', h: 24, icon: '📄' }, foot: 48, top: n => n.h,
             draw: (d, n, s) => {
               let o = ''; const k = 3, t = n.h / k;
               for (let i = 0; i < k; i++) { const off = i * 4 * s; o += d.prism(rect(n.x - 36 * s + off, n.y - 46 * s - off, 72 * s, 92 * s), i * t, t - 1, i === k - 1 ? n.color : shade(n.color, .9)).svg; }
@@ -365,7 +375,7 @@ const uid = p => p + Date.now().toString(36) + (idSeq++).toString(36) + Math.ran
 function normalize(raw) {
   const d = (raw && typeof raw === 'object') ? raw : {};
   const out = {
-    v: 1, title: String(d.title ?? '未命名'), crumb: String(d.crumb ?? ''), subtitle: String(d.subtitle ?? ''),
+    v: 1, title: String(d.title ?? TXT.untitled), crumb: String(d.crumb ?? ''), subtitle: String(d.subtitle ?? ''),
     tags: Array.isArray(d.tags) ? d.tags.map(String) : [],
     cards: Array.isArray(d.cards) ? d.cards.map(c => ({ k: String(c.k ?? ''), v: String(c.v ?? ''), type: String(c.type ?? '') })) : [],
     theme: (THEMES[d.theme] || d.theme === 'custom') ? d.theme : 'paper', customTheme: null, rot: (((d.rot | 0) % 4) + 4) % 4,
@@ -575,7 +585,7 @@ function applyThemeVars(el, th) {
   for (const k of ['bg', 'card', 'ink', 'muted', 'soft', 'accent', 'dot']) el.style.setProperty('--' + k, th[k]);
 }
 
-return { C, S, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, customFrom, SHAPES, shade, esc, textW, isHex, pairKey, proj, normalize, render, along, Camera, applyThemeVars, uid };
+return { C, S, TXT, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, customFrom, SHAPES, shade, esc, textW, isHex, pairKey, proj, normalize, render, along, Camera, applyThemeVars, uid };
 })();
 </script>
 
@@ -633,22 +643,29 @@ h1{font-size:28px;margin:0}
 'use strict';
 const doc = ISO.normalize(JSON.parse(document.getElementById('doc-json').textContent));
 const th = ISO.themeOf(doc), T = ISO.STEP_TYPES, esc = ISO.esc, steps = doc.steps;
+/* 介面文字：匯出當下編輯器的語言（window.ISO_L10N），沒有就用英文 */
+const L = Object.assign({ steps: '⏱ {n} steps', zoomOut: 'Zoom out', fit: 'Fit', fitTitle: 'Fit (or double-click the canvas)', zoomIn: 'Zoom in',
+  prev: '◀ Prev', next: 'Next ▶', play: '▶ Play', pause: '❚❚ Pause', inFlow: 'IN THIS FLOW', step: 'Step {n}',
+  badge: 'STEP {n} / {t}', count: 'Step {n} of {t}' }, window.ISO_L10N || {});
+const fmt = (k, v) => String(L[k]).replace(/\{(\w+)\}/g, (m, x) => (v && v[x] != null) ? v[x] : m);
+if (L.types) for (const k of Object.keys(L.types)) if (T[k]) T[k].n = L.types[k];
+if (L.lang) document.documentElement.lang = L.lang;
 ISO.applyThemeVars(document.documentElement, th);
 const used = [...new Set(steps.map(s => s.type))];
 document.getElementById('root').innerHTML = `<div class="wrap">
   ${doc.crumb ? `<div class="crumb">${esc(doc.crumb)}</div>` : ''}
-  <div class="head"><h1>${esc(doc.title)}</h1>${steps.length ? `<span class="tag">⏱ ${steps.length} steps</span>` : ''}${doc.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+  <div class="head"><h1>${esc(doc.title)}</h1>${steps.length ? `<span class="tag">${esc(fmt('steps', { n: steps.length }))}</span>` : ''}${doc.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
   ${doc.subtitle ? `<div class="sub">${esc(doc.subtitle)}</div>` : ''}
   ${doc.cards.length ? `<div class="cards">${doc.cards.map(c => `<div class="card" style="--c:${(T[c.type] || {}).c || th.muted}"><div class="k">${esc(c.k)}</div><div class="v">${esc(c.v)}</div></div>`).join('')}</div>` : ''}
   <div class="main ${steps.length ? '' : 'nosteps'}">
     <div class="stage"><svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
       <div class="legend">${used.map(t => `<span><i style="background:${T[t].c}"></i>${esc(T[t].n)}</span>`).join('')}</div>
-      <div class="zoom"><button data-z="out" title="縮小">−</button><button data-z="fit" title="適配（雙擊畫面也可以）">適配</button><button data-z="in" title="放大">＋</button></div></div>
+      <div class="zoom"><button data-z="out" title="${esc(L.zoomOut)}">−</button><button data-z="fit" title="${esc(L.fitTitle)}">${esc(L.fit)}</button><button data-z="in" title="${esc(L.zoomIn)}">＋</button></div></div>
     ${steps.length ? `<div class="panel" id="panel"><span class="badge" id="pBadge"></span><h2 id="pTitle"></h2><p id="pDesc"></p>
       <div class="code" id="pCodeBox"><div class="cap" id="pCap"></div><pre id="pCode"></pre></div>
-      <div class="ctrl"><button id="bPrev">◀ 上一步</button><button id="bPlay"></button><button id="bNext">下一步 ▶</button></div></div>` : ''}
+      <div class="ctrl"><button id="bPrev">${esc(L.prev)}</button><button id="bPlay"></button><button id="bNext">${esc(L.next)}</button></div></div>` : ''}
   </div>
-  ${steps.length ? `<div class="tl"><div class="row"><span>IN THIS FLOW</span><span id="tlCount"></span></div><div class="steps" id="steps"><div class="fill" id="fill"></div></div></div>` : ''}
+  ${steps.length ? `<div class="tl"><div class="row"><span>${esc(L.inFlow)}</span><span id="tlCount"></span></div><div class="steps" id="steps"><div class="fill" id="fill"></div></div></div>` : ''}
 </div>`;
 const $ = id => document.getElementById(id), svg = $('svg'), cam = ISO.Camera(svg);
 let res = ISO.render(svg, doc, { step: steps.length ? 0 : -1 });
@@ -672,12 +689,12 @@ if (!steps.length) return;
 const stepsEl = $('steps');
 steps.forEach((s, i) => {
   const d = document.createElement('div'); d.className = 'st'; d.style.setProperty('--c', T[s.type].c);
-  d.innerHTML = `<b>${i + 1}</b><span>${esc(s.short || s.title || '步驟 ' + (i + 1))}</span>`;
+  d.innerHTML = `<b>${i + 1}</b><span>${esc(s.short || s.title || fmt('step', { n: i + 1 }))}</span>`;
   d.onclick = () => go(i, true); stepsEl.appendChild(d);
 });
 let cur = 0, playing = doc.autoplay, t0 = performance.now();
 const HOP = Math.max(200, doc.speed), PAUSE = 900;
-const setPlayLbl = () => { $('bPlay').textContent = playing ? '❚❚ 暫停' : '▶ 播放'; };
+const setPlayLbl = () => { $('bPlay').textContent = playing ? L.pause : L.play; };
 function go(i, manual) {
   cur = (i + steps.length) % steps.length; t0 = performance.now();
   if (manual) playing = false;
@@ -685,12 +702,12 @@ function go(i, manual) {
   res = ISO.render(svg, doc, { step: cur });
   const s = steps[cur], col = T[s.type].c;
   $('panel').style.setProperty('--c', col);
-  $('pBadge').textContent = `STEP ${cur + 1} / ${steps.length}`;
-  $('pTitle').textContent = s.title || s.short || '步驟 ' + (cur + 1);
+  $('pBadge').textContent = fmt('badge', { n: cur + 1, t: steps.length });
+  $('pTitle').textContent = s.title || s.short || fmt('step', { n: cur + 1 });
   $('pDesc').textContent = s.desc;
   $('pCodeBox').style.display = (s.cap || s.code) ? '' : 'none';
   $('pCap').textContent = s.cap; $('pCode').textContent = s.code;
-  $('tlCount').textContent = `Step ${cur + 1} of ${steps.length}`;
+  $('tlCount').textContent = fmt('count', { n: cur + 1, t: steps.length });
   [...stepsEl.querySelectorAll('.st')].forEach((d, j) => { d.classList.toggle('on', j === cur); d.classList.toggle('done', j < cur); });
   $('fill').style.width = steps.length > 1 ? `calc((100% - 36px) * ${cur / (steps.length - 1)})` : '0';
   $('iso-pktR').setAttribute('fill', col);
@@ -733,76 +750,367 @@ requestAnimationFrame(tick);
 </script>
 
 <!-- ===================================================================
+     多語系：語言清單＋語言包（編輯器用；匯出的檢視器只帶需要的那幾句）
+     =================================================================== -->
+<script>
+/* 要加新語言：照抄 LANG_EN_US 改名（例如 LANG_JA_JP）、翻譯右邊的文字，
+   再在最下面加一行 registerLang('ja-JP', '日本語', LANG_JA_JP); 下拉選單就會多一個選項。
+   漏翻的代碼自動用英文補；英文也沒有就直接顯示代碼，一眼看得出漏了哪個。
+   內建範本的圖內文字只有英文與繁中（編輯器裡的 tx()），其他語言會用英文範本。 */
+const LANGS = {}, LANG_DEFAULT = 'en-US', LANG_KEY = '25dumlhtml-lang-v1';
+let curLang = LANG_DEFAULT;
+function registerLang(code, name, fn) { LANGS[code] = { name, fn, dict: null }; }
+function langDict(code) {
+  const L = LANGS[code]; if (!L) return {};
+  if (!L.dict) { try { L.dict = L.fn() || {}; } catch (e) { L.dict = {}; } }
+  return L.dict;
+}
+/** 取字串：T('toast.opened', { name }) 會把 {name} 換掉 */
+function T(key, vars) {
+  let s = langDict(curLang)[key];
+  if (s == null) s = langDict(LANG_DEFAULT)[key];
+  if (s == null) return key;
+  return vars ? String(s).replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? vars[k] : m) : s;
+}
+/** 上次選的語言；沒選過或瀏覽器擋掉就用英文 */
+function savedLang() {
+  try { const c = localStorage.getItem(LANG_KEY); if (c && LANGS[c]) return c; } catch (e) { /* 忽略 */ }
+  return LANG_DEFAULT;
+}
+
+function LANG_EN_US() {
+  return {
+    'app.title': '2.5DUMLhtml · Isometric flow editor',
+    'app.lang': 'Language',
+    'tb.tpl': 'Templates ▾', 'tb.tplTitle': 'Apply a template (Ctrl+Z undoes it)',
+    'tb.open': 'Open', 'tb.openTitle': 'Open JSON',
+    'tb.save': 'Save JSON', 'tb.saveTitle': 'Export JSON (Ctrl+S)',
+    'tb.html': 'Export HTML', 'tb.htmlTitle': 'Export a playable HTML viewer',
+    'tb.png': 'Export PNG', 'tb.pngTitle': 'Export PNG (2× resolution)',
+    'tb.undo': 'Undo (Ctrl+Z)', 'tb.redo': 'Redo (Ctrl+Y)',
+    'tb.rotL': 'Rotate view 90° left (Shift+R)', 'tb.rotR': 'Rotate view 90° right (R)',
+    'tb.fit': 'Fit', 'tb.fitTitle': 'Zoom to fit everything (F)',
+    'tb.zoom100': 'Back to 100%',
+    'tb.theme': 'Switch theme (T cycles through them)',
+    'tb.sideL': 'Collapse left panel ([)', 'tb.sideR': 'Collapse right panel (])',
+    'tb.play': '▶ Play preview', 'tb.playTitle': 'Play preview (P)',
+    'left.shapes': 'SHAPES (click or drag onto the canvas)', 'left.zones': 'ZONES',
+    'tab.prop': 'Properties', 'tab.step': 'Steps', 'tab.doc': 'Document',
+    'tl.title': 'Step timeline', 'tl.add': '＋ Add step',
+    'tl.info': 'Steps: {n} · click one to edit', 'tl.empty': 'No steps yet: click "＋ Add step" on the right',
+    'step.n': 'Step {n}',
+    'ov.note': 'This is exactly what "Export HTML" produces', 'ov.close': '✕ Back to editor (Esc)',
+    'pal.plate': 'Zone plate', 'pal.plateTitle': 'Zone plate: drag it and the shapes on it move along',
+    'pal.shapeTitle': '{name} ({desc})',
+
+    'shape.hex': 'App', 'shape.hex.desc': 'hex prism',
+    'shape.box': 'Service', 'shape.box.desc': 'block',
+    'shape.cyl': 'Database', 'shape.cyl.desc': 'cylinder',
+    'shape.server': 'Server', 'shape.server.desc': 'rack',
+    'shape.phone': 'Client', 'shape.phone.desc': 'phone',
+    'shape.desktop': 'Client', 'shape.desktop.desc': 'desktop',
+    'shape.gate': 'Gateway', 'shape.gate.desc': 'gate',
+    'shape.users': 'Users', 'shape.users.desc': 'crowd',
+    'shape.file': 'File', 'shape.file.desc': 'file stack',
+    'theme.paper': 'Paper', 'theme.light': 'Light', 'theme.night': 'Night', 'theme.midnight': 'Midnight',
+    'theme.graphite': 'Graphite', 'theme.blueprint': 'Blueprint', 'theme.forest': 'Forest', 'theme.customPick': 'Custom…',
+    'type.req': 'request', 'type.crypto': 'crypto', 'type.ext': 'external', 'type.resp': 'response', 'type.err': 'error', 'type.job': 'other',
+    'cust.bg': 'Canvas', 'cust.ink': 'Text', 'cust.accent': 'Accent', 'cust.plate': 'Zone plate', 'cust.edge': 'Lines', 'cust.stroke': 'Shape outline',
+    'tpl.blank': 'Blank canvas', 'tpl.blank.desc': 'Start from scratch',
+    'tpl.xverify': 'Cross-org identity verification', 'tpl.xverify.desc': '7 steps, 3 zones, relayed response',
+    'tpl.web3': 'Three-tier website', 'tpl.web3.desc': 'Users → gateway → two app servers → cache / database',
+    'tpl.file': 'File processing', 'tpl.file.desc': 'Upstream file → convert → core',
+    'tpl.undoNote': 'You can press Ctrl+Z to undo after applying',
+    'doc.untitled': 'Untitled', 'doc.defTitle': '2.5D flow', 'new.plate': 'New zone',
+
+    'toast.saveFail': 'Autosave failed (the browser blocks localStorage)',
+    'toast.customHint': 'Adjust the custom colors in the Document tab',
+    'toast.theme': 'Theme: {name}',
+    'toast.addStep': 'Click a line on the canvas to add it to this step',
+    'toast.pasted': 'Pasted {n} item(s)', 'toast.copied': 'Copied {n} item(s)',
+    'toast.dupEdge': 'These two shapes are already connected',
+    'toast.rot': 'View {deg}°',
+    'toast.jsonOut': 'JSON exported', 'toast.htmlOut': 'HTML viewer exported', 'toast.pngOut': 'PNG exported',
+    'toast.opened': 'Opened: {name}', 'toast.openFail': 'Could not open: {msg}',
+    'toast.empty': 'The canvas is empty', 'toast.pngFail': 'PNG export failed: {msg}',
+    'toast.tpl': 'Template applied: {name}',
+    'toast.hopAdded': 'Added: {a} → {b}',
+    'toast.sameNode': 'Start and end can\'t be the same shape',
+    'toast.corrupt': 'Your last autosave was corrupted; the original was backed up to localStorage "{key}"',
+    'err.notDoc': 'Not a 2.5DUMLhtml JSON (no nodes)', 'err.svg': 'Could not convert SVG to an image', 'err.png': 'Could not convert the canvas to PNG',
+
+    'hint.step': 'Editing step {n}: click a line = add it to the packet route (Alt+click = reverse) · switch steps on the timeline',
+    'hint.main': 'Drag to move · select, then drag the "＋" on top to connect · drag empty space / Space+drag to pan · wheel to zoom · Alt+drag skips snapping',
+    'sw.auto': 'Follow theme', 'sw.custom': 'Custom color',
+    'p.none': 'NOTHING SELECTED', 'p.noneHint': 'Click a shape, line or zone on the canvas to edit its properties.',
+    'p.keys': 'SHORTCUTS',
+    'p.keysHtml': '<kbd>Drag</kbd> move (snaps to 10) · <kbd>Alt</kbd>+drag no snapping, only that item<br>' +
+      '<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+click add/remove from selection · <kbd>Ctrl</kbd>+<kbd>A</kbd> select all<br>' +
+      '<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> copy / paste at the last click (repeated pastes step diagonally)<br>' +
+      'Select, then drag the <kbd>＋</kbd> on top to another shape = connect<br>' +
+      '<kbd>Del</kbd> delete · <kbd>Ctrl</kbd>+<kbd>D</kbd> duplicate<br>' +
+      '<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> undo / redo · <kbd>Ctrl</kbd>+<kbd>S</kbd> save JSON<br>' +
+      '<kbd>Arrow keys</kbd> nudge 1 (<kbd>Shift</kbd> 10, along the isometric grid)<br>' +
+      '<kbd>Ctrl</kbd>+<kbd>0</kbd> 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> zoom in / out<br>' +
+      '<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> rotate view · <kbd>F</kbd> fit<br>' +
+      '<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> cycle themes<br>' +
+      '<kbd>P</kbd> play preview · <kbd>[</kbd> <kbd>]</kbd> collapse side panels<br>' +
+      'Wheel zoom · drag empty space / <kbd>Space</kbd>+drag pan · double-click empty space = fit<br>' +
+      'Double-click a shape = rename it',
+    'p.multi': '{n} ITEMS SELECTED', 'p.multiColor': 'Recolor together (shapes)',
+    'btn.dup': 'Duplicate', 'btn.del': 'Delete', 'btn.add': 'Add', 'btn.swap': '⇄ Reverse direction',
+    'p.shape': 'SHAPE', 'f.type': 'Type', 'f.name': 'Name', 'f.sub': 'Subtitle (small second line)',
+    'f.icon': 'Top icon (emoji or short text; empty = none)', 'f.color': 'Color', 'f.size': 'Size', 'f.h': 'Height',
+    'p.shapeNote': 'Deleting a shape also removes its lines and its packet routes in steps.',
+    'p.edge': 'LINE', 'f.label': 'Text (shown mid-line)', 'f.mode': 'Path',
+    'mode.air': 'Straight (in the air)', 'mode.xy': 'Ground L-shape (X then Y)', 'mode.yx': 'Ground L-shape (Y then X)',
+    'f.lineColor': 'Line color', 'f.dash': 'Dashed',
+    'p.edgeNote': 'During step playback the line takes the step type\'s color. The packet direction comes from the step, not from this line.',
+    'p.plate': 'ZONE PLATE', 'f.plateLabel': 'Label (lies flat on the ground)', 'f.plateColor': 'Fill',
+    'f.w': 'Width (X)', 'f.d': 'Depth (Y)',
+    'p.plateNote': 'Dragging a plate moves the shapes on it (hold Alt to drag only the plate). Drag the two white dots to resize. Deleting a plate keeps its shapes.',
+    's.unnamed': '(untitled)', 's.up': 'Move up', 's.down': 'Move down', 's.rm': 'Delete this step',
+    'f.short': 'Timeline label', 'f.stype': 'Type (sets the color)', 'f.title': 'Title', 'f.desc': 'Description',
+    'f.cap': 'Code block caption', 'f.code': 'Code block (empty = hidden)',
+    's.route': 'PACKET ROUTE (relayed in order)', 's.pktPh': 'Packet text', 's.rev': 'Reverse', 's.hrm': 'Remove',
+    's.noRoute': 'No route yet. Click a line on the canvas to add it (Alt+click = reverse).',
+    's.noEdgeOk': 'You can add a hop even if the two shapes aren\'t connected; the packet travels in a straight line.',
+    's.list': 'STEP LIST', 's.none': 'No steps yet.', 's.playFrom': '▶ Play from this step',
+    'd.head': 'DOCUMENT (shown in the exported HTML)', 'f.crumb': 'Breadcrumb (small top line)', 'f.subtitle': 'Subtitle',
+    'f.tags': 'Tags (comma-separated)', 'f.cards': 'Key cards (one per line: title|value|type)',
+    'd.cardTypes': 'Type can be {types}; it sets the card\'s left color.',
+    'd.play': 'PLAYBACK', 'f.speed': 'Packet speed per hop',
+    'speed.slow': 'Slow', 'speed.mid': 'Medium', 'speed.fast': 'Fast', 'speed.vfast': 'Very fast', 'speed.custom': 'Custom',
+    'speed.opt': '{name} ({ms} ms)',
+    'f.autoplay': 'Auto-play when opened',
+    'd.look': 'APPEARANCE', 'f.theme': 'Theme (also remembered as your preference for new templates)',
+    'f.ctBase': 'Start from a preset theme', 'd.ctPick': '(pick one to overwrite the colors above)',
+    'd.ctNote': 'Cards, secondary text, grid, label fills etc. are derived from these 6 colors. Dragging a picker previews live; releasing it records one undo step.',
+    'd.view': 'View: {deg}° (toolbar ⟲ ⟳ or R; kept on export)',
+    'd.stats': 'STATS', 'd.statsLine': 'Shapes {n} · Lines {e} · Zones {p} · Steps {s}',
+
+    'v.steps': '⏱ {n} steps', 'v.zoomOut': 'Zoom out', 'v.fit': 'Fit', 'v.fitTitle': 'Fit (or double-click the canvas)', 'v.zoomIn': 'Zoom in',
+    'v.prev': '◀ Prev', 'v.next': 'Next ▶', 'v.play': '▶ Play', 'v.pause': '❚❚ Pause', 'v.inFlow': 'IN THIS FLOW',
+    'v.step': 'Step {n}', 'v.badge': 'STEP {n} / {t}', 'v.count': 'Step {n} of {t}',
+  };
+}
+
+function LANG_ZH_TW() {
+  return {
+    'app.title': '2.5DUMLhtml · 等角流程圖編輯器',
+    'app.lang': '語言',
+    'tb.tpl': '範本 ▾', 'tb.tplTitle': '套用範本（可 Ctrl+Z 復原）',
+    'tb.open': '開啟', 'tb.openTitle': '開啟 JSON',
+    'tb.save': '存 JSON', 'tb.saveTitle': '匯出 JSON（Ctrl+S）',
+    'tb.html': '匯出 HTML', 'tb.htmlTitle': '匯出可播放的 HTML 檢視器',
+    'tb.png': '匯出 PNG', 'tb.pngTitle': '匯出 PNG（2 倍解析度）',
+    'tb.undo': '復原（Ctrl+Z）', 'tb.redo': '重做（Ctrl+Y）',
+    'tb.rotL': '視角往左轉 90°（Shift+R）', 'tb.rotR': '視角往右轉 90°（R）',
+    'tb.fit': '適配', 'tb.fitTitle': '縮放至全部（F）',
+    'tb.zoom100': '回到 100%',
+    'tb.theme': '切換主題（T 依序切換）',
+    'tb.sideL': '收合左側（[）', 'tb.sideR': '收合右側（]）',
+    'tb.play': '▶ 播放預覽', 'tb.playTitle': '播放預覽（P）',
+    'left.shapes': '圖形（點擊或拖到畫布）', 'left.zones': '區域',
+    'tab.prop': '屬性', 'tab.step': '步驟', 'tab.doc': '文件',
+    'tl.title': '步驟時間軸', 'tl.add': '＋ 新增步驟',
+    'tl.info': '{n} 個步驟 · 點一下編輯', 'tl.empty': '還沒有步驟：按右邊「＋ 新增步驟」',
+    'step.n': '步驟 {n}',
+    'ov.note': '這就是「匯出 HTML」的樣子', 'ov.close': '✕ 回到編輯（Esc）',
+    'pal.plate': '區域平台', 'pal.plateTitle': '區域平台：拖它，上面的圖形會跟著走',
+    'pal.shapeTitle': '{name}（{desc}）',
+
+    'shape.hex': '應用程式', 'shape.hex.desc': '六角柱',
+    'shape.box': '服務', 'shape.box.desc': '方塊',
+    'shape.cyl': '資料庫', 'shape.cyl.desc': '圓柱',
+    'shape.server': '伺服器', 'shape.server.desc': '機櫃',
+    'shape.phone': '前端', 'shape.phone.desc': '手機',
+    'shape.desktop': '前端', 'shape.desktop.desc': '電腦',
+    'shape.gate': '閘道', 'shape.gate.desc': '閘門',
+    'shape.users': '使用者', 'shape.users.desc': '人群',
+    'shape.file': '檔案', 'shape.file.desc': '文件堆',
+    'theme.paper': '紙本', 'theme.light': '淺色', 'theme.night': '夜間', 'theme.midnight': '深邃',
+    'theme.graphite': '石墨', 'theme.blueprint': '藍圖', 'theme.forest': '森林', 'theme.customPick': '自訂…',
+    'type.req': 'request', 'type.crypto': '加解密', 'type.ext': '外部', 'type.resp': 'response', 'type.err': '錯誤', 'type.job': '其他',
+    'cust.bg': '畫布底色', 'cust.ink': '文字', 'cust.accent': '強調色', 'cust.plate': '區域平台', 'cust.edge': '連線', 'cust.stroke': '圖形外框',
+    'tpl.blank': '空白畫布', 'tpl.blank.desc': '從零開始',
+    'tpl.xverify': '跨機構身分驗證', 'tpl.xverify.desc': '7 個步驟、三塊區域、接力回應',
+    'tpl.web3': '三層式網站', 'tpl.web3.desc': '使用者 → 閘道 → 兩台 AP → 快取／資料庫',
+    'tpl.file': '檔案處理流程', 'tpl.file.desc': '上游檔案 → 轉檔 → 核心',
+    'tpl.undoNote': '套用後可按 Ctrl+Z 復原',
+    'doc.untitled': '未命名', 'doc.defTitle': '2.5D 流程', 'new.plate': '新區域',
+
+    'toast.saveFail': '自動儲存失敗（瀏覽器不允許 localStorage）',
+    'toast.customHint': '在「文件」分頁調整自訂顏色',
+    'toast.theme': '主題：{name}',
+    'toast.addStep': '點畫布上的連線，就能把它加進這個步驟',
+    'toast.pasted': '已貼上 {n} 個項目', 'toast.copied': '已複製 {n} 個項目',
+    'toast.dupEdge': '這兩個圖形之間已經有連線了',
+    'toast.rot': '視角 {deg}°',
+    'toast.jsonOut': '已匯出 JSON', 'toast.htmlOut': '已匯出 HTML 檢視器', 'toast.pngOut': '已匯出 PNG',
+    'toast.opened': '已開啟：{name}', 'toast.openFail': '開啟失敗：{msg}',
+    'toast.empty': '畫布是空的', 'toast.pngFail': '匯出 PNG 失敗：{msg}',
+    'toast.tpl': '已套用範本：{name}',
+    'toast.hopAdded': '已加入：{a} → {b}',
+    'toast.sameNode': '起點和終點不能是同一個',
+    'toast.corrupt': '上次的自動存檔壞掉了，原內容已備份到 localStorage「{key}」',
+    'err.notDoc': '不是 2.5DUMLhtml 的 JSON（缺 nodes）', 'err.svg': 'SVG 轉圖失敗', 'err.png': 'canvas 轉 PNG 失敗',
+
+    'hint.step': '正在編輯步驟 {n}：點連線＝加入封包路線（Alt＋點＝反方向）· 時間軸可切換步驟',
+    'hint.main': '點選拖曳移動 · 選取後拉頂端「＋」建立連線 · 空白處拖曳／空白鍵＋拖曳平移 · 滾輪縮放 · Alt 拖曳不吸附',
+    'sw.auto': '跟隨主題', 'sw.custom': '自訂顏色',
+    'p.none': '還沒有選取', 'p.noneHint': '點畫布上的圖形、連線或區域來編輯屬性。',
+    'p.keys': '快捷鍵',
+    'p.keysHtml': '<kbd>拖曳</kbd> 移動（吸附 10）· <kbd>Alt</kbd>＋拖曳 不吸附、只拖一個<br>' +
+      '<kbd>Shift</kbd>／<kbd>Ctrl</kbd>＋點 加選／減選 · <kbd>Ctrl</kbd>+<kbd>A</kbd> 全選<br>' +
+      '<kbd>Ctrl</kbd>+<kbd>C</kbd>／<kbd>V</kbd> 複製／貼在最後點擊處（同一點連貼會階梯排開）<br>' +
+      '選取後拉頂端 <kbd>＋</kbd> 到另一個圖形＝連線<br>' +
+      '<kbd>Del</kbd> 刪除 · <kbd>Ctrl</kbd>+<kbd>D</kbd> 複製一份<br>' +
+      '<kbd>Ctrl</kbd>+<kbd>Z</kbd>／<kbd>Y</kbd> 復原／重做 · <kbd>Ctrl</kbd>+<kbd>S</kbd> 存 JSON<br>' +
+      '<kbd>方向鍵</kbd> 微調 1（<kbd>Shift</kbd> 10，沿等角格線，不會偏離格線）<br>' +
+      '<kbd>Ctrl</kbd>+<kbd>0</kbd> 回到 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>／<kbd>-</kbd> 放大／縮小<br>' +
+      '<kbd>R</kbd>／<kbd>Shift</kbd>+<kbd>R</kbd> 旋轉視角 · <kbd>F</kbd> 適配<br>' +
+      '<kbd>T</kbd>／<kbd>Shift</kbd>+<kbd>T</kbd> 依序切換主題<br>' +
+      '<kbd>P</kbd> 播放預覽 · <kbd>[</kbd> <kbd>]</kbd> 收合側欄<br>' +
+      '滾輪縮放 · 空白處拖曳／<kbd>空白鍵</kbd>＋拖曳 平移 · 雙擊空白處 適配<br>' +
+      '雙擊圖形＝直接改名稱',
+    'p.multi': '已選取 {n} 個項目', 'p.multiColor': '一起換顏色（圖形）',
+    'btn.dup': '複製一份', 'btn.del': '刪除', 'btn.add': '加入', 'btn.swap': '⇄ 反轉方向',
+    'p.shape': '圖形', 'f.type': '類型', 'f.name': '名稱', 'f.sub': '副標（第二行小字）',
+    'f.icon': '頂面圖示（emoji 或短字，留空＝不顯示）', 'f.color': '顏色', 'f.size': '大小', 'f.h': '高度',
+    'p.shapeNote': '刪除圖形會一併刪掉它的連線與步驟裡的封包路線。',
+    'p.edge': '連線', 'f.label': '文字（顯示在線中間）', 'f.mode': '路徑',
+    'mode.air': '直線（空中）', 'mode.xy': '地面 L 形（先 X 後 Y）', 'mode.yx': '地面 L 形（先 Y 後 X）',
+    'f.lineColor': '線色', 'f.dash': '虛線',
+    'p.edgeNote': '步驟播放時，線會改用步驟類型的顏色；封包走哪個方向由步驟決定，不受這條線的方向影響。',
+    'p.plate': '區域平台', 'f.plateLabel': '標籤（平貼在地上）', 'f.plateColor': '底色',
+    'f.w': '寬（X 方向）', 'f.d': '深（Y 方向）',
+    'p.plateNote': '拖平台時，上面的圖形會一起走（按 Alt 只拖平台）。拖兩個白色圓點可以改大小。刪除平台不會刪掉上面的圖形。',
+    's.unnamed': '（未命名）', 's.up': '上移', 's.down': '下移', 's.rm': '刪除這個步驟',
+    'f.short': '時間軸短名', 'f.stype': '類型（決定顏色）', 'f.title': '標題', 'f.desc': '說明',
+    'f.cap': '程式碼區塊標題', 'f.code': '程式碼區塊（留空＝不顯示）',
+    's.route': '封包路線（依序接力）', 's.pktPh': '封包文字', 's.rev': '反方向', 's.hrm': '移除',
+    's.noRoute': '還沒有路線。直接點畫布上的連線就會加進來（Alt＋點＝反方向）。',
+    's.noEdgeOk': '兩個圖形之間沒有連線也可以加，封包會走直線。',
+    's.list': '步驟清單', 's.none': '還沒有步驟。', 's.playFrom': '▶ 從這步播放',
+    'd.head': '文件（匯出的 HTML 會顯示這些）', 'f.crumb': '麵包屑（最上面一行小字）', 'f.subtitle': '副標',
+    'f.tags': '標籤（逗號分隔）', 'f.cards': '重點卡片（一行一張：標題|內容|類型）',
+    'd.cardTypes': '類型可填 {types}，決定卡片左邊的顏色。',
+    'd.play': '播放', 'f.speed': '封包每段速度',
+    'speed.slow': '慢', 'speed.mid': '中', 'speed.fast': '快', 'speed.vfast': '極快', 'speed.custom': '自訂',
+    'speed.opt': '{name}（{ms}ms）',
+    'f.autoplay': '開啟時自動輪播',
+    'd.look': '外觀', 'f.theme': '主題（也會記成你的偏好，開新範本時沿用）',
+    'f.ctBase': '拿預設主題當起點', 'd.ctPick': '（選一套覆蓋上面的顏色）',
+    'd.ctNote': '卡片、次要文字、格線、標籤底色等由這 6 色自動推導。拖色盤即時預覽，放開才記一筆復原點。',
+    'd.view': '視角：{deg}°（工具列 ⟲ ⟳ 或 R 鍵切換，匯出時會保留）',
+    'd.stats': '統計', 'd.statsLine': '圖形 {n} · 連線 {e} · 區域 {p} · 步驟 {s}',
+
+    'v.steps': '⏱ {n} 個步驟', 'v.zoomOut': '縮小', 'v.fit': '適配', 'v.fitTitle': '適配（雙擊畫面也可以）', 'v.zoomIn': '放大',
+    'v.prev': '◀ 上一步', 'v.next': '下一步 ▶', 'v.play': '▶ 播放', 'v.pause': '❚❚ 暫停', 'v.inFlow': '流程步驟',
+    'v.step': '步驟 {n}', 'v.badge': 'STEP {n} / {t}', 'v.count': '第 {n} 步，共 {t} 步',
+  };
+}
+
+registerLang('en-US', 'English', LANG_EN_US);
+registerLang('zh-TW', '繁體中文', LANG_ZH_TW);
+</script>
+
+<!-- ===================================================================
      編輯器
      =================================================================== -->
 <script>
 (() => {
 'use strict';
 const { SHAPES, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, customFrom, esc, normalize, render, Camera, applyThemeVars, uid, pairKey, isHex } = ISO;
+/* 範本內容只內建英文與繁中：tx(英文, 繁中)；其他語言用英文 */
+const tx = (en, zh) => curLang === 'zh-TW' ? zh : en;
 const $ = id => document.getElementById(id);
 const LS_KEY = '25dumlhtml-doc-v1', LS_UI = '25dumlhtml-ui-v1', LS_PREF = '25dumlhtml-theme-v1', MAX_UNDO = 80, GRID = 10;
 const PALETTE = ['#9cc3ec', '#f0b070', '#8fd0a8', '#b9a6e8', '#f2c98a', '#cfd6de', '#e8a0a0', '#f5f1e6', '#7fd1d8', '#d9c27a'];
 
 /* ---------- 範本 ---------- */
-const TEMPLATES = {
-  blank: { name: '空白畫布', desc: '從零開始', doc: () => ({ title: '未命名', plates: [], nodes: [], edges: [], steps: [] }) },
-  xverify: { name: '跨機構身分驗證', desc: '7 個步驟、三塊區域、接力回應', doc: () => ({
-    title: '跨機構身分驗證流程', crumb: '範例系統 / 身分驗證服務 / 跨機構驗證',
-    subtitle: '客戶在 App 發動跨機構驗證 → 驗證服務簽章加密 → 經 API 閘道送清算中心 → 轉送他機構 IdP', tags: ['我方為 RP 發動'],
-    cards: [{ k: '傳輸保護', v: 'JWS + JWE', type: 'crypto' }, { k: '外送路徑', v: '經 API 閘道', type: 'req' }, { k: '回應', v: '明文', type: 'resp' }, { k: '外部錯誤', v: '502 統一處理', type: 'err' }],
-    plates: [{ id: 'p1', x: -80, y: 230, w: 160, d: 140, label: '客戶端' }, { id: 'p2', x: 100, y: -120, w: 380, d: 500, label: '內部系統' }, { id: 'p3', x: 510, y: -290, w: 480, d: 240, label: '外部 · 清算網路' }],
+const TEMPLATES = {   // name／desc 由語言包（tpl.*）填；圖內文字用 tx(英文, 繁中)
+  blank: { name: '', desc: '', doc: () => ({ title: T('doc.untitled'), plates: [], nodes: [], edges: [], steps: [] }) },
+  xverify: { name: '', desc: '', doc: () => {
+    const plain = tx('plain', '明文');
+    return {
+    title: tx('Cross-org identity verification', '跨機構身分驗證流程'),
+    crumb: tx('Sample system / Identity service / Cross-org verification', '範例系統 / 身分驗證服務 / 跨機構驗證'),
+    subtitle: tx('Customer starts verification in the app → identity service signs & encrypts → API gateway → clearing house → other org\'s IdP',
+                 '客戶在 App 發動跨機構驗證 → 驗證服務簽章加密 → 經 API 閘道送清算中心 → 轉送他機構 IdP'),
+    tags: [tx('We initiate as RP', '我方為 RP 發動')],
+    cards: [{ k: tx('Transport protection', '傳輸保護'), v: 'JWS + JWE', type: 'crypto' }, { k: tx('Outbound path', '外送路徑'), v: tx('Via API gateway', '經 API 閘道'), type: 'req' },
+            { k: tx('Response', '回應'), v: plain, type: 'resp' }, { k: tx('External errors', '外部錯誤'), v: tx('Unified 502', '502 統一處理'), type: 'err' }],
+    plates: [{ id: 'p1', x: -80, y: 230, w: 160, d: 140, label: tx('Client', '客戶端') }, { id: 'p2', x: 100, y: -120, w: 380, d: 500, label: tx('Internal systems', '內部系統') },
+             { id: 'p3', x: 510, y: -290, w: 480, d: 240, label: tx('External · Clearing network', '外部 · 清算網路') }],
     nodes: [
-      { id: 'app', type: 'phone', x: 0, y: 300, name: '行動 App', sub: 'RP 依賴方' },
-      { id: 'svc', type: 'hex', x: 180, y: 140, name: '身分驗證服務', sub: 'Web API', icon: '⚙' },
-      { id: 'crypto', type: 'box', x: 380, y: 300, name: '加解密服務', sub: 'JWS 簽章 / JWE 加密' },
-      { id: 'gw', type: 'gate', x: 360, y: -40, name: 'API 閘道', sub: '統一對外出口' },
-      { id: 'hub', type: 'cyl', x: 600, y: -200, name: '清算中心', sub: '跨機構驗證', icon: '🏛' },
-      { id: 'idp', type: 'cyl', x: 900, y: -150, size: .8, h: 62, color: '#cfd6de', name: '他機構 IdP', sub: '身分提供方（經清算中心轉送）', icon: '🏦' }],
+      { id: 'app', type: 'phone', x: 0, y: 300, name: tx('Mobile app', '行動 App'), sub: tx('RP (relying party)', 'RP 依賴方') },
+      { id: 'svc', type: 'hex', x: 180, y: 140, name: tx('Identity service', '身分驗證服務'), sub: 'Web API', icon: '⚙' },
+      { id: 'crypto', type: 'box', x: 380, y: 300, name: tx('Crypto service', '加解密服務'), sub: tx('JWS sign / JWE encrypt', 'JWS 簽章 / JWE 加密') },
+      { id: 'gw', type: 'gate', x: 360, y: -40, name: tx('API gateway', 'API 閘道'), sub: tx('Single egress', '統一對外出口') },
+      { id: 'hub', type: 'cyl', x: 600, y: -200, name: tx('Clearing house', '清算中心'), sub: tx('Cross-org verification', '跨機構驗證'), icon: '🏛' },
+      { id: 'idp', type: 'cyl', x: 900, y: -150, size: .8, h: 62, color: '#cfd6de', name: tx('Other org IdP', '他機構 IdP'), sub: tx('Identity provider (via clearing house)', '身分提供方（經清算中心轉送）'), icon: '🏦' }],
     edges: [{ a: 'app', b: 'svc' }, { a: 'svc', b: 'crypto' }, { a: 'svc', b: 'gw' }, { a: 'gw', b: 'hub' }, { a: 'hub', b: 'idp' }],
     steps: [
-      { type: 'req', short: '發動', title: '客戶發動跨機構驗證', hops: [{ a: 'app', b: 'svc', label: '明文' }],
-        desc: 'App 帶著 Access Token 呼叫驗證 API，body 是明文。', cap: 'REQUEST', code: 'POST /cross-verify/request\nAuthorization: Bearer <token>\nHeader：x-request-id / x-source-id / x-dest-id' },
-      { type: 'crypto', short: '簽章加密', title: '交給加解密服務簽章＋加密', hops: [{ a: 'svc', b: 'crypto', label: '明文' }],
-        desc: '驗證服務把 body 送去加解密服務，用對外專用的金鑰處理。', cap: '金鑰識別', code: 'SignKeyId    = <簽章金鑰前綴> + <機構代號>\nEncryptKeyId = <加密金鑰前綴> + x-dest-id' },
-      { type: 'crypto', short: '回密文', title: '拿回密文', hops: [{ a: 'crypto', b: 'svc', label: 'JWS+JWE' }],
-        desc: '加解密服務回傳簽章＋加密後的內容。這支 API 只保護「外送」這一段。', cap: '保護模式', code: '外送 → 簽章 + 加密\n回應 → 明文（不用解）' },
-      { type: 'req', short: '送閘道', title: '經 API 閘道外送', hops: [{ a: 'svc', b: 'gw', label: 'JWS+JWE' }],
-        desc: '驗證服務不直連清算中心，一律走 API 閘道統一出口。Host 標頭要帶對，帶錯會被擋回。', cap: 'OUTBOUND', code: 'POST https://<api-gateway>/cross-verify/request\n\n503 → 先檢查送出的 Host 標頭' },
-      { type: 'ext', short: '到清算中心', title: 'API 閘道 → 清算中心', hops: [{ a: 'gw', b: 'hub', label: 'SSL' }],
-        desc: 'API 閘道以 SSL 憑證連到清算中心。換 SSL 憑證只影響這一段，JWS／JWE 金鑰不受影響。', cap: 'SSL', code: 'API 閘道 ──SSL──▶ 清算中心\n憑證錯誤 → 先查 SSL 憑證' },
-      { type: 'ext', short: '他機構驗證', title: '清算中心轉送他機構 IdP', hops: [{ a: 'hub', b: 'idp', label: '轉送' }, { a: 'idp', b: 'hub', label: '受理' }],
-        desc: '清算中心把請求轉給客戶所屬的他機構 IdP，客戶在那邊完成身分確認。', cap: 'EXTERNAL', code: '清算中心 ──▶ 他機構 IdP（身分提供方）\n受理後回覆清算中心' },
-      { type: 'resp', short: '回應', title: '回應一路接力回 App', hops: [{ a: 'hub', b: 'gw', label: '明文' }, { a: 'gw', b: 'svc', label: '明文' }, { a: 'svc', b: 'app', label: '明文' }],
-        desc: '發動驗證的回應是明文，原路回到 App。真正的驗證結果之後由清算中心主動回拋。', cap: 'RESPONSE', code: '發動回應：明文\n查詢回應：要驗章 + 解密\n\n最終結果：清算中心 → POST /cross-verify/result' }] }) },
-  web3: { name: '三層式網站', desc: '使用者 → 閘道 → 兩台 AP → 快取／資料庫', doc: () => ({
-    title: '三層式網站請求流程', subtitle: '負載平衡分流、先查快取、沒有再查資料庫',
-    cards: [{ k: 'AP 台數', v: '2', type: 'req' }, { k: '快取', v: 'Redis', type: 'crypto' }, { k: '資料庫', v: 'SQL Server', type: 'resp' }],
-    plates: [{ id: 'z1', x: -110, y: 80, w: 200, d: 180, label: '網際網路' }, { id: 'z2', x: 130, y: -30, w: 150, d: 200, label: 'DMZ' },
-             { id: 'z3', x: 330, y: -130, w: 180, d: 420, label: '應用層' }, { id: 'z4', x: 560, y: -80, w: 200, d: 420, label: '資料層' }],
-    nodes: [{ id: 'u', type: 'users', x: -10, y: 170, name: '使用者', sub: '瀏覽器 / App', size: .85 },
-            { id: 'lb', type: 'gate', x: 205, y: 70, name: '負載平衡', sub: 'L7 LB', icon: 'LB' },
+      { type: 'req', short: tx('Start', '發動'), title: tx('Customer starts cross-org verification', '客戶發動跨機構驗證'), hops: [{ a: 'app', b: 'svc', label: plain }],
+        desc: tx('The app calls the verification API with an access token; the body is plain text.', 'App 帶著 Access Token 呼叫驗證 API，body 是明文。'),
+        cap: 'REQUEST', code: 'POST /cross-verify/request\nAuthorization: Bearer <token>\n' + tx('Headers: ', 'Header：') + 'x-request-id / x-source-id / x-dest-id' },
+      { type: 'crypto', short: tx('Sign+encrypt', '簽章加密'), title: tx('Hand off to the crypto service to sign + encrypt', '交給加解密服務簽章＋加密'), hops: [{ a: 'svc', b: 'crypto', label: plain }],
+        desc: tx('The identity service sends the body to the crypto service, which uses the outbound-only keys.', '驗證服務把 body 送去加解密服務，用對外專用的金鑰處理。'),
+        cap: tx('Key IDs', '金鑰識別'),
+        code: tx('SignKeyId    = <sign-key prefix> + <org code>\nEncryptKeyId = <enc-key prefix> + x-dest-id', 'SignKeyId    = <簽章金鑰前綴> + <機構代號>\nEncryptKeyId = <加密金鑰前綴> + x-dest-id') },
+      { type: 'crypto', short: tx('Ciphertext', '回密文'), title: tx('Get the ciphertext back', '拿回密文'), hops: [{ a: 'crypto', b: 'svc', label: 'JWS+JWE' }],
+        desc: tx('The crypto service returns the signed + encrypted content. This API protects only the outbound leg.', '加解密服務回傳簽章＋加密後的內容。這支 API 只保護「外送」這一段。'),
+        cap: tx('Protection mode', '保護模式'), code: tx('Outbound → sign + encrypt\nResponse → plain text (no decryption)', '外送 → 簽章 + 加密\n回應 → 明文（不用解）') },
+      { type: 'req', short: tx('To gateway', '送閘道'), title: tx('Send out via the API gateway', '經 API 閘道外送'), hops: [{ a: 'svc', b: 'gw', label: 'JWS+JWE' }],
+        desc: tx('The identity service never calls the clearing house directly; everything leaves through the API gateway. The Host header must be right or the request is rejected.',
+                 '驗證服務不直連清算中心，一律走 API 閘道統一出口。Host 標頭要帶對，帶錯會被擋回。'),
+        cap: 'OUTBOUND', code: 'POST https://<api-gateway>/cross-verify/request\n\n' + tx('503 → check the outgoing Host header first', '503 → 先檢查送出的 Host 標頭') },
+      { type: 'ext', short: tx('To clearing', '到清算中心'), title: tx('API gateway → clearing house', 'API 閘道 → 清算中心'), hops: [{ a: 'gw', b: 'hub', label: 'SSL' }],
+        desc: tx('The API gateway connects to the clearing house over SSL. Rotating the SSL certificate only affects this leg; the JWS / JWE keys are unaffected.',
+                 'API 閘道以 SSL 憑證連到清算中心。換 SSL 憑證只影響這一段，JWS／JWE 金鑰不受影響。'),
+        cap: 'SSL', code: tx('API gateway ──SSL──▶ clearing house\nCertificate error → check the SSL certificate first', 'API 閘道 ──SSL──▶ 清算中心\n憑證錯誤 → 先查 SSL 憑證') },
+      { type: 'ext', short: tx('Other org', '他機構驗證'), title: tx('Clearing house forwards to the other org\'s IdP', '清算中心轉送他機構 IdP'),
+        hops: [{ a: 'hub', b: 'idp', label: tx('forward', '轉送') }, { a: 'idp', b: 'hub', label: tx('accepted', '受理') }],
+        desc: tx('The clearing house forwards the request to the customer\'s own IdP, where the customer completes verification.', '清算中心把請求轉給客戶所屬的他機構 IdP，客戶在那邊完成身分確認。'),
+        cap: 'EXTERNAL', code: tx('Clearing house ──▶ other org IdP (identity provider)\nReplies to the clearing house once accepted', '清算中心 ──▶ 他機構 IdP（身分提供方）\n受理後回覆清算中心') },
+      { type: 'resp', short: tx('Response', '回應'), title: tx('Response relays back to the app', '回應一路接力回 App'),
+        hops: [{ a: 'hub', b: 'gw', label: plain }, { a: 'gw', b: 'svc', label: plain }, { a: 'svc', b: 'app', label: plain }],
+        desc: tx('The response is plain text and travels back the same way. The actual verification result is pushed later by the clearing house.',
+                 '發動驗證的回應是明文，原路回到 App。真正的驗證結果之後由清算中心主動回拋。'),
+        cap: 'RESPONSE', code: tx('Start response: plain text\nQuery response: verify + decrypt\n\nFinal result: clearing house → POST /cross-verify/result',
+                                  '發動回應：明文\n查詢回應：要驗章 + 解密\n\n最終結果：清算中心 → POST /cross-verify/result') }] };
+  } },
+  web3: { name: '', desc: '', doc: () => ({
+    title: tx('Three-tier web request flow', '三層式網站請求流程'), subtitle: tx('Load balancing, check the cache first, then the database', '負載平衡分流、先查快取、沒有再查資料庫'),
+    cards: [{ k: tx('App servers', 'AP 台數'), v: '2', type: 'req' }, { k: tx('Cache', '快取'), v: 'Redis', type: 'crypto' }, { k: tx('Database', '資料庫'), v: 'SQL Server', type: 'resp' }],
+    plates: [{ id: 'z1', x: -110, y: 80, w: 200, d: 180, label: tx('Internet', '網際網路') }, { id: 'z2', x: 130, y: -30, w: 150, d: 200, label: 'DMZ' },
+             { id: 'z3', x: 330, y: -130, w: 180, d: 420, label: tx('App tier', '應用層') }, { id: 'z4', x: 560, y: -80, w: 200, d: 420, label: tx('Data tier', '資料層') }],
+    nodes: [{ id: 'u', type: 'users', x: -10, y: 170, name: tx('Users', '使用者'), sub: tx('Browser / App', '瀏覽器 / App'), size: .85 },
+            { id: 'lb', type: 'gate', x: 205, y: 70, name: tx('Load balancer', '負載平衡'), sub: 'L7 LB', icon: 'LB' },
             { id: 'a1', type: 'hex', x: 420, y: -40, name: 'AP-01', sub: 'Web API', size: .85 },
             { id: 'a2', type: 'hex', x: 420, y: 190, name: 'AP-02', sub: 'Web API', size: .85 },
-            { id: 'rd', type: 'box', x: 660, y: 0, name: '快取', sub: 'Redis', icon: '⚡', color: '#e8a0a0', size: .85 },
-            { id: 'db', type: 'cyl', x: 660, y: 230, name: '資料庫', sub: 'SQL Server' }],
+            { id: 'rd', type: 'box', x: 660, y: 0, name: tx('Cache', '快取'), sub: 'Redis', icon: '⚡', color: '#e8a0a0', size: .85 },
+            { id: 'db', type: 'cyl', x: 660, y: 230, name: tx('Database', '資料庫'), sub: 'SQL Server' }],
     edges: [{ a: 'u', b: 'lb' }, { a: 'lb', b: 'a1' }, { a: 'lb', b: 'a2', dash: true }, { a: 'a1', b: 'rd' }, { a: 'a1', b: 'db', mode: 'ground-xy' }, { a: 'a2', b: 'db' }, { a: 'a2', b: 'rd', dash: true, mode: 'ground-yx' }],
     steps: [
-      { type: 'req', short: '請求', title: '使用者送出請求', hops: [{ a: 'u', b: 'lb', label: 'HTTPS' }], desc: '請求先到負載平衡。', cap: 'REQUEST', code: 'GET /api/orders/42' },
-      { type: 'req', short: '分流', title: '分流到 AP-01', hops: [{ a: 'lb', b: 'a1', label: '轉送' }], desc: '依健康檢查與權重挑一台 AP。', cap: '', code: '' },
-      { type: 'crypto', short: '查快取', title: '先查快取', hops: [{ a: 'a1', b: 'rd', label: 'GET' }, { a: 'rd', b: 'a1', label: 'miss' }], desc: '快取沒有資料（miss）。', cap: 'CACHE', code: 'GET order:42 → (nil)' },
-      { type: 'resp', short: '查 DB', title: '查資料庫並回填快取', hops: [{ a: 'a1', b: 'db', label: 'SQL' }, { a: 'db', b: 'a1', label: '資料' }, { a: 'a1', b: 'rd', label: 'SET' }], desc: '查到後寫回快取，下次就不用再查 DB。', cap: 'SQL', code: 'SELECT * FROM Orders WHERE Id = 42' },
-      { type: 'resp', short: '回應', title: '回應使用者', hops: [{ a: 'a1', b: 'lb', label: '200' }, { a: 'lb', b: 'u', label: '200' }], desc: '原路回到使用者。', cap: '', code: '' }] }) },
-  file: { name: '檔案處理流程', desc: '上游檔案 → 轉檔 → 核心', doc: () => ({
-    title: '檔案轉檔入核心', subtitle: '上游丟檔 → 排程轉檔 → 寫入核心資料庫',
-    plates: [{ id: 'f1', x: -90, y: -90, w: 180, d: 180, label: '上游' }, { id: 'f2', x: 150, y: -90, w: 200, d: 180, label: '轉檔服務' }, { id: 'f3', x: 410, y: -90, w: 200, d: 180, label: '核心' }],
-    nodes: [{ id: 'up', type: 'file', x: 0, y: 0, name: '上游檔案', sub: '檔案交換傳入' },
-            { id: 'cv', type: 'server', x: 250, y: 0, name: '轉檔排程', sub: 'Windows 服務' },
-            { id: 'core', type: 'cyl', x: 510, y: 0, name: '核心資料庫', sub: 'DB2' }],
+      { type: 'req', short: tx('Request', '請求'), title: tx('User sends a request', '使用者送出請求'), hops: [{ a: 'u', b: 'lb', label: 'HTTPS' }], desc: tx('The request reaches the load balancer first.', '請求先到負載平衡。'), cap: 'REQUEST', code: 'GET /api/orders/42' },
+      { type: 'req', short: tx('Route', '分流'), title: tx('Route to AP-01', '分流到 AP-01'), hops: [{ a: 'lb', b: 'a1', label: tx('forward', '轉送') }], desc: tx('Picks an app server by health check and weight.', '依健康檢查與權重挑一台 AP。'), cap: '', code: '' },
+      { type: 'crypto', short: tx('Cache', '查快取'), title: tx('Check the cache first', '先查快取'), hops: [{ a: 'a1', b: 'rd', label: 'GET' }, { a: 'rd', b: 'a1', label: 'miss' }], desc: tx('The cache has no data (miss).', '快取沒有資料（miss）。'), cap: 'CACHE', code: 'GET order:42 → (nil)' },
+      { type: 'resp', short: tx('Query DB', '查 DB'), title: tx('Query the database and refill the cache', '查資料庫並回填快取'), hops: [{ a: 'a1', b: 'db', label: 'SQL' }, { a: 'db', b: 'a1', label: tx('rows', '資料') }, { a: 'a1', b: 'rd', label: 'SET' }], desc: tx('Write the result back to the cache so the next request skips the DB.', '查到後寫回快取，下次就不用再查 DB。'), cap: 'SQL', code: 'SELECT * FROM Orders WHERE Id = 42' },
+      { type: 'resp', short: tx('Response', '回應'), title: tx('Respond to the user', '回應使用者'), hops: [{ a: 'a1', b: 'lb', label: '200' }, { a: 'lb', b: 'u', label: '200' }], desc: tx('Back along the same path.', '原路回到使用者。'), cap: '', code: '' }] }) },
+  file: { name: '', desc: '', doc: () => ({
+    title: tx('Convert files into the core system', '檔案轉檔入核心'), subtitle: tx('Upstream drops a file → scheduled conversion → write to the core database', '上游丟檔 → 排程轉檔 → 寫入核心資料庫'),
+    plates: [{ id: 'f1', x: -90, y: -90, w: 180, d: 180, label: tx('Upstream', '上游') }, { id: 'f2', x: 150, y: -90, w: 200, d: 180, label: tx('Converter', '轉檔服務') }, { id: 'f3', x: 410, y: -90, w: 200, d: 180, label: tx('Core', '核心') }],
+    nodes: [{ id: 'up', type: 'file', x: 0, y: 0, name: tx('Upstream file', '上游檔案'), sub: tx('From file exchange', '檔案交換傳入') },
+            { id: 'cv', type: 'server', x: 250, y: 0, name: tx('Conversion job', '轉檔排程'), sub: tx('Windows service', 'Windows 服務') },
+            { id: 'core', type: 'cyl', x: 510, y: 0, name: tx('Core database', '核心資料庫'), sub: 'DB2' }],
     edges: [{ a: 'up', b: 'cv' }, { a: 'cv', b: 'core' }],
     steps: [
-      { type: 'job', short: '收檔', title: '收到上游檔案', hops: [{ a: 'up', b: 'cv', label: '檔案' }], desc: '排程掃描資料夾，取得新檔。', cap: '', code: '' },
-      { type: 'req', short: '寫入', title: '轉檔後寫入核心', hops: [{ a: 'cv', b: 'core', label: '寫入' }], desc: '轉成核心格式後寫入。', cap: '', code: '' },
-      { type: 'resp', short: '回報', title: '回報結果', hops: [{ a: 'core', b: 'cv', label: 'OK' }], desc: '寫入成功，排程記錄結果。', cap: '', code: '' }] }) },
+      { type: 'job', short: tx('Receive', '收檔'), title: tx('Receive the upstream file', '收到上游檔案'), hops: [{ a: 'up', b: 'cv', label: tx('file', '檔案') }], desc: tx('The job scans the folder and picks up new files.', '排程掃描資料夾，取得新檔。'), cap: '', code: '' },
+      { type: 'req', short: tx('Write', '寫入'), title: tx('Convert and write to the core', '轉檔後寫入核心'), hops: [{ a: 'cv', b: 'core', label: tx('write', '寫入') }], desc: tx('Converts to the core format and writes it.', '轉成核心格式後寫入。'), cap: '', code: '' },
+      { type: 'resp', short: tx('Report', '回報'), title: tx('Report the result', '回報結果'), hops: [{ a: 'core', b: 'cv', label: 'OK' }], desc: tx('The write succeeded; the job logs the result.', '寫入成功，排程記錄結果。'), cap: '', code: '' }] }) },
 };
 
 /* ---------- 狀態 ---------- */
@@ -818,7 +1126,7 @@ const findE = id => doc.edges.find(e => e.id === id);
 const pj = () => ISO.proj(doc.rot);
 
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 1800); }
-function save() { try { localStorage.setItem(LS_KEY, last); } catch (e) { toast('自動儲存失敗（瀏覽器不允許 localStorage）'); } }
+function save() { try { localStorage.setItem(LS_KEY, last); } catch (e) { toast(T('toast.saveFail')); } }
 function commit() {
   const now = JSON.stringify(doc);
   if (now === last) return;
@@ -839,8 +1147,8 @@ function loadDoc(d, fit = true) {
   applyTheme(); draw(); if (fit) fitView(); refreshPanel();
 }
 function applyTheme() { applyThemeVars(document.documentElement, themeOf(doc)); $('selTheme').value = doc.theme; }
-const themeOptions = cur => THEME_ORDER.map(k => `<option value="${k}" ${k === cur ? 'selected' : ''}>${THEMES[k].name}</option>`).join('') +
-  `<option value="custom" ${cur === 'custom' ? 'selected' : ''}>自訂…</option>`;
+const themeOptions = cur => THEME_ORDER.map(k => `<option value="${k}" ${k === cur ? 'selected' : ''}>${esc(THEMES[k].name)}</option>`).join('') +
+  `<option value="custom" ${cur === 'custom' ? 'selected' : ''}>${esc(T('theme.customPick'))}</option>`;
 /* 記住偏好：下次沒有存檔、或開新範本時，用你最後選的主題 */
 function savePref() { try { localStorage.setItem(LS_PREF, JSON.stringify({ theme: doc.theme, customTheme: doc.customTheme })); } catch (e) { } }
 function loadPref() { try { return JSON.parse(localStorage.getItem(LS_PREF) || 'null'); } catch (e) { return null; } }
@@ -848,8 +1156,8 @@ function setTheme(key) {
   const prev = doc.theme;
   if (key === 'custom' && !doc.customTheme.edited && prev !== 'custom') doc.customTheme = { ...customFrom(prev), edited: false };   // 第一次切自訂：以目前主題當起點
   doc.theme = key; commit(); savePref(); applyTheme(); draw(); refreshPanel();
-  if (key === 'custom') { setTab('doc'); toast('在「文件」分頁調整自訂顏色'); }
-  else toast('主題：' + THEMES[key].name);
+  if (key === 'custom') { setTab('doc'); toast(T('toast.customHint')); }
+  else toast(T('toast.theme', { name: THEMES[key].name }));
 }
 
 /* ---------- 繪製 ---------- */
@@ -861,8 +1169,8 @@ function fitView() { draw(); cam.fit(lastRes.bounds); }
 
 function drawTimeline() {
   const box = $('tlSteps');
-  $('tlInfo').textContent = doc.steps.length ? `${doc.steps.length} 個步驟 · 點一下編輯` : '還沒有步驟：按右邊「＋ 新增步驟」';
-  box.innerHTML = doc.steps.map((s, i) => `<div class="tls ${tab === 'step' && i === stepSel ? 'on' : ''}" data-i="${i}" title="${esc(s.title)}"><b style="background:${STEP_TYPES[s.type].c}">${i + 1}</b>${esc(s.short || s.title || '步驟 ' + (i + 1))}</div>`).join('');
+  $('tlInfo').textContent = doc.steps.length ? T('tl.info', { n: doc.steps.length }) : T('tl.empty');
+  box.innerHTML = doc.steps.map((s, i) => `<div class="tls ${tab === 'step' && i === stepSel ? 'on' : ''}" data-i="${i}" title="${esc(s.title)}"><b style="background:${STEP_TYPES[s.type].c}">${i + 1}</b>${esc(s.short || s.title || T('step.n', { n: i + 1 }))}</div>`).join('');
 }
 $('tlSteps').addEventListener('click', e => { const t = e.target.closest('.tls'); if (!t) return; stepSel = +t.dataset.i; setTab('step'); });
 $('bAddStep').onclick = () => addStep();
@@ -874,13 +1182,13 @@ function addNode(type, wx, wy) {
   doc.nodes.push(n); sel = new Set([n.id]); setTab('prop', false); commit(); draw(); refreshPanel();
 }
 function addPlate(wx, wy) {
-  const p = { id: uid('p'), x: Math.round((wx - 120) / GRID) * GRID, y: Math.round((wy - 120) / GRID) * GRID, w: 240, d: 240, label: '新區域', color: '' };
+  const p = { id: uid('p'), x: Math.round((wx - 120) / GRID) * GRID, y: Math.round((wy - 120) / GRID) * GRID, w: 240, d: 240, label: T('new.plate'), color: '' };
   doc.plates.push(p); sel = new Set([p.id]); setTab('prop', false); commit(); draw(); refreshPanel();
 }
 function addStep() {
-  doc.steps.push({ id: uid('s'), type: 'req', short: '步驟 ' + (doc.steps.length + 1), title: '', desc: '', cap: '', code: '', hops: [] });
+  doc.steps.push({ id: uid('s'), type: 'req', short: T('step.n', { n: doc.steps.length + 1 }), title: '', desc: '', cap: '', code: '', hops: [] });
   stepSel = doc.steps.length - 1; commit(); setTab('step');
-  toast('點畫布上的連線，就能把它加進這個步驟');
+  toast(T('toast.addStep'));
 }
 function deleteSel() {
   if (!sel.size) return;
@@ -936,14 +1244,14 @@ function pasteClip(c) {
   for (const p of src.plates) { const c2 = { ...p, id: uid('p'), x: p.x + dx, y: p.y + dy }; doc.plates.push(c2); add.push(c2.id); }
   for (const e of src.edges) if (map[e.a] && map[e.b]) doc.edges.push({ ...e, id: uid('e'), a: map[e.a], b: map[e.b] });
   sel = new Set(add); commit(); draw(); refreshPanel();
-  toast(`已貼上 ${add.length} 個項目`);
+  toast(T('toast.pasted', { n: add.length }));
 }
 document.addEventListener('copy', e => {
   if (typing() || !$('ov').hidden) return;
   const c = collectClip(); if (!c) return;
   clip = c; e.preventDefault();
   try { e.clipboardData.setData('text/plain', JSON.stringify(c)); } catch (err) { }
-  toast(`已複製 ${c.nodes.length + c.plates.length} 個項目`);
+  toast(T('toast.copied', { n: c.nodes.length + c.plates.length }));
 });
 document.addEventListener('paste', e => {
   if (typing() || !$('ov').hidden) return;
@@ -961,8 +1269,13 @@ function palIcon(type) {
   const r = render(tmp, d, {}), b = r.bounds;
   return `<svg viewBox="${b[0] - 6} ${b[1] - 6} ${b[2] - b[0] + 12} ${b[3] - b[1] + 12}">${tmp.innerHTML}</svg>`;
 }
-$('pal').innerHTML = Object.entries(SHAPES).map(([k, s]) => `<button data-type="${k}" title="${s.name}（${s.desc}）">${palIcon(k)}<span>${s.name}</span></button>`).join('');
-$('pal2').innerHTML = `<button data-type="plate" title="區域平台：拖它，上面的圖形會跟著走"><svg viewBox="-100 -60 200 120"><polygon points="0,-50 87,0 0,50 -87,0" fill="#ece5d5" stroke="#2d2a24" stroke-width="3"/></svg><span>區域平台</span></button>`;
+const PAL_ICONS = Object.fromEntries(Object.keys(SHAPES).map(k => [k, palIcon(k)]));
+function buildPalette() {   // 換語言時重建（只換文字，圖示沿用）
+  const dupName = nm => Object.values(SHAPES).filter(x => x.name === nm).length > 1;
+  $('pal').innerHTML = Object.entries(SHAPES).map(([k, s]) => { const full = T('pal.shapeTitle', { name: s.name, desc: s.desc });
+    return `<button data-type="${k}" title="${esc(full)}">${PAL_ICONS[k]}<span>${esc(dupName(s.name) ? full : s.name)}</span></button>`; }).join('');
+  $('pal2').innerHTML = `<button data-type="plate" title="${esc(T('pal.plateTitle'))}"><svg viewBox="-100 -60 200 120"><polygon points="0,-50 87,0 0,50 -87,0" fill="#ece5d5" stroke="#2d2a24" stroke-width="3"/></svg><span>${esc(T('pal.plate'))}</span></button>`;
+}
 let palDrag = null;
 for (const box of [$('pal'), $('pal2')]) box.addEventListener('pointerdown', e => {
   const b = e.target.closest('button[data-type]'); if (!b || e.button !== 0) return;
@@ -1067,7 +1380,7 @@ window.addEventListener('pointerup', e => {
       }
     }
     if (to && to !== from) {
-      if (doc.edges.some(x => pairKey(x.a, x.b) === pairKey(from, to))) toast('這兩個圖形之間已經有連線了');
+      if (doc.edges.some(x => pairKey(x.a, x.b) === pairKey(from, to))) toast(T('toast.dupEdge'));
       else { const ed = { id: uid('e'), a: from, b: to, label: '', color: '', mode: 'air', dash: false }; doc.edges.push(ed); sel = new Set([ed.id]); commit(); refreshPanel(); }
     }
     draw(); return;
@@ -1120,13 +1433,12 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => { if (e.key === ' ') { spaceDown = false; stage.style.cursor = ''; } });
 
 /* ---------- 工具列 ---------- */
-function rotate(dir) { doc.rot = (doc.rot + dir + 4) % 4; commit(); fitView(); toast('視角 ' + doc.rot * 90 + '°'); }
+function rotate(dir) { doc.rot = (doc.rot + dir + 4) % 4; commit(); fitView(); toast(T('toast.rot', { deg: doc.rot * 90 })); }
 $('bRotL').onclick = () => rotate(-1);
 $('bRotR').onclick = () => rotate(1);
 $('bFit').onclick = fitView;
 $('zoomLbl').onclick = () => cam.setZoom(1);
 $('bUndo').onclick = undo; $('bRedo').onclick = redo;
-$('selTheme').innerHTML = themeOptions('paper');
 $('selTheme').onchange = e => { setTheme(e.target.value); e.target.blur(); };
 function toggleSide(w) {
   $('app').classList.toggle('hide' + w);
@@ -1140,46 +1452,48 @@ function download(name, blob) {
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
 const fname = ext => (doc.title || '2.5DUML').replace(/[\\/:*?"<>|\s]+/g, '_').slice(0, 60) + ext;
-function exportJSON() { download(fname('.json'), new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' })); toast('已匯出 JSON'); }
+function exportJSON() { download(fname('.json'), new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' })); toast(T('toast.jsonOut')); }
 $('bSave').onclick = exportJSON;
 $('bOpen').onclick = () => $('fileIn').click();
 $('fileIn').onchange = async () => {
   const f = $('fileIn').files[0]; $('fileIn').value = ''; if (!f) return;
   try {
     const d = JSON.parse(await f.text());
-    if (!d || !Array.isArray(d.nodes)) throw new Error('不是 2.5DUMLhtml 的 JSON（缺 nodes）');
-    loadDoc(d); commit(); toast('已開啟：' + f.name);
-  } catch (err) { toast('開啟失敗：' + err.message); }
+    if (!d || !Array.isArray(d.nodes)) throw new Error(T('err.notDoc'));
+    loadDoc(d); commit(); toast(T('toast.opened', { name: f.name }));
+  } catch (err) { toast(T('toast.openFail', { msg: err.message })); }
 };
 
 function buildViewerHTML(d, startStep) {
   const core = $('core').textContent, vcss = $('viewer-css').textContent, vjs = $('viewer-js').textContent, ccss = $('core-css').textContent;
   const json = JSON.stringify(d).replace(/</g, '\\u003c');
   const E = '</' + 'script>';
-  return '<!doctype html>\n<html lang="zh-Hant">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-    '<title>' + esc(d.title || '2.5D 流程') + '</title>\n<style>' + ccss + vcss + '</style>\n</head>\n<body>\n<div id="root"></div>\n' +
+  const l10n = JSON.stringify(viewerL10n()).replace(/</g, '\\u003c');
+  return '<!doctype html>\n<html lang="' + curLang + '">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+    '<title>' + esc(d.title || T('doc.defTitle')) + '</title>\n<style>' + ccss + vcss + '</style>\n</head>\n<body>\n<div id="root"></div>\n' +
     '<script type="application/json" id="doc-json">' + json + E + '\n' +
+    '<script>window.ISO_L10N=' + l10n + ';' + E + '\n' +
     (startStep ? '<script>window.ISO_START=' + (+startStep) + ';' + E + '\n' : '') +
     '<script>' + core + E + '\n<script>' + vjs + E + '\n</body>\n</html>\n';
 }
-$('bHtml').onclick = () => { download(fname('.html'), new Blob([buildViewerHTML(doc)], { type: 'text/html' })); toast('已匯出 HTML 檢視器'); };
+$('bHtml').onclick = () => { download(fname('.html'), new Blob([buildViewerHTML(doc)], { type: 'text/html' })); toast(T('toast.htmlOut')); };
 
 async function exportPNG() {
   const tmp = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   const r = render(tmp, doc, {}), b = r.bounds, pad = 30, th = themeOf(doc);
-  if (!isFinite(b[0])) { toast('畫布是空的'); return; }
+  if (!isFinite(b[0])) { toast(T('toast.empty')); return; }
   const w = b[2] - b[0] + pad * 2, h = b[3] - b[1] + pad * 2, scale = 2;
   const src = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${b[0] - pad} ${b[1] - pad} ${w} ${h}" width="${w * scale}" height="${h * scale}" font-family="Cascadia Mono, Consolas, Microsoft JhengHei, monospace"><rect x="${b[0] - pad}" y="${b[1] - pad}" width="${w}" height="${h}" fill="${th.bg}"/>${[...tmp.childNodes].map(c => new XMLSerializer().serializeToString(c)).join('')}</svg>`;
   const img = new Image();
   const url = URL.createObjectURL(new Blob([src], { type: 'image/svg+xml' }));
   try {
-    await new Promise((ok, bad) => { img.onload = ok; img.onerror = () => bad(new Error('SVG 轉圖失敗')); img.src = url; });
+    await new Promise((ok, bad) => { img.onload = ok; img.onerror = () => bad(new Error(T('err.svg'))); img.src = url; });
     const cv = document.createElement('canvas'); cv.width = Math.ceil(w * scale); cv.height = Math.ceil(h * scale);
     cv.getContext('2d').drawImage(img, 0, 0);
     const blob = await new Promise(ok => cv.toBlob(ok, 'image/png'));
-    if (!blob) throw new Error('canvas 轉 PNG 失敗');
-    download(fname('.png'), blob); toast('已匯出 PNG');
-  } catch (err) { toast('匯出 PNG 失敗：' + err.message); }
+    if (!blob) throw new Error(T('err.png'));
+    download(fname('.png'), blob); toast(T('toast.pngOut'));
+  } catch (err) { toast(T('toast.pngFail', { msg: err.message })); }
   finally { URL.revokeObjectURL(url); }
 }
 $('bPng').onclick = exportPNG;
@@ -1197,9 +1511,9 @@ window.addEventListener('message', e => { if (e.data === 'iso-close') closePlay(
 $('bTpl').onclick = e => {
   e.stopPropagation(); closeMenu();
   const m = document.createElement('div'); m.className = 'menu'; m.id = 'tplMenu';
-  m.innerHTML = Object.entries(TEMPLATES).map(([k, t]) => `<button data-k="${k}">${esc(t.name)}<small>${esc(t.desc)}</small></button>`).join('') + '<small style="padding:4px 12px">套用後可按 Ctrl+Z 復原</small>';
+  m.innerHTML = Object.entries(TEMPLATES).map(([k, t]) => `<button data-k="${k}">${esc(t.name)}<small>${esc(t.desc)}</small></button>`).join('') + '<small style="padding:4px 12px">' + esc(T('tpl.undoNote')) + '</small>';
   const r = e.currentTarget.getBoundingClientRect(); m.style.left = r.left + 'px'; m.style.top = r.bottom + 4 + 'px';
-  m.onclick = ev => { const b = ev.target.closest('button[data-k]'); if (!b) return; closeMenu(); const d = TEMPLATES[b.dataset.k].doc(); d.theme = doc.theme; d.customTheme = doc.customTheme; loadDoc(d); commit(); toast('已套用範本：' + TEMPLATES[b.dataset.k].name); };
+  m.onclick = ev => { const b = ev.target.closest('button[data-k]'); if (!b) return; closeMenu(); const d = TEMPLATES[b.dataset.k].doc(); d.theme = doc.theme; d.customTheme = doc.customTheme; loadDoc(d); commit(); toast(T('toast.tpl', { name: TEMPLATES[b.dataset.k].name })); };
   document.body.appendChild(m);
 };
 function closeMenu() { const m = $('tplMenu'); if (m) m.remove(); }
@@ -1215,14 +1529,14 @@ function setTab(t, redraw = true) {
 }
 function updHint() {
   $('hint').textContent = tab === 'step' && stepSel >= 0
-    ? `正在編輯步驟 ${stepSel + 1}：點連線＝加入封包路線（Alt＋點＝反方向）· 時間軸可切換步驟`
-    : '點選拖曳移動 · 選取後拉頂端「＋」建立連線 · 空白處拖曳／空白鍵＋拖曳平移 · 滾輪縮放 · Alt 拖曳不吸附';
+    ? T('hint.step', { n: stepSel + 1 })
+    : T('hint.main');
 }
 const fld = (label, html) => `<label class="f"><span>${label}</span>${html}</label>`;
 const inp = (f, v, type = 'text', extra = '') => `<input data-f="${f}" type="${type}" value="${esc(v ?? '')}" ${extra}>`;
 const txa = (f, v, rows = 3) => `<textarea data-f="${f}" rows="${rows}">${esc(v ?? '')}</textarea>`;
 const rng = (f, v, min, max, step) => `<div class="rng"><input data-f="${f}" type="range" min="${min}" max="${max}" step="${step}" value="${v}"><em data-show="${f}">${v}</em></div>`;
-const swatches = (f, v, allowAuto) => `<div class="sw">${allowAuto ? `<button class="auto" data-sw="" data-tf="${f}" title="跟隨主題"></button>` : ''}${PALETTE.map(c => `<button style="background:${c}" data-sw="${c}" data-tf="${f}" title="${c}"></button>`).join('')}<input type="color" data-f="${f}" value="${isHex(v) ? v : '#999999'}" title="自訂顏色"></div>`;
+const swatches = (f, v, allowAuto) => `<div class="sw">${allowAuto ? `<button class="auto" data-sw="" data-tf="${f}" title="${esc(T('sw.auto'))}"></button>` : ''}${PALETTE.map(c => `<button style="background:${c}" data-sw="${c}" data-tf="${f}" title="${c}"></button>`).join('')}<input type="color" data-f="${f}" value="${isHex(v) ? v : '#999999'}" title="${esc(T('sw.custom'))}"></div>`;
 function bind(root, obj) {
   root.querySelectorAll('[data-f]').forEach(el => {
     const f = el.dataset.f;
@@ -1248,44 +1562,31 @@ function refreshPanel() {
 function panelProp(P) {
   const ids = [...sel];
   if (!ids.length) {
-    P.innerHTML = `<div class="sec">還沒有選取</div><p class="muted">點畫布上的圖形、連線或區域來編輯屬性。</p>
-      <div class="sec">快捷鍵</div><div class="keys">
-      <kbd>拖曳</kbd> 移動（吸附 10）· <kbd>Alt</kbd>＋拖曳 不吸附、只拖一個<br>
-      <kbd>Shift</kbd>／<kbd>Ctrl</kbd>＋點 加選／減選 · <kbd>Ctrl</kbd>+<kbd>A</kbd> 全選<br>
-      <kbd>Ctrl</kbd>+<kbd>C</kbd>／<kbd>V</kbd> 複製／貼在最後點擊處（同一點連貼會階梯排開）<br>
-      選取後拉頂端 <kbd>＋</kbd> 到另一個圖形＝連線<br>
-      <kbd>Del</kbd> 刪除 · <kbd>Ctrl</kbd>+<kbd>D</kbd> 複製一份<br>
-      <kbd>Ctrl</kbd>+<kbd>Z</kbd>／<kbd>Y</kbd> 復原／重做 · <kbd>Ctrl</kbd>+<kbd>S</kbd> 存 JSON<br>
-      <kbd>方向鍵</kbd> 微調 1（<kbd>Shift</kbd> 10，沿等角格線，不會偏離格線）<br>
-      <kbd>Ctrl</kbd>+<kbd>0</kbd> 回到 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>／<kbd>-</kbd> 放大／縮小<br>
-      <kbd>R</kbd>／<kbd>Shift</kbd>+<kbd>R</kbd> 旋轉視角 · <kbd>F</kbd> 適配<br>
-      <kbd>T</kbd>／<kbd>Shift</kbd>+<kbd>T</kbd> 依序切換主題<br>
-      <kbd>P</kbd> 播放預覽 · <kbd>[</kbd> <kbd>]</kbd> 收合側欄<br>
-      滾輪縮放 · 空白處拖曳／<kbd>空白鍵</kbd>＋拖曳 平移 · 雙擊空白處 適配<br>
-      雙擊圖形＝直接改名稱</div>`;
+    P.innerHTML = `<div class="sec">${T('p.none')}</div><p class="muted">${T('p.noneHint')}</p>
+      <div class="sec">${T('p.keys')}</div><div class="keys">${T('p.keysHtml')}</div>`;
     return;
   }
   if (ids.length > 1) {
-    P.innerHTML = `<div class="sec">已選取 ${ids.length} 個項目</div>
-      ${fld('一起換顏色（圖形）', `<div class="sw">${PALETTE.map(c => `<button style="background:${c}" data-mc="${c}"></button>`).join('')}</div>`)}
-      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">複製一份</button><button class="btn sm" data-act="del">刪除</button></div>`;
+    P.innerHTML = `<div class="sec">${T('p.multi', { n: ids.length })}</div>
+      ${fld(T('p.multiColor'), `<div class="sw">${PALETTE.map(c => `<button style="background:${c}" data-mc="${c}"></button>`).join('')}</div>`)}
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">${T('btn.dup')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>`;
     P.querySelectorAll('[data-mc]').forEach(b => b.onclick = () => { ids.forEach(id => { const n = findN(id); if (n) n.color = b.dataset.mc; }); commit(); draw(); });
     P.querySelector('[data-act=dup]').onclick = duplicateSel; P.querySelector('[data-act=del]').onclick = deleteSel;
     return;
   }
   const id = ids[0], n = findN(id), p = findP(id), e = findE(id);
   if (n) {
-    P.innerHTML = `<div class="sec">圖形</div>
-      ${fld('類型', `<select data-f="type" data-custom="1">${Object.entries(SHAPES).map(([k, s]) => `<option value="${k}" ${k === n.type ? 'selected' : ''}>${s.name}（${s.desc}）</option>`).join('')}</select>`)}
-      ${fld('名稱', inp('name', n.name))}
-      ${fld('副標（第二行小字）', inp('sub', n.sub))}
-      ${fld('頂面圖示（emoji 或短字，留空＝不顯示）', inp('icon', n.icon))}
-      ${fld('顏色', swatches('color', n.color, false))}
-      ${fld('大小', rng('size', n.size, .4, 2, .05))}
-      ${fld('高度', rng('h', n.h, 4, 220, 2))}
+    P.innerHTML = `<div class="sec">${T('p.shape')}</div>
+      ${fld(T('f.type'), `<select data-f="type" data-custom="1">${Object.entries(SHAPES).map(([k, s]) => `<option value="${k}" ${k === n.type ? 'selected' : ''}>${esc(T('pal.shapeTitle', { name: s.name, desc: s.desc }))}</option>`).join('')}</select>`)}
+      ${fld(T('f.name'), inp('name', n.name))}
+      ${fld(T('f.sub'), inp('sub', n.sub))}
+      ${fld(T('f.icon'), inp('icon', n.icon))}
+      ${fld(T('f.color'), swatches('color', n.color, false))}
+      ${fld(T('f.size'), rng('size', n.size, .4, 2, .05))}
+      ${fld(T('f.h'), rng('h', n.h, 4, 220, 2))}
       <div class="row2">${fld('X', inp('x', n.x, 'number', 'step="10"'))}${fld('Y', inp('y', n.y, 'number', 'step="10"'))}</div>
-      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">複製一份</button><button class="btn sm" data-act="del">刪除</button></div>
-      <p class="muted" style="margin-top:12px">刪除圖形會一併刪掉它的連線與步驟裡的封包路線。</p>`;
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">${T('btn.dup')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>
+      <p class="muted" style="margin-top:12px">${T('p.shapeNote')}</p>`;
     const oldType = n.type;
     bind(P, n);
     P.querySelector('[data-f=type]').addEventListener('change', () => {
@@ -1295,24 +1596,24 @@ function panelProp(P) {
       commit(); draw(); refreshPanel();
     });
   } else if (e) {
-    P.innerHTML = `<div class="sec">連線</div>
+    P.innerHTML = `<div class="sec">${T('p.edge')}</div>
       <p><b>${esc(nodeName(e.a))}</b> → <b>${esc(nodeName(e.b))}</b></p>
-      ${fld('文字（顯示在線中間）', inp('label', e.label))}
-      ${fld('路徑', `<select data-f="mode"><option value="air" ${e.mode === 'air' ? 'selected' : ''}>直線（空中）</option><option value="ground-xy" ${e.mode === 'ground-xy' ? 'selected' : ''}>地面 L 形（先 X 後 Y）</option><option value="ground-yx" ${e.mode === 'ground-yx' ? 'selected' : ''}>地面 L 形（先 Y 後 X）</option></select>`)}
-      ${fld('線色', swatches('color', e.color, true))}
-      <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="dash" ${e.dash ? 'checked' : ''}><span>虛線</span></label>
-      <div style="display:flex;gap:6px"><button class="btn sm" data-act="swap">⇄ 反轉方向</button><button class="btn sm" data-act="del">刪除</button></div>
-      <p class="muted" style="margin-top:12px">步驟播放時，線會改用步驟類型的顏色；封包走哪個方向由步驟決定，不受這條線的方向影響。</p>`;
+      ${fld(T('f.label'), inp('label', e.label))}
+      ${fld(T('f.mode'), `<select data-f="mode"><option value="air" ${e.mode === 'air' ? 'selected' : ''}>${T('mode.air')}</option><option value="ground-xy" ${e.mode === 'ground-xy' ? 'selected' : ''}>${T('mode.xy')}</option><option value="ground-yx" ${e.mode === 'ground-yx' ? 'selected' : ''}>${T('mode.yx')}</option></select>`)}
+      ${fld(T('f.lineColor'), swatches('color', e.color, true))}
+      <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="dash" ${e.dash ? 'checked' : ''}><span>${T('f.dash')}</span></label>
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="swap">${T('btn.swap')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>
+      <p class="muted" style="margin-top:12px">${T('p.edgeNote')}</p>`;
     bind(P, e);
     P.querySelector('[data-act=swap]').onclick = () => { [e.a, e.b] = [e.b, e.a]; commit(); draw(); refreshPanel(); };
   } else if (p) {
-    P.innerHTML = `<div class="sec">區域平台</div>
-      ${fld('標籤（平貼在地上）', inp('label', p.label))}
-      ${fld('底色', swatches('color', p.color, true))}
-      <div class="row2">${fld('寬（X 方向）', inp('w', p.w, 'number', 'step="10" min="40"'))}${fld('深（Y 方向）', inp('d', p.d, 'number', 'step="10" min="40"'))}</div>
+    P.innerHTML = `<div class="sec">${T('p.plate')}</div>
+      ${fld(T('f.plateLabel'), inp('label', p.label))}
+      ${fld(T('f.plateColor'), swatches('color', p.color, true))}
+      <div class="row2">${fld(T('f.w'), inp('w', p.w, 'number', 'step="10" min="40"'))}${fld(T('f.d'), inp('d', p.d, 'number', 'step="10" min="40"'))}</div>
       <div class="row2">${fld('X', inp('x', p.x, 'number', 'step="10"'))}${fld('Y', inp('y', p.y, 'number', 'step="10"'))}</div>
-      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">複製一份</button><button class="btn sm" data-act="del">刪除</button></div>
-      <p class="muted" style="margin-top:12px">拖平台時，上面的圖形會一起走（按 Alt 只拖平台）。拖兩個白色圓點可以改大小。刪除平台不會刪掉上面的圖形。</p>`;
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">${T('btn.dup')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>
+      <p class="muted" style="margin-top:12px">${T('p.plateNote')}</p>`;
     bind(P, p);
   }
   const dup = P.querySelector('[data-act=dup]'), del = P.querySelector('[data-act=del]');
@@ -1323,31 +1624,31 @@ function addHopFromEdge(eid, reverse) {
   const s = doc.steps[stepSel], e = findE(eid); if (!s || !e) return;
   const h = reverse ? { a: e.b, b: e.a, label: '' } : { a: e.a, b: e.b, label: '' };
   s.hops.push(h); commit(); draw(); refreshPanel();
-  toast(`已加入：${nodeName(h.a)} → ${nodeName(h.b)}`);
+  toast(T('toast.hopAdded', { a: nodeName(h.a), b: nodeName(h.b) }));
 }
 function panelStep(P) {
-  const list = doc.steps.map((s, i) => `<div class="li ${i === stepSel ? 'on' : ''}" data-i="${i}"><span class="dot" style="background:${STEP_TYPES[s.type].c}"></span><span class="t">${i + 1}. ${esc(s.short || s.title || '（未命名）')}</span>
-    <button data-act="up" title="上移">↑</button><button data-act="down" title="下移">↓</button><button data-act="rm" title="刪除這個步驟">✕</button></div>`).join('');
+  const list = doc.steps.map((s, i) => `<div class="li ${i === stepSel ? 'on' : ''}" data-i="${i}"><span class="dot" style="background:${STEP_TYPES[s.type].c}"></span><span class="t">${i + 1}. ${esc(s.short || s.title || T('s.unnamed'))}</span>
+    <button data-act="up" title="${T('s.up')}">↑</button><button data-act="down" title="${T('s.down')}">↓</button><button data-act="rm" title="${T('s.rm')}">✕</button></div>`).join('');
   const s = doc.steps[stepSel];
   let body = '';
   if (s) {
     const opts = doc.nodes.map(n => `<option value="${esc(n.id)}">${esc(n.name || SHAPES[n.type].name)}</option>`).join('');
-    body = `<div class="sec">步驟 ${stepSel + 1}</div>
-      <div class="row2">${fld('時間軸短名', inp('short', s.short))}${fld('類型（決定顏色）', `<select data-f="type">${Object.entries(STEP_TYPES).map(([k, t]) => `<option value="${k}" ${k === s.type ? 'selected' : ''}>${esc(t.n)}</option>`).join('')}</select>`)}</div>
-      ${fld('標題', inp('title', s.title))}
-      ${fld('說明', txa('desc', s.desc, 3))}
-      ${fld('程式碼區塊標題', inp('cap', s.cap))}
-      ${fld('程式碼區塊（留空＝不顯示）', txa('code', s.code, 4))}
-      <div class="sec">封包路線（依序接力）</div>
+    body = `<div class="sec">${T('step.n', { n: stepSel + 1 })}</div>
+      <div class="row2">${fld(T('f.short'), inp('short', s.short))}${fld(T('f.stype'), `<select data-f="type">${Object.entries(STEP_TYPES).map(([k, t]) => `<option value="${k}" ${k === s.type ? 'selected' : ''}>${esc(t.n)}</option>`).join('')}</select>`)}</div>
+      ${fld(T('f.title'), inp('title', s.title))}
+      ${fld(T('f.desc'), txa('desc', s.desc, 3))}
+      ${fld(T('f.cap'), inp('cap', s.cap))}
+      ${fld(T('f.code'), txa('code', s.code, 4))}
+      <div class="sec">${T('s.route')}</div>
       ${s.hops.length ? s.hops.map((h, j) => `<div class="hop" data-j="${j}"><span class="p" title="${esc(nodeName(h.a))} → ${esc(nodeName(h.b))}">${j + 1}. ${esc(nodeName(h.a))} → ${esc(nodeName(h.b))}</span>
-        <input data-hl="${j}" value="${esc(h.label)}" placeholder="封包文字"><span class="ops"><button data-act="hsw" title="反方向">⇄</button><button data-act="hup" title="上移">↑</button><button data-act="hrm" title="移除">✕</button></span></div>`).join('')
-        : '<p class="muted">還沒有路線。直接點畫布上的連線就會加進來（Alt＋點＝反方向）。</p>'}
-      ${doc.nodes.length >= 2 ? `<div class="addhop"><select id="hopA">${opts}</select><span>→</span><select id="hopB">${opts}</select><button class="btn sm" data-act="hadd">加入</button></div>
-      <p class="muted" style="font-size:11.5px">兩個圖形之間沒有連線也可以加，封包會走直線。</p>` : ''}`;
+        <input data-hl="${j}" value="${esc(h.label)}" placeholder="${T('s.pktPh')}"><span class="ops"><button data-act="hsw" title="${T('s.rev')}">⇄</button><button data-act="hup" title="${T('s.up')}">↑</button><button data-act="hrm" title="${T('s.hrm')}">✕</button></span></div>`).join('')
+        : `<p class="muted">${T('s.noRoute')}</p>`}
+      ${doc.nodes.length >= 2 ? `<div class="addhop"><select id="hopA">${opts}</select><span>→</span><select id="hopB">${opts}</select><button class="btn sm" data-act="hadd">${T('btn.add')}</button></div>
+      <p class="muted" style="font-size:11.5px">${T('s.noEdgeOk')}</p>` : ''}`;
   }
-  P.innerHTML = `<div class="sec">步驟清單</div><div class="list">${list || '<p class="muted">還沒有步驟。</p>'}</div>
-    <button class="btn sm" data-act="add">＋ 新增步驟</button>
-    <button class="btn sm" data-act="play" ${doc.steps.length ? '' : 'disabled'}>▶ 從這步播放</button>${body}`;
+  P.innerHTML = `<div class="sec">${T('s.list')}</div><div class="list">${list || `<p class="muted">${T('s.none')}</p>`}</div>
+    <button class="btn sm" data-act="add">${T('tl.add')}</button>
+    <button class="btn sm" data-act="play" ${doc.steps.length ? '' : 'disabled'}>${T('s.playFrom')}</button>${body}`;
   P.querySelector('.list').onclick = ev => {
     const li = ev.target.closest('.li'); if (!li) return; const i = +li.dataset.i, act = ev.target.dataset.act;
     if (act === 'up' && i > 0) { [doc.steps[i - 1], doc.steps[i]] = [doc.steps[i], doc.steps[i - 1]]; stepSel = i - 1; commit(); }
@@ -1377,30 +1678,30 @@ function panelStep(P) {
     if (doc.nodes[1]) P.querySelector('#hopB').value = doc.nodes[1].id;
     add.onclick = () => {
       const a = P.querySelector('#hopA').value, b = P.querySelector('#hopB').value;
-      if (a === b) { toast('起點和終點不能是同一個'); return; }
+      if (a === b) { toast(T('toast.sameNode')); return; }
       s.hops.push({ a, b, label: '' }); commit(); draw(); refreshPanel();
     };
   }
 }
 function panelDoc(P) {
-  P.innerHTML = `<div class="sec">文件（匯出的 HTML 會顯示這些）</div>
-    ${fld('標題', inp('title', doc.title))}
-    ${fld('麵包屑（最上面一行小字）', inp('crumb', doc.crumb))}
-    ${fld('副標', inp('subtitle', doc.subtitle))}
-    ${fld('標籤（逗號分隔）', `<input id="dTags" type="text" value="${esc(doc.tags.join(', '))}">`)}
-    ${fld('重點卡片（一行一張：標題|內容|類型）', `<textarea id="dCards" rows="5">${esc(doc.cards.map(c => [c.k, c.v, c.type].join('|')).join('\n'))}</textarea>`)}
-    <p class="muted" style="font-size:11.5px;margin-top:-4px">類型可填 ${Object.keys(STEP_TYPES).join(' / ')}，決定卡片左邊的顏色。</p>
-    <div class="sec">播放</div>
-    ${fld('封包每段速度', `<select data-f="speed" data-num="1">${(() => { const o = [[1600, '慢'], [1100, '中'], [700, '快'], [400, '極快']]; if (!o.some(x => x[0] === doc.speed)) o.push([doc.speed, '自訂']); return o; })().map(([v, l]) => `<option value="${v}" ${doc.speed === v ? 'selected' : ''}>${l}（${v}ms）</option>`).join('')}</select>`)}
-    <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="autoplay" ${doc.autoplay ? 'checked' : ''}><span>開啟時自動輪播</span></label>
-    <div class="sec">外觀</div>
-    ${fld('主題（也會記成你的偏好，開新範本時沿用）', `<select id="dTheme">${themeOptions(doc.theme)}</select>`)}
-    ${doc.theme === 'custom' ? `<div class="row2">${CUSTOM_FIELDS.map(([k, l]) => fld(l, `<input type="color" data-ct="${k}" value="${doc.customTheme[k]}" style="width:100%;height:30px;border:1.5px solid var(--soft);border-radius:7px;background:var(--bg);padding:2px">`)).join('')}</div>
-      ${fld('拿預設主題當起點', `<select id="dCtBase"><option value="">（選一套覆蓋上面的顏色）</option>${THEME_ORDER.map(k => `<option value="${k}">${THEMES[k].name}</option>`).join('')}</select>`)}
-      <p class="muted" style="font-size:11.5px;margin-top:-4px">卡片、次要文字、格線、標籤底色等由這 6 色自動推導。拖色盤即時預覽，放開才記一筆復原點。</p>` : ''}
-    <p class="muted">視角：${doc.rot * 90}°（工具列 ⟲ ⟳ 或 R 鍵切換，匯出時會保留）</p>
-    <div class="sec">統計</div>
-    <p class="muted">圖形 ${doc.nodes.length} · 連線 ${doc.edges.length} · 區域 ${doc.plates.length} · 步驟 ${doc.steps.length}</p>`;
+  P.innerHTML = `<div class="sec">${T('d.head')}</div>
+    ${fld(T('f.title'), inp('title', doc.title))}
+    ${fld(T('f.crumb'), inp('crumb', doc.crumb))}
+    ${fld(T('f.subtitle'), inp('subtitle', doc.subtitle))}
+    ${fld(T('f.tags'), `<input id="dTags" type="text" value="${esc(doc.tags.join(', '))}">`)}
+    ${fld(T('f.cards'), `<textarea id="dCards" rows="5">${esc(doc.cards.map(c => [c.k, c.v, c.type].join('|')).join('\n'))}</textarea>`)}
+    <p class="muted" style="font-size:11.5px;margin-top:-4px">${T('d.cardTypes', { types: Object.keys(STEP_TYPES).join(' / ') })}</p>
+    <div class="sec">${T('d.play')}</div>
+    ${fld(T('f.speed'), `<select data-f="speed" data-num="1">${(() => { const o = [[1600, T('speed.slow')], [1100, T('speed.mid')], [700, T('speed.fast')], [400, T('speed.vfast')]]; if (!o.some(x => x[0] === doc.speed)) o.push([doc.speed, T('speed.custom')]); return o; })().map(([v, l]) => `<option value="${v}" ${doc.speed === v ? 'selected' : ''}>${T('speed.opt', { name: l, ms: v })}</option>`).join('')}</select>`)}
+    <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="autoplay" ${doc.autoplay ? 'checked' : ''}><span>${T('f.autoplay')}</span></label>
+    <div class="sec">${T('d.look')}</div>
+    ${fld(T('f.theme'), `<select id="dTheme">${themeOptions(doc.theme)}</select>`)}
+    ${doc.theme === 'custom' ? `<div class="row2">${CUSTOM_FIELDS.map(([k, l]) => fld(esc(l), `<input type="color" data-ct="${k}" value="${doc.customTheme[k]}" style="width:100%;height:30px;border:1.5px solid var(--soft);border-radius:7px;background:var(--bg);padding:2px">`)).join('')}</div>
+      ${fld(T('f.ctBase'), `<select id="dCtBase"><option value="">${T('d.ctPick')}</option>${THEME_ORDER.map(k => `<option value="${k}">${esc(THEMES[k].name)}</option>`).join('')}</select>`)}
+      <p class="muted" style="font-size:11.5px;margin-top:-4px">${T('d.ctNote')}</p>` : ''}
+    <p class="muted">${T('d.view', { deg: doc.rot * 90 })}</p>
+    <div class="sec">${T('d.stats')}</div>
+    <p class="muted">${T('d.statsLine', { n: doc.nodes.length, e: doc.edges.length, p: doc.plates.length, s: doc.steps.length })}</p>`;
   bind(P, doc);
   $('dTheme').onchange = e => setTheme(e.target.value);
   P.querySelectorAll('[data-ct]').forEach(el => {
@@ -1422,7 +1723,52 @@ function panelDoc(P) {
 window.addEventListener('beforeunload', () => commit());
 document.addEventListener('visibilitychange', () => { if (document.hidden) commit(); });
 
+/* ---------- 語言 ---------- */
+/* 圖形、主題、步驟類型等表格的顯示名稱跟著語言換 */
+function localizeTables() {
+  for (const k of Object.keys(SHAPES)) { SHAPES[k].name = T('shape.' + k); SHAPES[k].desc = T('shape.' + k + '.desc'); }
+  for (const k of Object.keys(THEMES)) THEMES[k].name = T('theme.' + k);
+  for (const k of Object.keys(STEP_TYPES)) STEP_TYPES[k].n = T('type.' + k);
+  for (const k of Object.keys(TEMPLATES)) { TEMPLATES[k].name = T('tpl.' + k); TEMPLATES[k].desc = T('tpl.' + k + '.desc'); }
+  CUSTOM_FIELDS.forEach(f => { f[1] = T('cust.' + f[0]); });
+  ISO.TXT.untitled = T('doc.untitled');
+}
+/* 匯出的檢視器用的文字：匯出當下的語言 */
+function viewerL10n() {
+  const o = { lang: curLang, types: {} };
+  for (const k of ['steps', 'zoomOut', 'fit', 'fitTitle', 'zoomIn', 'prev', 'next', 'play', 'pause', 'inFlow', 'step', 'badge', 'count']) o[k] = T('v.' + k);
+  for (const k of Object.keys(STEP_TYPES)) o.types[k] = STEP_TYPES[k].n;
+  return o;
+}
+/* 套用語言：靜態文字（data-i18n*）、表格名稱、左側面板、主題選單、語言選單 */
+function applyLang(code) {
+  curLang = LANGS[code] ? code : LANG_DEFAULT;
+  document.documentElement.lang = curLang;
+  document.title = T('app.title');
+  const each = (attr, fn) => document.querySelectorAll('[' + attr + ']').forEach(x => fn(x, T(x.getAttribute(attr))));
+  each('data-i18n', (x, v) => { x.textContent = v; });
+  each('data-i18n-title', (x, v) => { x.title = v; });
+  localizeTables(); buildPalette();
+  $('selTheme').innerHTML = themeOptions(doc ? doc.theme : 'paper');
+  const ls = $('langSel'); ls.textContent = '';
+  for (const [c, L] of Object.entries(LANGS)) ls.add(new Option(L.name, c, false, c === curLang));
+}
+/* 畫布上的圖是使用者的內容，換語言不動它；只有「完全沒改過的內建範本」會換成新語言的版本 */
+const tplSig = d => { const n = normalize(d); return JSON.stringify({ ...n, theme: 0, customTheme: 0, rot: 0, speed: 0, autoplay: 0, steps: n.steps.map(({ id, ...r }) => r), edges: n.edges.map(({ id, ...r }) => r) }); };
+$('langSel').onchange = () => {
+  const old = curLang, cur = doc ? tplSig(doc) : '';
+  const tk = Object.keys(TEMPLATES).find(k => tplSig(TEMPLATES[k].doc()) === cur);   // 用舊語言比對
+  applyLang($('langSel').value);
+  try { localStorage.setItem(LANG_KEY, curLang); } catch (e) { /* 記不住就算了，這次照樣換 */ }
+  if (tk && old !== curLang) {
+    const d = TEMPLATES[tk].doc(); d.theme = doc.theme; d.customTheme = doc.customTheme; d.rot = doc.rot; d.speed = doc.speed; d.autoplay = doc.autoplay;
+    loadDoc(d, false); commit();
+  } else { applyTheme(); draw(); refreshPanel(); }
+  $('langSel').blur();   // 焦點留在選單上，方向鍵會繼續換語言
+};
+
 /* ---------- 啟動 ---------- */
+applyLang(savedLang());
 try { const u = JSON.parse(localStorage.getItem(LS_UI) || '{}'); if (u.L) $('app').classList.add('hideL'); if (u.R) $('app').classList.add('hideR'); } catch (e) { }
 let start = null;
 let corrupt = false;
@@ -1431,9 +1777,9 @@ const pref = loadPref();
 if (!start) { start = TEMPLATES.xverify.doc(); if (pref) { start.theme = pref.theme; start.customTheme = pref.customTheme; } }
 loadDoc(start, false);
 last = JSON.stringify(doc); save(); updUndo();
-if (corrupt) setTimeout(() => toast('上次的自動存檔壞掉了，原內容已備份到 localStorage「' + LS_KEY + '-corrupt」'), 300);
+if (corrupt) setTimeout(() => toast(T('toast.corrupt', { key: LS_KEY + '-corrupt' })), 300);
 requestAnimationFrame(() => { cam.apply(); fitView(); });
-if (/[?&]test\b/.test(location.search)) window.__iso = { get doc() { return doc; }, get sel() { return sel; }, cam, buildViewerHTML, TEMPLATES, loadDoc, commit, undo, redo };
+if (/[?&]test\b/.test(location.search)) window.__iso = { get doc() { return doc; }, get sel() { return sel; }, get lang() { return curLang; }, cam, buildViewerHTML, TEMPLATES, loadDoc, commit, undo, redo };
 })();
 </script>
 </body>
