@@ -1,0 +1,1440 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.5DUMLhtml · 等角流程圖編輯器</title>
+
+<!-- ===================================================================
+     核心樣式：編輯器畫布與匯出的 HTML 檢視器共用（匯出時會整段複製過去）
+     =================================================================== -->
+<style id="core-css">
+.iso-flow{stroke-dasharray:10 8;animation:isoFlow .7s linear infinite}
+@keyframes isoFlow{to{stroke-dashoffset:-18}}
+.iso-pulse{transform-box:fill-box;transform-origin:center;animation:isoPulse 1.6s ease-out infinite}
+@keyframes isoPulse{0%{opacity:.6;transform:scale(.6)}100%{opacity:0;transform:scale(1.5)}}
+.iso-node.on{transform:translateY(-6px)}
+.iso-sel{stroke-dasharray:6 5;animation:isoFlow 1.2s linear infinite}
+@media (prefers-reduced-motion:reduce){.iso-flow,.iso-pulse,.iso-sel{animation:none}}
+</style>
+
+<!-- ===================================================================
+     編輯器介面樣式
+     =================================================================== -->
+<style>
+:root{--bg:#f4efe4;--card:#fbf8f1;--ink:#2d2a24;--muted:#7a7366;--soft:#e4dccb;--accent:#2f7fd6;--dot:#e2d9c6;
+  --mono:"Cascadia Mono",Consolas,"Microsoft JhengHei",monospace}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+#app{display:grid;height:100vh;grid-template-columns:200px minmax(0,1fr) 340px;grid-template-rows:50px minmax(0,1fr) 96px;
+  grid-template-areas:"tb tb tb" "left stage right" "left tl right"}
+#app.hideL{grid-template-columns:0 minmax(0,1fr) 340px}
+#app.hideR{grid-template-columns:200px minmax(0,1fr) 0}
+#app.hideL.hideR{grid-template-columns:0 minmax(0,1fr) 0}
+.tb{grid-area:tb;display:flex;align-items:center;gap:6px;padding:0 10px;border-bottom:2px solid var(--soft);background:var(--card);overflow-x:auto;white-space:nowrap}
+.tb .logo{font-weight:700;font-size:15px;margin-right:6px}
+.tb .sep{width:2px;height:24px;background:var(--soft);margin:0 4px;flex:none}
+.btn{border:2px solid var(--ink);border-radius:8px;background:var(--card);padding:4px 10px;cursor:pointer;font-weight:700;flex:none}
+.btn:hover{background:var(--soft)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{padding:2px 7px;font-size:12px;border-width:1.5px}
+.btn:disabled{opacity:.4;cursor:default}
+#zoomLbl{min-width:58px;text-align:center}
+#left{grid-area:left;border-right:2px solid var(--soft);background:var(--card);overflow:auto;padding:10px}
+#right{grid-area:right;border-left:2px solid var(--soft);background:var(--card);overflow:auto;display:flex;flex-direction:column}
+#app.hideL #left,#app.hideR #right{display:none}
+.sec{font-size:11px;color:var(--muted);letter-spacing:.08em;margin:12px 0 6px;font-weight:700}
+.sec:first-child{margin-top:0}
+.pal{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pal button{border:2px solid var(--soft);border-radius:10px;background:var(--bg);padding:6px 4px;cursor:grab;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;touch-action:none}
+.pal button:hover{border-color:var(--accent)}
+.pal svg{width:64px;height:52px;pointer-events:none}
+#stage{grid-area:stage;position:relative;overflow:hidden;background:radial-gradient(circle,var(--dot) 1px,transparent 1.3px) 0 0/22px 22px,var(--bg)}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;user-select:none}
+#cv .iso-node,#cv .iso-plate{cursor:move}
+#cv .iso-hit{cursor:pointer}
+#cv [data-handle]{cursor:crosshair}
+#cv [data-handle^="p"]{cursor:nwse-resize}
+#stage.panning #cv,#stage.panning #cv *{cursor:grabbing!important}
+#hint{position:absolute;left:10px;bottom:8px;right:10px;font-size:11.5px;color:var(--muted);pointer-events:none}
+#toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:6px 14px;border-radius:8px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none}
+#toast.on{opacity:.92}
+#tl{grid-area:tl;border-top:2px solid var(--soft);background:var(--card);padding:8px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+#tl .tlh{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+#tlSteps{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;align-items:center}
+.tls{flex:none;display:flex;align-items:center;gap:6px;border:2px solid var(--soft);border-radius:999px;padding:3px 10px 3px 3px;cursor:pointer;background:var(--bg)}
+.tls b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px}
+.tls.on{border-color:var(--ink);font-weight:700}
+.tabs{display:flex;border-bottom:2px solid var(--soft);flex:none}
+.tabs button{flex:1;border:0;background:none;padding:10px 4px;cursor:pointer;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
+#panel{padding:12px 14px 30px;overflow:auto;flex:1}
+.f{display:flex;flex-direction:column;gap:3px;margin-bottom:9px}
+.f>span{font-size:11px;color:var(--muted);font-weight:700}
+.f input[type=text],.f input[type=number],.f select,.f textarea{width:100%;border:1.5px solid var(--soft);border-radius:7px;background:var(--bg);padding:5px 7px}
+.f textarea{resize:vertical;min-height:60px;line-height:1.5}
+.f input:focus,.f select:focus,.f textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sw{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.sw button{width:22px;height:22px;border-radius:6px;border:2px solid var(--ink);cursor:pointer;padding:0}
+.sw button.auto{background:linear-gradient(135deg,var(--card) 45%,#d64545 47%,#d64545 53%,var(--card) 55%)}
+.sw input[type=color]{width:30px;height:24px;border:0;padding:0;background:none;cursor:pointer}
+.rng{display:flex;align-items:center;gap:8px}.rng input{flex:1}.rng em{font-style:normal;min-width:40px;text-align:right}
+.muted{color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.li{display:flex;align-items:center;gap:6px;border:1.5px solid var(--soft);border-radius:8px;padding:4px 6px;background:var(--bg);cursor:pointer}
+.li.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.li .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.li .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li button{border:0;background:none;cursor:pointer;padding:0 3px;font-size:13px;color:var(--muted)}
+.li button:hover{color:var(--ink)}
+.hop{display:grid;grid-template-columns:1fr 86px auto;gap:4px;align-items:center;border:1.5px solid var(--soft);border-radius:8px;padding:4px 6px;margin-bottom:4px;background:var(--bg)}
+.hop .p{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hop input{width:100%;border:1.5px solid var(--soft);border-radius:6px;background:var(--card);padding:2px 5px;font-size:12px}
+.hop .ops{display:flex}.hop .ops button{border:0;background:none;cursor:pointer;padding:0 3px;color:var(--muted)}
+.hop .ops button:hover{color:var(--ink)}
+.addhop{display:grid;grid-template-columns:1fr auto 1fr auto;gap:4px;align-items:center}
+.addhop select{border:1.5px solid var(--soft);border-radius:6px;background:var(--bg);padding:3px;min-width:0}
+.keys{line-height:1.9;font-size:12px}
+.keys kbd{border:1.5px solid var(--soft);border-bottom-width:3px;border-radius:5px;padding:0 5px;background:var(--bg);font-family:inherit;font-size:11px}
+.menu{position:fixed;z-index:20;background:var(--card);border:2px solid var(--ink);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.menu button{border:0;background:none;text-align:left;padding:6px 12px;border-radius:6px;cursor:pointer}
+.menu button:hover{background:var(--soft)}
+.menu small{display:block;color:var(--muted);font-size:11px}
+#ov{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column}
+#ov[hidden]{display:none}
+#ov .bar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:2px solid var(--soft);background:var(--card)}
+#ov iframe{flex:1;border:0;width:100%}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="tb">
+    <span class="logo">🧊 2.5DUMLhtml</span>
+    <button class="btn" id="bTpl" title="套用範本（可 Ctrl+Z 復原）">範本 ▾</button>
+    <button class="btn" id="bOpen" title="開啟 JSON">開啟</button>
+    <button class="btn" id="bSave" title="匯出 JSON（Ctrl+S）">存 JSON</button>
+    <button class="btn" id="bHtml" title="匯出可播放的 HTML 檢視器">匯出 HTML</button>
+    <button class="btn" id="bPng" title="匯出 PNG（2 倍解析度）">匯出 PNG</button>
+    <span class="sep"></span>
+    <button class="btn" id="bUndo" title="復原（Ctrl+Z）">↶</button>
+    <button class="btn" id="bRedo" title="重做（Ctrl+Y）">↷</button>
+    <span class="sep"></span>
+    <button class="btn" id="bRotL" title="視角往左轉 90°（Shift+R）">⟲</button>
+    <button class="btn" id="bRotR" title="視角往右轉 90°（R）">⟳</button>
+    <button class="btn" id="bFit" title="縮放至全部（F）">適配</button>
+    <button class="btn" id="zoomLbl" title="回到 100%">100%</button>
+    <select class="btn" id="selTheme" title="切換主題（T 依序切換）"></select>
+    <span class="sep"></span>
+    <button class="btn" id="bSideL" title="收合左側（[）">☰</button>
+    <button class="btn" id="bSideR" title="收合右側（]）">◧</button>
+    <button class="btn pri" id="bPlay" title="播放預覽（P）">▶ 播放預覽</button>
+    <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  </div>
+
+  <aside id="left">
+    <div class="sec">圖形（點擊或拖到畫布）</div>
+    <div class="pal" id="pal"></div>
+    <div class="sec">區域</div>
+    <div class="pal" id="pal2"></div>
+  </aside>
+
+  <main id="stage">
+    <svg id="cv" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="hint"></div>
+    <div id="toast"></div>
+  </main>
+
+  <aside id="right">
+    <div class="tabs" id="tabs">
+      <button data-tab="prop" class="on">屬性</button>
+      <button data-tab="step">步驟</button>
+      <button data-tab="doc">文件</button>
+    </div>
+    <div id="panel"></div>
+  </aside>
+
+  <footer id="tl">
+    <div class="tlh"><b style="color:var(--ink)">步驟時間軸</b><span id="tlInfo"></span>
+      <button class="btn sm" id="bAddStep" style="margin-left:auto">＋ 新增步驟</button></div>
+    <div id="tlSteps"></div>
+  </footer>
+</div>
+
+<div id="ov" hidden>
+  <div class="bar"><b>▶ 播放預覽</b><span class="muted">這就是「匯出 HTML」的樣子</span>
+    <button class="btn" id="ovClose" style="margin-left:auto">✕ 回到編輯（Esc）</button></div>
+  <iframe id="ovf" title="播放預覽"></iframe>
+</div>
+
+<!-- ===================================================================
+     核心：等角投影、圖形、渲染、相機。匯出的 HTML 檢視器會整段複製這支 script。
+     （這段裡面不能出現 script 結尾標籤，否則匯出會斷掉）
+     =================================================================== -->
+<script id="core">
+const ISO = (() => {
+'use strict';
+const C = Math.cos(Math.PI / 6), S = 0.5;
+
+const STEP_TYPES = {
+  req:    { c: '#2f7fd6', n: 'request' },
+  crypto: { c: '#e8871a', n: '加解密' },
+  ext:    { c: '#8a5cd6', n: '外部' },
+  resp:   { c: '#2e9e5b', n: 'response' },
+  err:    { c: '#d64545', n: '錯誤' },
+  job:    { c: '#6b7a8f', n: '其他' },
+};
+const THEMES = {
+  paper: { name: '紙本', bg: '#f4efe4', card: '#fbf8f1', ink: '#2d2a24', muted: '#7a7366', soft: '#e4dccb', dot: '#e2d9c6',
+           stroke: '#2d2a24', plate: '#ece5d5', grid: '#dcd3bf', plateText: '#8f8572', pill: '#fffdf8',
+           edge: '#8a8172', future: '#bdb39f', accent: '#2f7fd6' },
+  night: { name: '夜間', bg: '#1b1e25', card: '#232731', ink: '#e9e5db', muted: '#9aa1ad', soft: '#353a46', dot: '#2c313b',
+           stroke: '#0c0e12', plate: '#2a2f3a', grid: '#363c4a', plateText: '#8d95a5', pill: '#2a2f39',
+           edge: '#9aa1ad', future: '#4a5060', accent: '#6aa8ff' },
+};
+Object.assign(THEMES, {
+  light:     { name: '淺色', bg: '#f4f6fa', card: '#ffffff', ink: '#1c2331', muted: '#6b7688', soft: '#d8dee8', dot: '#e2e7f0',
+               stroke: '#2a3242', plate: '#e9edf4', grid: '#d5dce8', plateText: '#8a94a6', pill: '#ffffff',
+               edge: '#69748a', future: '#c3cad6', accent: '#2f6fe0' },
+  midnight:  { name: '深邃', bg: '#12151c', card: '#1a1f2b', ink: '#e6ebf5', muted: '#8b95ab', soft: '#2e3648', dot: '#232a39',
+               stroke: '#0a0c10', plate: '#202736', grid: '#2c3447', plateText: '#7d88a0', pill: '#222836',
+               edge: '#8d9ab5', future: '#3a4458', accent: '#4c8dff' },
+  graphite:  { name: '石墨', bg: '#17181a', card: '#1f2123', ink: '#ececed', muted: '#9a9ea3', soft: '#3a3e42', dot: '#2a2d30',
+               stroke: '#0b0c0d', plate: '#26292c', grid: '#34383c', plateText: '#8a8f95', pill: '#292c2f',
+               edge: '#9aa0a6', future: '#45494e', accent: '#f0a03c' },
+  blueprint: { name: '藍圖', bg: '#0a2444', card: '#0d2e56', ink: '#dbeaff', muted: '#7fa8d6', soft: '#1d4f80', dot: '#164274',
+               stroke: '#061a33', plate: '#0f3463', grid: '#1d4f80', plateText: '#7fa8d6', pill: '#12385f',
+               edge: '#9fd0ff', future: '#2a5a8c', accent: '#4fd1e6' },
+  forest:    { name: '森林', bg: '#101a15', card: '#16241d', ink: '#e2f0e7', muted: '#84a394', soft: '#2b4438', dot: '#1e3129',
+               stroke: '#07100b', plate: '#1b2c23', grid: '#29413a', plateText: '#7c9a8c', pill: '#1d2f26',
+               edge: '#8bb5a0', future: '#34503f', accent: '#4ec98a' },
+});
+const THEME_ORDER = ['paper', 'light', 'night', 'midnight', 'graphite', 'blueprint', 'forest'];
+
+/* 自訂主題：只調 6 個主色，其餘次要色自動推導 */
+const CUSTOM_FIELDS = [['bg', '畫布底色'], ['ink', '文字'], ['accent', '強調色'], ['plate', '區域平台'], ['edge', '連線'], ['stroke', '圖形外框']];
+const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
+const mixHex = (a, b, t) => { const pa = hexRgb(a), pb = hexRgb(b); return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const lum = h => { const [r, g, b] = hexRgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
+function customFrom(key) { const t = THEMES[key] || THEMES.paper; const o = {}; CUSTOM_FIELDS.forEach(([k]) => o[k] = t[k]); return o; }
+function expandCustom(c) {
+  const { bg, ink, plate, edge } = c, dark = lum(bg) < 0.45;
+  return { name: '自訂', bg, ink, accent: c.accent, plate, edge, stroke: c.stroke,
+    card: dark ? mixHex(bg, '#ffffff', .04) : mixHex(bg, '#ffffff', .55), muted: mixHex(ink, bg, .42), soft: mixHex(bg, ink, .15),
+    dot: mixHex(bg, ink, .09), grid: mixHex(plate, ink, .12), plateText: mixHex(plate, ink, .45),
+    pill: dark ? mixHex(bg, ink, .08) : mixHex(bg, '#ffffff', .75), future: mixHex(edge, bg, .55) };
+}
+const themeOf = doc => (doc.theme === 'custom' && doc.customTheme) ? expandCustom(doc.customTheme) : (THEMES[doc.theme] || THEMES.paper);
+
+const SHAPE_INK = '#2d2a24';   // 畫在彩色圖形頂面上的字，所有主題都用深色
+
+const isHex = c => /^#[0-9a-f]{6}$/i.test(c || '');
+function shade(hex, f) {
+  if (!isHex(hex)) hex = '#999999';
+  const n = parseInt(hex.slice(1), 16);
+  const ch = [n >> 16, (n >> 8) & 255, n & 255].map(v =>
+    Math.max(0, Math.min(255, Math.round(f > 1 ? v + (255 - v) * (f - 1) : v * f))));
+  return `rgb(${ch.join(',')})`;
+}
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const textW = (t, size = 13) => [...String(t ?? '')].reduce((s, c) => s + (c.charCodeAt(0) > 255 ? size * 1.05 : size * 0.6), 0);
+const num = (v, d) => (typeof v === 'number' && isFinite(v)) ? v : d;
+const pairKey = (a, b) => (a < b ? a + '|' + b : b + '|' + a);
+
+/* ---------- 投影：世界座標 (x, y, z) → 畫面；rot 是 90° 視角旋轉次數 ---------- */
+function proj(rot) {
+  rot = (((rot | 0) % 4) + 4) % 4;
+  const R  = (x, y) => { for (let i = 0; i < rot; i++) { const t = x; x = -y; y = t; } return [x, y]; };
+  const Ri = (x, y) => { for (let i = 0; i < rot; i++) { const t = x; x = y; y = -t; } return [x, y]; };
+  const P0 = (a, b, z = 0) => [(a - b) * C, (a + b) * S - z];
+  return {
+    rot, R, Ri, P0,
+    P: (x, y, z = 0) => { const r = R(x, y); return P0(r[0], r[1], z); },
+    un: (sx, sy) => Ri((sx / C + sy / S) / 2, (sy / S - sx / C) / 2),   // 畫面點 → 地面 (z=0) 世界座標
+    depth: (x, y) => { const r = R(x, y); return r[0] + r[1]; },
+  };
+}
+
+/* ---------- 繪圖工具：會順便記錄內容邊界 ---------- */
+let gradSeq = 0;
+function Draw(pj, th) {
+  const d = { defs: '', stroke: th.stroke, bb: [Infinity, Infinity, -Infinity, -Infinity], depth: pj.depth };
+  const grow = (x, y) => { const b = d.bb; if (x < b[0]) b[0] = x; if (y < b[1]) b[1] = y; if (x > b[2]) b[2] = x; if (y > b[3]) b[3] = y; };
+  const P0 = (a, b, z = 0) => { const p = pj.P0(a, b, z); grow(p[0], p[1]); return p; };
+  d.grow = grow; d.P0 = P0;
+  d.P = (x, y, z = 0) => { const r = pj.R(x, y); return P0(r[0], r[1], z); };
+  d.pts = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const sw = `stroke="${th.stroke}" stroke-width="1.6" stroke-linejoin="round"`;
+
+  /* 任意多邊形擠出成柱體：只畫朝向鏡頭的側面，依深度排序 */
+  d.prism = (poly, z0, h, color) => {
+    const rp = poly.map(p => pj.R(p[0], p[1]));
+    const cx = rp.reduce((s, p) => s + p[0], 0) / rp.length, cy = rp.reduce((s, p) => s + p[1], 0) / rp.length;
+    const faces = [];
+    rp.forEach((a, i) => {
+      const b = rp[(i + 1) % rp.length];
+      let nx = b[1] - a[1], ny = -(b[0] - a[0]);
+      if (nx * ((a[0] + b[0]) / 2 - cx) + ny * ((a[1] + b[1]) / 2 - cy) < 0) { nx = -nx; ny = -ny; }
+      const L = Math.hypot(nx, ny) || 1; nx /= L; ny /= L;
+      if (nx + ny > 1e-6) faces.push({ a, b, nx, ny, z0, h, dp: a[0] + b[0] + a[1] + b[1] });
+    });
+    faces.sort((p, q) => p.dp - q.dp);
+    let s = '';
+    for (const f of faces) {
+      const q = [P0(f.a[0], f.a[1], z0), P0(f.b[0], f.b[1], z0), P0(f.b[0], f.b[1], z0 + h), P0(f.a[0], f.a[1], z0 + h)];
+      s += `<polygon points="${d.pts(q)}" fill="${shade(color, 0.74 + 0.13 * (f.ny - f.nx))}" ${sw}/>`;
+    }
+    s += `<polygon points="${d.pts(rp.map(p => P0(p[0], p[1], z0 + h)))}" fill="${shade(color, 1.18)}" ${sw}/>`;
+    return { svg: s, faces };
+  };
+  /* 側面上的一塊內嵌四邊形（手機螢幕、機櫃溝槽用） */
+  d.inset = (f, u0, u1, z0, z1) => {
+    const L = u => [f.a[0] + (f.b[0] - f.a[0]) * u, f.a[1] + (f.b[1] - f.a[1]) * u];
+    const p = L(u0), q = L(u1);
+    return d.pts([P0(p[0], p[1], z0), P0(q[0], q[1], z0), P0(q[0], q[1], z1), P0(p[0], p[1], z1)]);
+  };
+  d.cyl = (x, y, r, z0, h, color, band = true) => {
+    const [sx, sy] = d.P(x, y, z0);
+    const rx = r * C * Math.SQRT2, ry = r * S * Math.SQRT2, ty = sy - h;
+    grow(sx - rx, ty - ry); grow(sx + rx, sy + ry);
+    const id = 'isog' + (gradSeq++);
+    d.defs += `<linearGradient id="${id}" x1="0" x2="1"><stop offset="0" stop-color="${shade(color, .95)}"/><stop offset=".35" stop-color="${shade(color, 1.12)}"/><stop offset="1" stop-color="${shade(color, .7)}"/></linearGradient>`;
+    const by = sy - h * 0.42;
+    return `<path d="M${sx - rx},${ty} L${sx - rx},${sy} A${rx},${ry} 0 0 0 ${sx + rx},${sy} L${sx + rx},${ty} Z" fill="url(#${id})" ${sw}/>` +
+      (band ? `<path d="M${sx - rx},${by} A${rx},${ry} 0 0 0 ${sx + rx},${by}" fill="none" stroke="${th.stroke}" stroke-width="1.3" opacity=".55"/>` : '') +
+      `<ellipse cx="${sx}" cy="${ty}" rx="${rx}" ry="${ry}" fill="${shade(color, 1.22)}" ${sw}/>`;
+  };
+  d.text = (x, y, z, t, size = 13, weight = 700, fill = SHAPE_INK) => {
+    const [sx, sy] = d.P(x, y, z);
+    return `<text x="${sx.toFixed(1)}" y="${sy.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${size}" font-weight="${weight}" fill="${fill}">${esc(t)}</text>`;
+  };
+  return d;
+}
+
+/* ---------- 圖形定義 ----------
+   foot：地面佔用半徑（標籤位置、選取圈、脈衝圈用）
+   top(n)：頂面高度（圖示放這裡；連線接在 top/2） */
+const rect = (x, y, w, dd) => [[x, y], [x + w, y], [x + w, y + dd], [x, y + dd]];
+const longest = faces => faces.reduce((m, f) => Math.hypot(f.b[0] - f.a[0], f.b[1] - f.a[1]) > Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]) ? f : m);
+const SHAPES = {
+  hex:    { name: '應用程式', desc: '六角柱', def: { color: '#9cc3ec', h: 48, icon: '⚙' }, foot: 58, top: n => n.h,
+            draw: (d, n, s) => d.prism([0, 1, 2, 3, 4, 5].map(k => [n.x + 58 * s * Math.cos(k * Math.PI / 3), n.y + 58 * s * Math.sin(k * Math.PI / 3)]), 0, n.h, n.color).svg },
+  box:    { name: '服務', desc: '方塊', def: { color: '#f0b070', h: 58, icon: '🔐' }, foot: 42, top: n => n.h,
+            draw: (d, n, s) => d.prism(rect(n.x - 42 * s, n.y - 42 * s, 84 * s, 84 * s), 0, n.h, n.color).svg },
+  cyl:    { name: '資料庫', desc: '圓柱', def: { color: '#8fd0a8', h: 84, icon: '🛢' }, foot: 50, top: n => n.h,
+            draw: (d, n, s) => d.cyl(n.x, n.y, 50 * s, 0, n.h, n.color) },
+  server: { name: '伺服器', desc: '機櫃', def: { color: '#c9d3e0', h: 110, icon: '🖥' }, foot: 42, top: n => n.h,
+            draw: (d, n, s) => {
+              const pr = d.prism(rect(n.x - 35 * s, n.y - 25 * s, 70 * s, 50 * s), 0, n.h, n.color); let o = pr.svg;
+              for (const f of pr.faces) for (let i = 1; i <= 4; i++) { const z = n.h * i / 5; o += `<polygon points="${d.inset(f, .12, .88, z - 3, z + 1)}" fill="${shade(n.color, .45)}"/>`; }
+              return o; } },
+  phone:  { name: '前端', desc: '手機', def: { color: '#f2c98a', h: 92, icon: '📱' }, foot: 30, top: n => n.h + 14,
+            draw: (d, n, s) => {
+              const pr = d.prism(rect(n.x - 25 * s, n.y - 7 * s, 50 * s, 14 * s), 0, n.h, n.color);
+              return pr.svg + `<polygon points="${d.inset(longest(pr.faces), .12, .88, 12, n.h - 10)}" fill="#2b3a55" stroke="${d.stroke}" stroke-width="1.2"/>`; } },
+  gate:   { name: '閘道', desc: '閘門', def: { color: '#b9a6e8', h: 74, icon: 'GATEWAY' }, foot: 56, top: n => n.h + 16,
+            draw: (d, n, s) => {
+              const parts = [[n.x - 46 * s, n.y - 16 * s], [n.x + 30 * s, n.y - 16 * s]]
+                .sort((p, q) => d.depth(p[0] + 8 * s, p[1] + 16 * s) - d.depth(q[0] + 8 * s, q[1] + 16 * s));
+              return parts.map(p => d.prism(rect(p[0], p[1], 16 * s, 32 * s), 0, n.h, n.color).svg).join('') +
+                d.prism(rect(n.x - 54 * s, n.y - 20 * s, 108 * s, 40 * s), n.h, 16, n.color).svg; } },
+  users:  { name: '使用者', desc: '人群', def: { color: '#e9d8b4', h: 8, icon: '' }, foot: 62, top: n => n.h + 34,
+            draw: (d, n, s) => {
+              let o = d.prism(rect(n.x - 60 * s, n.y - 45 * s, 120 * s, 90 * s), 0, n.h, n.color).svg;
+              const cols = ['#9cc3ec', '#f2c98a', '#b9a6e8', '#8fd0a8', '#f0b070', '#e8a0a0'], ppl = [];
+              for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) ppl.push([n.x + (-36 + i * 36) * s, n.y + (-20 + j * 40) * s, cols[(i * 2 + j) % 6]]);
+              ppl.sort((p, q) => d.depth(p[0], p[1]) - d.depth(q[0], q[1]));
+              for (const [px, py, c] of ppl) {
+                o += d.cyl(px, py, 7 * s, n.h, 18 * s, c, false);
+                const [hx, hy] = d.P(px, py, n.h + 18 * s + 8 * s);
+                o += `<circle cx="${hx}" cy="${hy}" r="${7 * s}" fill="${shade(c, 1.15)}" stroke="${d.stroke}" stroke-width="1.4"/>`;
+              }
+              return o; } },
+  file:   { name: '檔案', desc: '文件堆', def: { color: '#f5f1e6', h: 24, icon: '📄' }, foot: 48, top: n => n.h,
+            draw: (d, n, s) => {
+              let o = ''; const k = 3, t = n.h / k;
+              for (let i = 0; i < k; i++) { const off = i * 4 * s; o += d.prism(rect(n.x - 36 * s + off, n.y - 46 * s - off, 72 * s, 92 * s), i * t, t - 1, i === k - 1 ? n.color : shade(n.color, .9)).svg; }
+              return o; } },
+};
+
+/* ---------- 文件正規化：補預設值、清掉壞資料 ---------- */
+let idSeq = 0;
+const uid = p => p + Date.now().toString(36) + (idSeq++).toString(36) + Math.random().toString(36).slice(2, 5);
+function normalize(raw) {
+  const d = (raw && typeof raw === 'object') ? raw : {};
+  const out = {
+    v: 1, title: String(d.title ?? '未命名'), crumb: String(d.crumb ?? ''), subtitle: String(d.subtitle ?? ''),
+    tags: Array.isArray(d.tags) ? d.tags.map(String) : [],
+    cards: Array.isArray(d.cards) ? d.cards.map(c => ({ k: String(c.k ?? ''), v: String(c.v ?? ''), type: String(c.type ?? '') })) : [],
+    theme: (THEMES[d.theme] || d.theme === 'custom') ? d.theme : 'paper', customTheme: null, rot: (((d.rot | 0) % 4) + 4) % 4,
+    speed: num(d.speed, 1100), autoplay: d.autoplay !== false,
+    plates: [], nodes: [], edges: [], steps: [],
+  };
+  const ct = (d.customTheme && typeof d.customTheme === 'object') ? d.customTheme : {}, base = customFrom('paper');
+  out.customTheme = { edited: !!ct.edited };
+  CUSTOM_FIELDS.forEach(([k]) => out.customTheme[k] = isHex(ct[k]) ? ct[k].toLowerCase() : base[k]);
+  const ids = new Set();
+  const SAFE_ID = /^[\w-]{1,64}$/;   // id 會寫進 HTML 屬性，只收英數、底線、連字號（防 XSS）
+  const okId = (id, p) => { const v = (typeof id === 'string' && SAFE_ID.test(id) && !ids.has(id)) ? id : uid(p); ids.add(v); return v; };
+  const nodeMap = new Map();   // 匯入的原始節點 id → 實際使用的 id
+  for (const p of (Array.isArray(d.plates) ? d.plates : [])) out.plates.push({
+    id: okId(p.id, 'p'), x: num(p.x, 0), y: num(p.y, 0), w: Math.max(40, num(p.w, 200)), d: Math.max(40, num(p.d, 200)),
+    label: String(p.label ?? ''), color: isHex(p.color) ? p.color : '' });
+  for (const n of (Array.isArray(d.nodes) ? d.nodes : [])) {
+    const type = SHAPES[n.type] ? n.type : 'box', def = SHAPES[type].def;
+    const nidNew = okId(n.id, 'n'); if (typeof n.id === 'string' && !nodeMap.has(n.id)) nodeMap.set(n.id, nidNew);
+    out.nodes.push({ id: nidNew, type, x: num(n.x, 0), y: num(n.y, 0), h: Math.max(4, num(n.h, def.h)),
+      size: Math.min(3, Math.max(.3, num(n.size, 1))), color: isHex(n.color) ? n.color : def.color,
+      icon: String(n.icon ?? def.icon), name: String(n.name ?? SHAPES[type].name), sub: String(n.sub ?? '') });
+  }
+  const ref = v => nodeMap.get(v);   // 只認得匯入檔裡真的存在的節點
+  for (const e of (Array.isArray(d.edges) ? d.edges : [])) {
+    const a = ref(e && e.a), b = ref(e && e.b);
+    if (!a || !b || a === b) continue;
+    out.edges.push({ id: okId(e.id, 'e'), a, b, label: String(e.label ?? ''), color: isHex(e.color) ? e.color : '',
+      mode: ['air', 'ground-xy', 'ground-yx'].includes(e.mode) ? e.mode : 'air', dash: !!e.dash });
+  }
+  for (const s of (Array.isArray(d.steps) ? d.steps : [])) out.steps.push({
+    id: okId(s.id, 's'), type: STEP_TYPES[s.type] ? s.type : 'req', short: String(s.short ?? ''), title: String(s.title ?? ''),
+    desc: String(s.desc ?? ''), cap: String(s.cap ?? ''), code: String(s.code ?? ''),
+    hops: (Array.isArray(s.hops) ? s.hops : []).map(h => h && { a: ref(h.a), b: ref(h.b), label: String(h.label ?? '') })
+      .filter(h => h && h.a && h.b && h.a !== h.b) });
+  return out;
+}
+
+/* ---------- 渲染：把整份文件畫進 svg（只改內容，不動 viewBox） ----------
+   st = { step, sel:Set, handles, link:{from,to:[x,y]} } */
+function render(svg, doc, st = {}) {
+  const th = themeOf(doc), pj = proj(doc.rot), d = Draw(pj, th);
+  const sel = st.sel || new Set(), step = (st.step >= 0 && doc.steps[st.step]) ? st.step : -1;
+  const N = Object.fromEntries(doc.nodes.map(n => [n.id, n]));
+  const top = n => (SHAPES[n.type] || SHAPES.box).top(n);
+  const anchor = n => d.P(n.x, n.y, top(n) * 0.5);
+  const edgePts = e => {
+    const A = N[e.a], B = N[e.b]; if (!A || !B) return null;
+    if (e.mode === 'ground-xy' || e.mode === 'ground-yx') {
+      const m = e.mode === 'ground-xy' ? [B.x, A.y] : [A.x, B.y];
+      return [d.P(A.x, A.y, 4), d.P(m[0], m[1], 4), d.P(B.x, B.y, 4)];
+    }
+    return [anchor(A), anchor(B)];
+  };
+  const edgeOf = (a, b) => doc.edges.find(e => (e.a === a && e.b === b) || (e.a === b && e.b === a));
+  const hopPts = h => {
+    const A = N[h.a], B = N[h.b]; if (!A || !B) return null;
+    const e = edgeOf(h.a, h.b); if (!e) return [anchor(A), anchor(B)];
+    const p = edgePts(e); return e.a === h.a ? p : p.slice().reverse();
+  };
+  const pathD = p => 'M' + p.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' L');
+
+  /* 步驟狀態 */
+  const pairSt = {}, onNodes = new Set();
+  let stepColor = th.accent;
+  if (step >= 0) {
+    stepColor = (STEP_TYPES[doc.steps[step].type] || STEP_TYPES.req).c;
+    doc.steps.forEach((sp, i) => sp.hops.forEach(h => {
+      const k = pairKey(h.a, h.b), c = (STEP_TYPES[sp.type] || STEP_TYPES.req).c;
+      if (i === step) { pairSt[k] = { s: 'active', c }; onNodes.add(h.a); onNodes.add(h.b); }
+      else if (i < step && (!pairSt[k] || pairSt[k].s !== 'active')) pairSt[k] = { s: 'done', c };
+      else if (!pairSt[k]) pairSt[k] = { s: 'future' };
+    }));
+  }
+
+  let out = '';
+  /* 1. 區域平台 */
+  const plateOrder = doc.plates.slice().sort((a, b) => pj.depth(a.x + a.w / 2, a.y + a.d / 2) - pj.depth(b.x + b.w / 2, b.y + b.d / 2));
+  for (const p of plateOrder) {
+    const col = p.color || th.plate;
+    let s = d.prism(rect(p.x, p.y, p.w, p.d), -10, 10, col).svg;
+    for (let gx = p.x + 40; gx < p.x + p.w - 1; gx += 40) { const a = d.P(gx, p.y), b = d.P(gx, p.y + p.d); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${th.grid}" stroke-width="1" pointer-events="none"/>`; }
+    for (let gy = p.y + 40; gy < p.y + p.d - 1; gy += 40) { const a = d.P(p.x, gy), b = d.P(p.x + p.w, gy); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${th.grid}" stroke-width="1" pointer-events="none"/>`; }
+    if (p.label) {
+      const rc = rect(p.x, p.y, p.w, p.d).map(q => pj.R(q[0], q[1]));
+      const minA = Math.min(...rc.map(q => q[0])), maxB = Math.max(...rc.map(q => q[1]));
+      const [tx, ty] = d.P0(minA + 14, maxB - 12, 0);
+      s += `<text transform="matrix(${C},${S},${-C},${S},${tx.toFixed(1)},${ty.toFixed(1)})" font-size="15" font-weight="700" fill="${th.plateText}" letter-spacing="2" pointer-events="none">${esc(p.label)}</text>`;
+    }
+    out += `<g class="iso-plate" data-id="${esc(p.id)}">${s}</g>`;
+    if (sel.has(p.id)) {
+      const q = rect(p.x, p.y, p.w, p.d).map(c => d.P(c[0], c[1], 0));
+      out += `<polygon class="iso-sel" points="${d.pts(q)}" fill="none" stroke="${th.accent}" stroke-width="2.5" pointer-events="none"/>`;
+    }
+  }
+  /* 2. 連線 */
+  const labels = [];
+  for (const e of doc.edges) {
+    const p = edgePts(e); if (!p) continue;
+    const ps = pairSt[pairKey(e.a, e.b)];
+    let attr;
+    if (step < 0) attr = `stroke="${e.color || th.edge}" stroke-width="2.6"${e.dash ? ' stroke-dasharray="7 6"' : ''}`;
+    else if (!ps) attr = `stroke="${th.future}" stroke-width="2" opacity=".7"`;
+    else if (ps.s === 'active') attr = `class="iso-flow" stroke="${ps.c}" stroke-width="4"`;
+    else if (ps.s === 'done') attr = `stroke="${ps.c}" stroke-width="2.6" opacity=".45"`;
+    else attr = `stroke="${th.future}" stroke-width="2" stroke-dasharray="3 7"`;
+    if (sel.has(e.id)) out += `<path d="${pathD(p)}" fill="none" stroke="${th.accent}" stroke-width="10" opacity=".28" stroke-linecap="round" stroke-linejoin="round"/>`;
+    out += `<path d="${pathD(p)}" fill="none" stroke-linecap="round" stroke-linejoin="round" ${attr} pointer-events="none"/>`;
+    out += `<path class="iso-hit" data-id="${esc(e.id)}" d="${pathD(p)}" fill="none" stroke="transparent" stroke-width="16"/>`;
+    if (e.label) labels.push([e, p]);
+  }
+  /* 3. 節點（依深度排序，遠的先畫） */
+  const order = doc.nodes.slice().sort((a, b) => pj.depth(a.x, a.y) - pj.depth(b.x, b.y));
+  for (const n of order) {
+    const sh = SHAPES[n.type] || SHAPES.box, s = n.size || 1, [gx, gy] = d.P(n.x, n.y, 0), rx = sh.foot * s * 1.45;
+    if (onNodes.has(n.id)) out += `<ellipse class="iso-pulse" cx="${gx}" cy="${gy}" rx="${rx}" ry="${rx * 0.58}" fill="none" stroke="${stepColor}" stroke-width="3" pointer-events="none"/>`;
+    if (sel.has(n.id)) out += `<ellipse class="iso-sel" cx="${gx}" cy="${gy}" rx="${rx * 0.95}" ry="${rx * 0.55}" fill="${th.accent}" fill-opacity=".1" stroke="${th.accent}" stroke-width="2.5" pointer-events="none"/>`;
+    let g = sh.draw(d, n, s);
+    if (n.icon) { const big = [...n.icon].length <= 2; g += d.text(n.x, n.y, top(n), n.icon, big ? 20 : 12, 700); }
+    out += `<g class="iso-node${onNodes.has(n.id) ? ' on' : ''}" data-id="${esc(n.id)}">${g}</g>`;
+  }
+  /* 4. 名稱標籤 */
+  for (const n of doc.nodes) {
+    if (!n.name && !n.sub) continue;
+    const sh = SHAPES[n.type] || SHAPES.box, s = n.size || 1, [gx, gy] = d.P(n.x, n.y, 0), y = gy + sh.foot * s * 0.8 + 22;
+    const w = Math.max(textW(n.name, 15), textW(n.sub, 12)) + 24, h = n.sub ? 42 : 28;
+    const stc = sel.has(n.id) ? th.accent : onNodes.has(n.id) ? stepColor : th.ink;
+    d.grow(gx - w / 2, y - 15); d.grow(gx + w / 2, y - 15 + h);
+    out += `<g class="iso-node" data-id="${esc(n.id)}"><rect x="${(gx - w / 2).toFixed(1)}" y="${(y - 15).toFixed(1)}" width="${w.toFixed(1)}" height="${h}" rx="10" fill="${th.pill}" stroke="${stc}" stroke-width="2"/>` +
+      `<text x="${gx.toFixed(1)}" y="${(y + 1).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="700" fill="${th.ink}">${esc(n.name)}</text>` +
+      (n.sub ? `<text x="${gx.toFixed(1)}" y="${(y + 18).toFixed(1)}" text-anchor="middle" font-size="12" fill="${th.muted}">${esc(n.sub)}</text>` : '') + `</g>`;
+  }
+  /* 5. 連線文字 */
+  for (const [e, p] of labels) {
+    const m = along(p, .5, 0), w = textW(e.label, 12) + 16;
+    out += `<g class="iso-hit" data-id="${esc(e.id)}"><rect x="${(m[0] - w / 2).toFixed(1)}" y="${(m[1] - 11).toFixed(1)}" width="${w.toFixed(1)}" height="22" rx="11" fill="${th.pill}" stroke="${e.color || th.edge}" stroke-width="1.6"/>` +
+      `<text x="${m[0].toFixed(1)}" y="${(m[1] + 1).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="${th.ink}">${esc(e.label)}</text></g>`;
+  }
+  /* 6. 編輯用控制點 */
+  if (st.handles) {
+    const one = sel.size === 1 ? [...sel][0] : null;
+    if (one && N[one]) {
+      const n = N[one], [hx, hy] = d.P(n.x, n.y, top(n) + 30);
+      out += `<g data-handle="link"><line x1="${hx}" y1="${hy + 10}" x2="${hx}" y2="${hy + 22}" stroke="${th.accent}" stroke-width="2"/><circle cx="${hx}" cy="${hy}" r="11" fill="${th.accent}" stroke="#fff" stroke-width="2"/><text x="${hx}" y="${hy + 1}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="16" font-weight="700" pointer-events="none">+</text></g>`;
+    }
+    const pl = one && doc.plates.find(p => p.id === one);
+    if (pl) {
+      const a = d.P(pl.x, pl.y, 0), b = d.P(pl.x + pl.w, pl.y + pl.d, 0);
+      out += `<circle data-handle="p0" cx="${a[0]}" cy="${a[1]}" r="8" fill="#fff" stroke="${th.accent}" stroke-width="3"/>`;
+      out += `<circle data-handle="p1" cx="${b[0]}" cy="${b[1]}" r="8" fill="#fff" stroke="${th.accent}" stroke-width="3"/>`;
+    }
+    if (st.link && N[st.link.from]) {
+      const a = anchor(N[st.link.from]);
+      out += `<line x1="${a[0]}" y1="${a[1]}" x2="${st.link.to[0]}" y2="${st.link.to[1]}" stroke="${th.accent}" stroke-width="3" stroke-dasharray="8 6" pointer-events="none"/>`;
+    }
+  }
+  /* 7. 封包（播放時才會顯示） */
+  out += `<g id="iso-pkt" style="display:none" pointer-events="none"><rect id="iso-pktR" x="-30" y="-13" width="60" height="26" rx="13" stroke="${th.stroke}" stroke-width="2"/><text id="iso-pktT" x="0" y="1" text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="#fff"></text></g>`;
+
+  svg.innerHTML = `<defs>${d.defs}</defs>` + out;
+  svg.setAttribute('font-family', 'Cascadia Mono, Consolas, Microsoft JhengHei, monospace');
+  return { bounds: d.bb, hopPts, pj, anchor: id => N[id] && anchor(N[id]) };
+}
+
+/* 折線上比例 u 的位置，off 為往行進方向左側的偏移量 */
+function along(pts, u, off = 9) {
+  const seg = []; let L = 0;
+  for (let i = 0; i < pts.length - 1; i++) { const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let t = Math.max(0, Math.min(1, u)) * L;
+  for (let i = 0; i < seg.length; i++) {
+    if (t <= seg[i] || i === seg.length - 1) {
+      const a = pts[i], b = pts[i + 1], l = seg[i] || 1, f = Math.min(1, t / l), dx = b[0] - a[0], dy = b[1] - a[1];
+      return [a[0] + dx * f - dy / l * off, a[1] + dy * f + dx / l * off];
+    }
+    t -= seg[i];
+  }
+  return pts[0];
+}
+
+/* ---------- 相機：只管 viewBox（縮放、平移、適配） ---------- */
+function Camera(svg, onChange) {
+  const cam = { x: -400, y: -300, z: 1 };
+  const box = () => svg.getBoundingClientRect();
+  cam.apply = () => { const r = box(); svg.setAttribute('viewBox', `${cam.x} ${cam.y} ${Math.max(1, r.width) / cam.z} ${Math.max(1, r.height) / cam.z}`); onChange && onChange(cam); };
+  cam.fit = (bb, pad = 50) => {
+    const r = box();
+    if (!bb || !isFinite(bb[0])) { cam.z = 1; cam.x = -r.width / 2; cam.y = -r.height / 2; return cam.apply(); }
+    const bw = bb[2] - bb[0] + pad * 2, bh = bb[3] - bb[1] + pad * 2;
+    cam.z = Math.max(.1, Math.min(r.width / bw, r.height / bh, 2.5));
+    cam.x = (bb[0] + bb[2]) / 2 - r.width / cam.z / 2; cam.y = (bb[1] + bb[3]) / 2 - r.height / cam.z / 2;
+    cam.apply();
+  };
+  cam.toSvg = (cx, cy) => { const r = box(); return [cam.x + (cx - r.left) / cam.z, cam.y + (cy - r.top) / cam.z]; };
+  cam.zoomAt = (f, cx, cy) => {
+    const r = box(); if (cx == null) { cx = r.left + r.width / 2; cy = r.top + r.height / 2; }
+    const [px, py] = cam.toSvg(cx, cy);
+    cam.z = Math.max(.1, Math.min(5, cam.z * f));
+    cam.x = px - (cx - r.left) / cam.z; cam.y = py - (cy - r.top) / cam.z; cam.apply();
+  };
+  cam.setZoom = z => cam.zoomAt(z / cam.z);
+  cam.panBy = (dx, dy) => { cam.x -= dx / cam.z; cam.y -= dy / cam.z; cam.apply(); };
+  cam.center = () => { const r = box(); return [cam.x + r.width / cam.z / 2, cam.y + r.height / cam.z / 2]; };
+  return cam;
+}
+
+function applyThemeVars(el, th) {
+  for (const k of ['bg', 'card', 'ink', 'muted', 'soft', 'accent', 'dot']) el.style.setProperty('--' + k, th[k]);
+}
+
+return { C, S, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, customFrom, SHAPES, shade, esc, textW, isHex, pairKey, proj, normalize, render, along, Camera, applyThemeVars, uid };
+})();
+</script>
+
+<!-- ===================================================================
+     匯出用：HTML 檢視器的樣式與程式（平常不執行，匯出／播放預覽時才組進去）
+     =================================================================== -->
+<script type="text/plain" id="viewer-css">
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cascadia Mono",Consolas,"Microsoft JhengHei",monospace}
+.wrap{max-width:1500px;margin:0 auto;padding:16px 22px 28px}
+.crumb{color:var(--muted);font-size:13px}
+.head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:6px 0 4px}
+h1{font-size:28px;margin:0}
+.tag{border:2px solid var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;background:var(--card)}
+.sub{color:var(--muted);font-size:14px;margin:4px 0 12px}
+.cards{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.card{border:2px solid var(--soft);border-left:5px solid var(--c);border-radius:10px;padding:6px 14px;background:var(--card);min-width:140px}
+.card .k{font-size:11px;color:var(--muted);letter-spacing:.06em}
+.card .v{font-weight:700;font-size:16px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px}
+.main.nosteps{grid-template-columns:1fr}
+.stage{border:2px solid var(--soft);border-radius:14px;background:radial-gradient(circle,var(--dot) 1px,transparent 1.2px) 0 0/22px 22px,var(--card);position:relative;overflow:hidden;height:min(68vh,680px);min-height:360px}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none;user-select:none}
+.stage svg.drag{cursor:grabbing}
+.legend{position:absolute;left:14px;bottom:10px;display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);pointer-events:none}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.zoom{position:absolute;right:10px;bottom:10px;display:flex;gap:4px}
+.zoom button{font:inherit;font-weight:700;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);padding:2px 9px;cursor:pointer}
+.panel{border:2px solid var(--ink);border-radius:14px;background:var(--card);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.badge{font-size:12px;font-weight:700;color:#fff;background:var(--c);border-radius:6px;padding:2px 8px;align-self:flex-start}
+.panel h2{margin:0;font-size:20px}
+.panel p{margin:0;font-size:14px;line-height:1.65;white-space:pre-wrap}
+.code{border:2px solid var(--ink);border-radius:10px;background:var(--bg);padding:10px 12px}
+.code .cap{font-size:11px;color:var(--muted);letter-spacing:.06em;margin-bottom:6px}
+.code pre{margin:0;font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-all;font-family:inherit}
+.ctrl{display:flex;gap:8px;margin-top:auto}
+.ctrl button{flex:1;font:inherit;font-weight:700;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);padding:8px;cursor:pointer}
+.ctrl button:hover,.zoom button:hover{background:var(--soft)}
+.tl{margin-top:16px;border-top:2px solid var(--soft);padding-top:12px}
+.tl .row{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.steps{display:flex;align-items:flex-start;position:relative}
+.steps::before{content:"";position:absolute;left:18px;right:18px;top:17px;height:3px;background:var(--soft)}
+.steps .fill{position:absolute;left:18px;top:17px;height:3px;background:var(--ink);transition:width .4s}
+.st{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;cursor:pointer;font-size:12px;text-align:center;color:var(--muted)}
+.st b{width:36px;height:36px;border-radius:50%;border:2px solid var(--ink);background:var(--card);display:grid;place-items:center;font-size:14px;color:var(--ink)}
+.st.on b{background:var(--c);color:#fff;transform:scale(1.12)}
+.st.done b{background:var(--soft)}
+.st.on{color:var(--ink);font-weight:700}
+@media (max-width:980px){.main{grid-template-columns:1fr}}
+@media (max-width:600px){.wrap{padding:12px 16px}h1{font-size:22px}.st span{display:none}.stage{height:56vh}}
+</script>
+
+<script type="text/plain" id="viewer-js">
+(() => {
+'use strict';
+const doc = ISO.normalize(JSON.parse(document.getElementById('doc-json').textContent));
+const th = ISO.themeOf(doc), T = ISO.STEP_TYPES, esc = ISO.esc, steps = doc.steps;
+ISO.applyThemeVars(document.documentElement, th);
+const used = [...new Set(steps.map(s => s.type))];
+document.getElementById('root').innerHTML = `<div class="wrap">
+  ${doc.crumb ? `<div class="crumb">${esc(doc.crumb)}</div>` : ''}
+  <div class="head"><h1>${esc(doc.title)}</h1>${steps.length ? `<span class="tag">⏱ ${steps.length} steps</span>` : ''}${doc.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+  ${doc.subtitle ? `<div class="sub">${esc(doc.subtitle)}</div>` : ''}
+  ${doc.cards.length ? `<div class="cards">${doc.cards.map(c => `<div class="card" style="--c:${(T[c.type] || {}).c || th.muted}"><div class="k">${esc(c.k)}</div><div class="v">${esc(c.v)}</div></div>`).join('')}</div>` : ''}
+  <div class="main ${steps.length ? '' : 'nosteps'}">
+    <div class="stage"><svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="legend">${used.map(t => `<span><i style="background:${T[t].c}"></i>${esc(T[t].n)}</span>`).join('')}</div>
+      <div class="zoom"><button data-z="out" title="縮小">−</button><button data-z="fit" title="適配（雙擊畫面也可以）">適配</button><button data-z="in" title="放大">＋</button></div></div>
+    ${steps.length ? `<div class="panel" id="panel"><span class="badge" id="pBadge"></span><h2 id="pTitle"></h2><p id="pDesc"></p>
+      <div class="code" id="pCodeBox"><div class="cap" id="pCap"></div><pre id="pCode"></pre></div>
+      <div class="ctrl"><button id="bPrev">◀ 上一步</button><button id="bPlay"></button><button id="bNext">下一步 ▶</button></div></div>` : ''}
+  </div>
+  ${steps.length ? `<div class="tl"><div class="row"><span>IN THIS FLOW</span><span id="tlCount"></span></div><div class="steps" id="steps"><div class="fill" id="fill"></div></div></div>` : ''}
+</div>`;
+const $ = id => document.getElementById(id), svg = $('svg'), cam = ISO.Camera(svg);
+let res = ISO.render(svg, doc, { step: steps.length ? 0 : -1 });
+const fit = () => cam.fit(res.bounds);
+fit();
+let userMoved = false;
+new ResizeObserver(() => userMoved ? cam.apply() : fit()).observe(svg);
+svg.addEventListener('wheel', e => { e.preventDefault(); userMoved = true; cam.zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY); }, { passive: false });
+let pan = null;
+svg.addEventListener('pointerdown', e => { pan = [e.clientX, e.clientY]; svg.classList.add('drag'); svg.setPointerCapture(e.pointerId); });
+svg.addEventListener('pointermove', e => { if (!pan) return; userMoved = true; cam.panBy(e.clientX - pan[0], e.clientY - pan[1]); pan = [e.clientX, e.clientY]; });
+svg.addEventListener('pointerup', () => { pan = null; svg.classList.remove('drag'); });
+svg.addEventListener('dblclick', () => { userMoved = false; fit(); });
+document.querySelector('.zoom').addEventListener('click', e => {
+  const z = e.target.dataset.z; if (!z) return;
+  if (z === 'fit') { userMoved = false; fit(); } else { userMoved = true; cam.zoomAt(z === 'in' ? 1.2 : 1 / 1.2); }
+});
+if (window.parent !== window) document.addEventListener('keydown', e => { if (e.key === 'Escape') window.parent.postMessage('iso-close', '*'); });
+if (!steps.length) return;
+
+const stepsEl = $('steps');
+steps.forEach((s, i) => {
+  const d = document.createElement('div'); d.className = 'st'; d.style.setProperty('--c', T[s.type].c);
+  d.innerHTML = `<b>${i + 1}</b><span>${esc(s.short || s.title || '步驟 ' + (i + 1))}</span>`;
+  d.onclick = () => go(i, true); stepsEl.appendChild(d);
+});
+let cur = 0, playing = doc.autoplay, t0 = performance.now();
+const HOP = Math.max(200, doc.speed), PAUSE = 900;
+const setPlayLbl = () => { $('bPlay').textContent = playing ? '❚❚ 暫停' : '▶ 播放'; };
+function go(i, manual) {
+  cur = (i + steps.length) % steps.length; t0 = performance.now();
+  if (manual) playing = false;
+  setPlayLbl();
+  res = ISO.render(svg, doc, { step: cur });
+  const s = steps[cur], col = T[s.type].c;
+  $('panel').style.setProperty('--c', col);
+  $('pBadge').textContent = `STEP ${cur + 1} / ${steps.length}`;
+  $('pTitle').textContent = s.title || s.short || '步驟 ' + (cur + 1);
+  $('pDesc').textContent = s.desc;
+  $('pCodeBox').style.display = (s.cap || s.code) ? '' : 'none';
+  $('pCap').textContent = s.cap; $('pCode').textContent = s.code;
+  $('tlCount').textContent = `Step ${cur + 1} of ${steps.length}`;
+  [...stepsEl.querySelectorAll('.st')].forEach((d, j) => { d.classList.toggle('on', j === cur); d.classList.toggle('done', j < cur); });
+  $('fill').style.width = steps.length > 1 ? `calc((100% - 36px) * ${cur / (steps.length - 1)})` : '0';
+  $('iso-pktR').setAttribute('fill', col);
+}
+const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+let lastLabel = null;
+function tick(now) {
+  let s = steps[cur], el = Math.max(0, now - t0);
+  if (el >= s.hops.length * HOP + PAUSE) {
+    if (playing) go(cur + 1); else t0 = now;
+    el = 0; s = steps[cur]; lastLabel = null;
+  }
+  const k = Math.floor(el / HOP), pkt = $('iso-pkt');
+  if (pkt && k < s.hops.length) {
+    const h = s.hops[k], pts = res.hopPts(h);
+    if (pts) {
+      const p = ISO.along(pts, ease((el - k * HOP) / HOP));
+      pkt.style.display = ''; pkt.setAttribute('transform', `translate(${p[0].toFixed(1)},${p[1].toFixed(1)})`);
+      const label = h.label || '•';
+      if (label !== lastLabel || $('iso-pktT').textContent !== label) {
+        lastLabel = label; $('iso-pktT').textContent = label; const w = ISO.textW(label, 12) + 22;
+        $('iso-pktR').setAttribute('x', -w / 2); $('iso-pktR').setAttribute('width', w);
+      }
+    }
+  } else if (pkt) pkt.style.display = 'none';
+  requestAnimationFrame(tick);
+}
+$('bPrev').onclick = () => go(cur - 1, true);
+$('bNext').onclick = () => go(cur + 1, true);
+$('bPlay').onclick = () => { playing = !playing; setPlayLbl(); t0 = performance.now(); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') go(cur + 1, true);
+  else if (e.key === 'ArrowLeft') go(cur - 1, true);
+  else if (e.key === ' ') { e.preventDefault(); $('bPlay').click(); }
+});
+const q = +(new URLSearchParams(location.search).get('step') || window.ISO_START || 0);
+go(q ? Math.max(0, Math.min(steps.length - 1, q - 1)) : 0, !!q);
+requestAnimationFrame(tick);
+})();
+</script>
+
+<!-- ===================================================================
+     編輯器
+     =================================================================== -->
+<script>
+(() => {
+'use strict';
+const { SHAPES, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, customFrom, esc, normalize, render, Camera, applyThemeVars, uid, pairKey, isHex } = ISO;
+const $ = id => document.getElementById(id);
+const LS_KEY = '25dumlhtml-doc-v1', LS_UI = '25dumlhtml-ui-v1', LS_PREF = '25dumlhtml-theme-v1', MAX_UNDO = 80, GRID = 10;
+const PALETTE = ['#9cc3ec', '#f0b070', '#8fd0a8', '#b9a6e8', '#f2c98a', '#cfd6de', '#e8a0a0', '#f5f1e6', '#7fd1d8', '#d9c27a'];
+
+/* ---------- 範本 ---------- */
+const TEMPLATES = {
+  blank: { name: '空白畫布', desc: '從零開始', doc: () => ({ title: '未命名', plates: [], nodes: [], edges: [], steps: [] }) },
+  xverify: { name: '跨機構身分驗證', desc: '7 個步驟、三塊區域、接力回應', doc: () => ({
+    title: '跨機構身分驗證流程', crumb: '範例系統 / 身分驗證服務 / 跨機構驗證',
+    subtitle: '客戶在 App 發動跨機構驗證 → 驗證服務簽章加密 → 經 API 閘道送清算中心 → 轉送他機構 IdP', tags: ['我方為 RP 發動'],
+    cards: [{ k: '傳輸保護', v: 'JWS + JWE', type: 'crypto' }, { k: '外送路徑', v: '經 API 閘道', type: 'req' }, { k: '回應', v: '明文', type: 'resp' }, { k: '外部錯誤', v: '502 統一處理', type: 'err' }],
+    plates: [{ id: 'p1', x: -80, y: 230, w: 160, d: 140, label: '客戶端' }, { id: 'p2', x: 100, y: -120, w: 380, d: 500, label: '內部系統' }, { id: 'p3', x: 510, y: -290, w: 480, d: 240, label: '外部 · 清算網路' }],
+    nodes: [
+      { id: 'app', type: 'phone', x: 0, y: 300, name: '行動 App', sub: 'RP 依賴方' },
+      { id: 'svc', type: 'hex', x: 180, y: 140, name: '身分驗證服務', sub: 'Web API', icon: '⚙' },
+      { id: 'crypto', type: 'box', x: 380, y: 300, name: '加解密服務', sub: 'JWS 簽章 / JWE 加密' },
+      { id: 'gw', type: 'gate', x: 360, y: -40, name: 'API 閘道', sub: '統一對外出口' },
+      { id: 'hub', type: 'cyl', x: 600, y: -200, name: '清算中心', sub: '跨機構驗證', icon: '🏛' },
+      { id: 'idp', type: 'cyl', x: 900, y: -150, size: .8, h: 62, color: '#cfd6de', name: '他機構 IdP', sub: '身分提供方（經清算中心轉送）', icon: '🏦' }],
+    edges: [{ a: 'app', b: 'svc' }, { a: 'svc', b: 'crypto' }, { a: 'svc', b: 'gw' }, { a: 'gw', b: 'hub' }, { a: 'hub', b: 'idp' }],
+    steps: [
+      { type: 'req', short: '發動', title: '客戶發動跨機構驗證', hops: [{ a: 'app', b: 'svc', label: '明文' }],
+        desc: 'App 帶著 Access Token 呼叫驗證 API，body 是明文。', cap: 'REQUEST', code: 'POST /cross-verify/request\nAuthorization: Bearer <token>\nHeader：x-request-id / x-source-id / x-dest-id' },
+      { type: 'crypto', short: '簽章加密', title: '交給加解密服務簽章＋加密', hops: [{ a: 'svc', b: 'crypto', label: '明文' }],
+        desc: '驗證服務把 body 送去加解密服務，用對外專用的金鑰處理。', cap: '金鑰識別', code: 'SignKeyId    = <簽章金鑰前綴> + <機構代號>\nEncryptKeyId = <加密金鑰前綴> + x-dest-id' },
+      { type: 'crypto', short: '回密文', title: '拿回密文', hops: [{ a: 'crypto', b: 'svc', label: 'JWS+JWE' }],
+        desc: '加解密服務回傳簽章＋加密後的內容。這支 API 只保護「外送」這一段。', cap: '保護模式', code: '外送 → 簽章 + 加密\n回應 → 明文（不用解）' },
+      { type: 'req', short: '送閘道', title: '經 API 閘道外送', hops: [{ a: 'svc', b: 'gw', label: 'JWS+JWE' }],
+        desc: '驗證服務不直連清算中心，一律走 API 閘道統一出口。Host 標頭要帶對，帶錯會被擋回。', cap: 'OUTBOUND', code: 'POST https://<api-gateway>/cross-verify/request\n\n503 → 先檢查送出的 Host 標頭' },
+      { type: 'ext', short: '到清算中心', title: 'API 閘道 → 清算中心', hops: [{ a: 'gw', b: 'hub', label: 'SSL' }],
+        desc: 'API 閘道以 SSL 憑證連到清算中心。換 SSL 憑證只影響這一段，JWS／JWE 金鑰不受影響。', cap: 'SSL', code: 'API 閘道 ──SSL──▶ 清算中心\n憑證錯誤 → 先查 SSL 憑證' },
+      { type: 'ext', short: '他機構驗證', title: '清算中心轉送他機構 IdP', hops: [{ a: 'hub', b: 'idp', label: '轉送' }, { a: 'idp', b: 'hub', label: '受理' }],
+        desc: '清算中心把請求轉給客戶所屬的他機構 IdP，客戶在那邊完成身分確認。', cap: 'EXTERNAL', code: '清算中心 ──▶ 他機構 IdP（身分提供方）\n受理後回覆清算中心' },
+      { type: 'resp', short: '回應', title: '回應一路接力回 App', hops: [{ a: 'hub', b: 'gw', label: '明文' }, { a: 'gw', b: 'svc', label: '明文' }, { a: 'svc', b: 'app', label: '明文' }],
+        desc: '發動驗證的回應是明文，原路回到 App。真正的驗證結果之後由清算中心主動回拋。', cap: 'RESPONSE', code: '發動回應：明文\n查詢回應：要驗章 + 解密\n\n最終結果：清算中心 → POST /cross-verify/result' }] }) },
+  web3: { name: '三層式網站', desc: '使用者 → 閘道 → 兩台 AP → 快取／資料庫', doc: () => ({
+    title: '三層式網站請求流程', subtitle: '負載平衡分流、先查快取、沒有再查資料庫',
+    cards: [{ k: 'AP 台數', v: '2', type: 'req' }, { k: '快取', v: 'Redis', type: 'crypto' }, { k: '資料庫', v: 'SQL Server', type: 'resp' }],
+    plates: [{ id: 'z1', x: -110, y: 80, w: 200, d: 180, label: '網際網路' }, { id: 'z2', x: 130, y: -30, w: 150, d: 200, label: 'DMZ' },
+             { id: 'z3', x: 330, y: -130, w: 180, d: 420, label: '應用層' }, { id: 'z4', x: 560, y: -80, w: 200, d: 420, label: '資料層' }],
+    nodes: [{ id: 'u', type: 'users', x: -10, y: 170, name: '使用者', sub: '瀏覽器 / App', size: .85 },
+            { id: 'lb', type: 'gate', x: 205, y: 70, name: '負載平衡', sub: 'L7 LB', icon: 'LB' },
+            { id: 'a1', type: 'hex', x: 420, y: -40, name: 'AP-01', sub: 'Web API', size: .85 },
+            { id: 'a2', type: 'hex', x: 420, y: 190, name: 'AP-02', sub: 'Web API', size: .85 },
+            { id: 'rd', type: 'box', x: 660, y: 0, name: '快取', sub: 'Redis', icon: '⚡', color: '#e8a0a0', size: .85 },
+            { id: 'db', type: 'cyl', x: 660, y: 230, name: '資料庫', sub: 'SQL Server' }],
+    edges: [{ a: 'u', b: 'lb' }, { a: 'lb', b: 'a1' }, { a: 'lb', b: 'a2', dash: true }, { a: 'a1', b: 'rd' }, { a: 'a1', b: 'db', mode: 'ground-xy' }, { a: 'a2', b: 'db' }, { a: 'a2', b: 'rd', dash: true, mode: 'ground-yx' }],
+    steps: [
+      { type: 'req', short: '請求', title: '使用者送出請求', hops: [{ a: 'u', b: 'lb', label: 'HTTPS' }], desc: '請求先到負載平衡。', cap: 'REQUEST', code: 'GET /api/orders/42' },
+      { type: 'req', short: '分流', title: '分流到 AP-01', hops: [{ a: 'lb', b: 'a1', label: '轉送' }], desc: '依健康檢查與權重挑一台 AP。', cap: '', code: '' },
+      { type: 'crypto', short: '查快取', title: '先查快取', hops: [{ a: 'a1', b: 'rd', label: 'GET' }, { a: 'rd', b: 'a1', label: 'miss' }], desc: '快取沒有資料（miss）。', cap: 'CACHE', code: 'GET order:42 → (nil)' },
+      { type: 'resp', short: '查 DB', title: '查資料庫並回填快取', hops: [{ a: 'a1', b: 'db', label: 'SQL' }, { a: 'db', b: 'a1', label: '資料' }, { a: 'a1', b: 'rd', label: 'SET' }], desc: '查到後寫回快取，下次就不用再查 DB。', cap: 'SQL', code: 'SELECT * FROM Orders WHERE Id = 42' },
+      { type: 'resp', short: '回應', title: '回應使用者', hops: [{ a: 'a1', b: 'lb', label: '200' }, { a: 'lb', b: 'u', label: '200' }], desc: '原路回到使用者。', cap: '', code: '' }] }) },
+  file: { name: '檔案處理流程', desc: '上游檔案 → 轉檔 → 核心', doc: () => ({
+    title: '檔案轉檔入核心', subtitle: '上游丟檔 → 排程轉檔 → 寫入核心資料庫',
+    plates: [{ id: 'f1', x: -90, y: -90, w: 180, d: 180, label: '上游' }, { id: 'f2', x: 150, y: -90, w: 200, d: 180, label: '轉檔服務' }, { id: 'f3', x: 410, y: -90, w: 200, d: 180, label: '核心' }],
+    nodes: [{ id: 'up', type: 'file', x: 0, y: 0, name: '上游檔案', sub: '檔案交換傳入' },
+            { id: 'cv', type: 'server', x: 250, y: 0, name: '轉檔排程', sub: 'Windows 服務' },
+            { id: 'core', type: 'cyl', x: 510, y: 0, name: '核心資料庫', sub: 'DB2' }],
+    edges: [{ a: 'up', b: 'cv' }, { a: 'cv', b: 'core' }],
+    steps: [
+      { type: 'job', short: '收檔', title: '收到上游檔案', hops: [{ a: 'up', b: 'cv', label: '檔案' }], desc: '排程掃描資料夾，取得新檔。', cap: '', code: '' },
+      { type: 'req', short: '寫入', title: '轉檔後寫入核心', hops: [{ a: 'cv', b: 'core', label: '寫入' }], desc: '轉成核心格式後寫入。', cap: '', code: '' },
+      { type: 'resp', short: '回報', title: '回報結果', hops: [{ a: 'core', b: 'cv', label: 'OK' }], desc: '寫入成功，排程記錄結果。', cap: '', code: '' }] }) },
+};
+
+/* ---------- 狀態 ---------- */
+let doc, last, undoS = [], redoS = [];
+let sel = new Set(), tab = 'prop', stepSel = -1;
+let drag = null, link = null, pan = null, spaceDown = false, lastRes = null;
+const svg = $('cv'), stage = $('stage');
+const cam = Camera(svg, c => { $('zoomLbl').textContent = Math.round(c.z * 100) + '%'; });
+
+const findN = id => doc.nodes.find(n => n.id === id);
+const findP = id => doc.plates.find(p => p.id === id);
+const findE = id => doc.edges.find(e => e.id === id);
+const pj = () => ISO.proj(doc.rot);
+
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 1800); }
+function save() { try { localStorage.setItem(LS_KEY, last); } catch (e) { toast('自動儲存失敗（瀏覽器不允許 localStorage）'); } }
+function commit() {
+  const now = JSON.stringify(doc);
+  if (now === last) return;
+  undoS.push(last); if (undoS.length > MAX_UNDO) undoS.shift();
+  redoS = []; last = now; save(); updUndo();
+}
+function updUndo() { $('bUndo').disabled = !undoS.length; $('bRedo').disabled = !redoS.length; }
+function restore(json) {
+  doc = normalize(JSON.parse(json)); last = JSON.stringify(doc); save();
+  sel = new Set([...sel].filter(id => findN(id) || findP(id) || findE(id)));
+  if (stepSel >= doc.steps.length) stepSel = doc.steps.length - 1;
+  applyTheme(); draw(); refreshPanel(); updUndo();
+}
+function undo() { if (!undoS.length) return; redoS.push(last); restore(undoS.pop()); }
+function redo() { if (!redoS.length) return; undoS.push(last); restore(redoS.pop()); }
+function loadDoc(d, fit = true) {
+  doc = normalize(d); sel.clear(); stepSel = doc.steps.length ? 0 : -1;
+  applyTheme(); draw(); if (fit) fitView(); refreshPanel();
+}
+function applyTheme() { applyThemeVars(document.documentElement, themeOf(doc)); $('selTheme').value = doc.theme; }
+const themeOptions = cur => THEME_ORDER.map(k => `<option value="${k}" ${k === cur ? 'selected' : ''}>${THEMES[k].name}</option>`).join('') +
+  `<option value="custom" ${cur === 'custom' ? 'selected' : ''}>自訂…</option>`;
+/* 記住偏好：下次沒有存檔、或開新範本時，用你最後選的主題 */
+function savePref() { try { localStorage.setItem(LS_PREF, JSON.stringify({ theme: doc.theme, customTheme: doc.customTheme })); } catch (e) { } }
+function loadPref() { try { return JSON.parse(localStorage.getItem(LS_PREF) || 'null'); } catch (e) { return null; } }
+function setTheme(key) {
+  const prev = doc.theme;
+  if (key === 'custom' && !doc.customTheme.edited && prev !== 'custom') doc.customTheme = { ...customFrom(prev), edited: false };   // 第一次切自訂：以目前主題當起點
+  doc.theme = key; commit(); savePref(); applyTheme(); draw(); refreshPanel();
+  if (key === 'custom') { setTab('doc'); toast('在「文件」分頁調整自訂顏色'); }
+  else toast('主題：' + THEMES[key].name);
+}
+
+/* ---------- 繪製 ---------- */
+function draw() {
+  lastRes = render(svg, doc, { sel, step: tab === 'step' ? stepSel : -1, handles: true, link });
+  drawTimeline();
+}
+function fitView() { draw(); cam.fit(lastRes.bounds); }
+
+function drawTimeline() {
+  const box = $('tlSteps');
+  $('tlInfo').textContent = doc.steps.length ? `${doc.steps.length} 個步驟 · 點一下編輯` : '還沒有步驟：按右邊「＋ 新增步驟」';
+  box.innerHTML = doc.steps.map((s, i) => `<div class="tls ${tab === 'step' && i === stepSel ? 'on' : ''}" data-i="${i}" title="${esc(s.title)}"><b style="background:${STEP_TYPES[s.type].c}">${i + 1}</b>${esc(s.short || s.title || '步驟 ' + (i + 1))}</div>`).join('');
+}
+$('tlSteps').addEventListener('click', e => { const t = e.target.closest('.tls'); if (!t) return; stepSel = +t.dataset.i; setTab('step'); });
+$('bAddStep').onclick = () => addStep();
+
+/* ---------- 新增／刪除 ---------- */
+function addNode(type, wx, wy) {
+  const def = SHAPES[type].def;
+  const n = { id: uid('n'), type, x: Math.round(wx / GRID) * GRID, y: Math.round(wy / GRID) * GRID, h: def.h, size: 1, color: def.color, icon: def.icon, name: SHAPES[type].name, sub: '' };
+  doc.nodes.push(n); sel = new Set([n.id]); setTab('prop', false); commit(); draw(); refreshPanel();
+}
+function addPlate(wx, wy) {
+  const p = { id: uid('p'), x: Math.round((wx - 120) / GRID) * GRID, y: Math.round((wy - 120) / GRID) * GRID, w: 240, d: 240, label: '新區域', color: '' };
+  doc.plates.push(p); sel = new Set([p.id]); setTab('prop', false); commit(); draw(); refreshPanel();
+}
+function addStep() {
+  doc.steps.push({ id: uid('s'), type: 'req', short: '步驟 ' + (doc.steps.length + 1), title: '', desc: '', cap: '', code: '', hops: [] });
+  stepSel = doc.steps.length - 1; commit(); setTab('step');
+  toast('點畫布上的連線，就能把它加進這個步驟');
+}
+function deleteSel() {
+  if (!sel.size) return;
+  const nodes = new Set([...sel].filter(findN));
+  doc.nodes = doc.nodes.filter(n => !nodes.has(n.id));
+  doc.plates = doc.plates.filter(p => !sel.has(p.id));
+  doc.edges = doc.edges.filter(e => !sel.has(e.id) && !nodes.has(e.a) && !nodes.has(e.b));
+  doc.steps.forEach(s => s.hops = s.hops.filter(h => !nodes.has(h.a) && !nodes.has(h.b)));
+  sel.clear(); commit(); draw(); refreshPanel();
+}
+function duplicateSel() {
+  const map = {}, add = [];
+  for (const id of sel) {
+    const n = findN(id), p = findP(id);
+    if (n) { const c = { ...n, id: uid('n'), x: n.x + 40, y: n.y + 40 }; map[n.id] = c.id; doc.nodes.push(c); add.push(c.id); }
+    if (p) { const c = { ...p, id: uid('p'), x: p.x + 40, y: p.y + 40 }; doc.plates.push(c); add.push(c.id); }
+  }
+  for (const e of doc.edges.slice()) if (map[e.a] && map[e.b]) doc.edges.push({ ...e, id: uid('e'), a: map[e.a], b: map[e.b] });
+  if (!add.length) return;
+  sel = new Set(add); commit(); draw(); refreshPanel();
+}
+function nudge(da, db) {
+  // da／db 是「旋轉後」的世界軸位移（整數）；(+1,-1) 在畫面上剛好是正右方，(+1,+1) 是正下方
+  // 只用整數格移動，原本在 10 格線上的東西用 Shift（10）移動後仍在格線上
+  const [wx, wy] = pj().Ri(da, db);
+  for (const id of sel) { const o = findN(id) || findP(id); if (o) { o.x += wx; o.y += wy; } }
+  draw(); commit();
+}
+
+/* ---------- 複製／貼上（Ctrl+C／Ctrl+V，也會寫進系統剪貼簿，另一個視窗可以貼） ---------- */
+let clip = null, lastClickW = null, pasteKey = null, pasteN = 0, pendingPaste = null;
+function collectClip() {
+  const nodes = doc.nodes.filter(n => sel.has(n.id)), plates = doc.plates.filter(p => sel.has(p.id));
+  if (!nodes.length && !plates.length) return null;
+  const ids = new Set(nodes.map(n => n.id));
+  const edges = doc.edges.filter(e => ids.has(e.a) && ids.has(e.b));
+  return JSON.parse(JSON.stringify({ kind: '25duml-clip', v: 1, nodes, plates, edges }));
+}
+function pasteClip(c) {
+  if (!c) return;
+  const src = normalize({ nodes: c.nodes, plates: c.plates, edges: c.edges });   // 從系統剪貼簿來的也要過濾
+  const pts = [...src.nodes.map(n => [n.x, n.y]), ...src.plates.map(p => [p.x + p.w / 2, p.y + p.d / 2])];
+  if (!pts.length) return;
+  const cx = pts.reduce((a, q) => a + q[0], 0) / pts.length, cy = pts.reduce((a, q) => a + q[1], 0) / pts.length;
+  let dx, dy;
+  const key = lastClickW ? lastClickW.join(',') : 'none';
+  pasteN = key === pasteKey ? pasteN + 1 : 0; pasteKey = key;
+  if (lastClickW) { dx = lastClickW[0] - cx + pasteN * 30; dy = lastClickW[1] - cy + pasteN * 30; }   // 貼在最後點擊處，同一點連貼會階梯排開
+  else { dx = 40 * (pasteN + 1); dy = 40 * (pasteN + 1); }
+  dx = Math.round(dx / GRID) * GRID; dy = Math.round(dy / GRID) * GRID;
+  const map = {}, add = [];
+  for (const n of src.nodes) { const c2 = { ...n, id: uid('n'), x: n.x + dx, y: n.y + dy }; map[n.id] = c2.id; doc.nodes.push(c2); add.push(c2.id); }
+  for (const p of src.plates) { const c2 = { ...p, id: uid('p'), x: p.x + dx, y: p.y + dy }; doc.plates.push(c2); add.push(c2.id); }
+  for (const e of src.edges) if (map[e.a] && map[e.b]) doc.edges.push({ ...e, id: uid('e'), a: map[e.a], b: map[e.b] });
+  sel = new Set(add); commit(); draw(); refreshPanel();
+  toast(`已貼上 ${add.length} 個項目`);
+}
+document.addEventListener('copy', e => {
+  if (typing() || !$('ov').hidden) return;
+  const c = collectClip(); if (!c) return;
+  clip = c; e.preventDefault();
+  try { e.clipboardData.setData('text/plain', JSON.stringify(c)); } catch (err) { }
+  toast(`已複製 ${c.nodes.length + c.plates.length} 個項目`);
+});
+document.addEventListener('paste', e => {
+  if (typing() || !$('ov').hidden) return;
+  clearTimeout(pendingPaste); pendingPaste = null;
+  let c = null;
+  try { const j = JSON.parse(e.clipboardData.getData('text/plain')); if (j && j.kind === '25duml-clip') c = j; } catch (err) { }
+  c = c || clip; if (!c) return;
+  e.preventDefault(); pasteClip(c);
+});
+
+/* ---------- 左側圖形面板 ---------- */
+function palIcon(type) {
+  const tmp = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const d = normalize({ nodes: [{ id: 'x', type, x: 0, y: 0, name: '', sub: '', icon: type === 'gate' ? '' : undefined }] });
+  const r = render(tmp, d, {}), b = r.bounds;
+  return `<svg viewBox="${b[0] - 6} ${b[1] - 6} ${b[2] - b[0] + 12} ${b[3] - b[1] + 12}">${tmp.innerHTML}</svg>`;
+}
+$('pal').innerHTML = Object.entries(SHAPES).map(([k, s]) => `<button data-type="${k}" title="${s.name}（${s.desc}）">${palIcon(k)}<span>${s.name}</span></button>`).join('');
+$('pal2').innerHTML = `<button data-type="plate" title="區域平台：拖它，上面的圖形會跟著走"><svg viewBox="-100 -60 200 120"><polygon points="0,-50 87,0 0,50 -87,0" fill="#ece5d5" stroke="#2d2a24" stroke-width="3"/></svg><span>區域平台</span></button>`;
+let palDrag = null;
+for (const box of [$('pal'), $('pal2')]) box.addEventListener('pointerdown', e => {
+  const b = e.target.closest('button[data-type]'); if (!b || e.button !== 0) return;
+  e.preventDefault(); palDrag = { type: b.dataset.type, x: e.clientX, y: e.clientY, moved: false };
+});
+function dropPalette(e) {
+  const t = palDrag.type; palDrag = null; stage.style.outline = '';
+  let w;
+  const r = svg.getBoundingClientRect();
+  const inside = e && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+  if (inside) { const [sx, sy] = cam.toSvg(e.clientX, e.clientY); w = pj().un(sx, sy); }
+  else { const [cx, cy] = cam.center(); w = pj().un(cx, cy); }
+  if (t === 'plate') addPlate(w[0], w[1]); else addNode(t, w[0], w[1]);
+}
+
+/* ---------- 畫布互動 ---------- */
+const snap = (v, alt) => alt ? Math.round(v) : Math.round(v / GRID) * GRID;
+const kindOf = id => findN(id) ? 'node' : findP(id) ? 'plate' : findE(id) ? 'edge' : null;
+const nodeInPlate = (n, p) => n.x >= p.x && n.x <= p.x + p.w && n.y >= p.y && n.y <= p.y + p.d;
+
+svg.addEventListener('pointerdown', e => {
+  if (e.button === 1 || (e.button === 0 && spaceDown)) { e.preventDefault(); startPan(e); return; }
+  if (e.button !== 0) return;
+  const [sx, sy] = cam.toSvg(e.clientX, e.clientY);
+  const multi = e.shiftKey || e.ctrlKey || e.metaKey;
+  lastClickW = pj().un(sx, sy).map(Math.round);
+  const t = e.target.closest('[data-handle],[data-id]');
+  if (!t) {
+    const now = performance.now();
+    if (lastEmpty && now - lastEmpty < 400) { lastEmpty = 0; fitView(); return; }   // 雙擊空白處＝適配
+    lastEmpty = now;
+    if (!multi && sel.size) { sel.clear(); draw(); refreshPanel(); }
+    startPan(e); return;
+  }
+  lastEmpty = 0;
+  if (t.dataset.handle === 'link') { link = { from: [...sel][0], to: [sx, sy] }; draw(); return; }
+  if (t.dataset.handle === 'p0' || t.dataset.handle === 'p1') {
+    const p = findP([...sel][0]); drag = { kind: 'resize', h: t.dataset.handle, p, o: { ...p }, moved: false }; return;
+  }
+  const id = t.dataset.id, kind = kindOf(id);
+  if (kind === 'edge') {
+    if (tab === 'step' && stepSel >= 0) { addHopFromEdge(id, e.altKey); return; }
+    const now = performance.now();
+    if (!multi && lastDown && lastDown.id === id && now - lastDown.t < 400) { lastDown = null; focusName(id); return; }
+    lastDown = { id, t: now };
+    if (multi) sel.has(id) ? sel.delete(id) : sel.add(id); else sel = new Set([id]);
+    draw(); refreshPanel(); return;
+  }
+  if (multi) { sel.has(id) ? sel.delete(id) : sel.add(id); draw(); refreshPanel(); return; }
+  // 自己判斷雙擊：第一下點擊會重畫 DOM，瀏覽器的 dblclick 不一定觸發
+  const now = performance.now();
+  if (lastDown && lastDown.id === id && now - lastDown.t < 400) { lastDown = null; focusName(id); return; }
+  lastDown = { id, t: now };
+  if (!sel.has(id)) { sel = new Set([id]); draw(); refreshPanel(); }
+  // 準備拖曳：選到的節點／平台＋平台上的節點（按 Alt 只拖點到的那一個）
+  const move = new Map();
+  const only = e.altKey ? [id] : [...sel];
+  for (const sid of only) {
+    const n = findN(sid), p = findP(sid);
+    if (n) move.set(n, { x: n.x, y: n.y });
+    if (p) { move.set(p, { x: p.x, y: p.y }); if (!e.altKey) doc.nodes.forEach(nn => { if (nodeInPlate(nn, p)) move.set(nn, { x: nn.x, y: nn.y }); }); }
+  }
+  drag = { kind: 'move', w0: pj().un(sx, sy), move, moved: false };
+});
+function startPan(e) { pan = [e.clientX, e.clientY]; stage.classList.add('panning'); }
+window.addEventListener('pointermove', e => {
+  if (palDrag) {
+    if (Math.hypot(e.clientX - palDrag.x, e.clientY - palDrag.y) > 6) palDrag.moved = true;
+    if (palDrag.moved) stage.style.outline = '3px dashed var(--accent)';
+    return;
+  }
+  if (pan) { if (Math.abs(e.clientX - pan[0]) + Math.abs(e.clientY - pan[1]) > 2) lastEmpty = 0; cam.panBy(e.clientX - pan[0], e.clientY - pan[1]); pan = [e.clientX, e.clientY]; return; }
+  if (!drag && !link) return;
+  const [sx, sy] = cam.toSvg(e.clientX, e.clientY);
+  if (link) { link.to = [sx, sy]; draw(); return; }
+  const w = pj().un(sx, sy);
+  if (drag.kind === 'move') {
+    const dx = snap(w[0] - drag.w0[0], e.altKey), dy = snap(w[1] - drag.w0[1], e.altKey);
+    if (dx || dy) { drag.moved = true; lastDown = null; }   // 拖過就不算雙擊
+    for (const [o, p0] of drag.move) { o.x = p0.x + dx; o.y = p0.y + dy; }
+    draw();
+  } else if (drag.kind === 'resize') {
+    const p = drag.p, o = drag.o, wx = snap(w[0], e.altKey), wy = snap(w[1], e.altKey);
+    if (drag.h === 'p1') { p.w = Math.max(60, wx - o.x); p.d = Math.max(60, wy - o.y); }
+    else { const ex = o.x + o.w, ey = o.y + o.d; p.x = Math.min(wx, ex - 60); p.y = Math.min(wy, ey - 60); p.w = ex - p.x; p.d = ey - p.y; }
+    drag.moved = true; draw();
+  }
+});
+window.addEventListener('pointerup', e => {
+  if (palDrag) { if (palDrag.moved) dropPalette(e); else dropPalette(null); return; }
+  if (pan) { pan = null; stage.classList.remove('panning'); return; }
+  if (link) {
+    const el = document.elementFromPoint(e.clientX, e.clientY), t = el && el.closest && el.closest('[data-id]');
+    let to = t && findN(t.dataset.id) ? t.dataset.id : null;
+    const from = link.from, [lx, ly] = link.to; link = null;
+    if (!to) {   // 沒正好放在圖形上（例如閘道兩根柱子中間）：找附近最近的圖形
+      let best = 70;
+      for (const n of doc.nodes) {
+        if (n.id === from) continue;
+        const a = lastRes.anchor(n.id), dd = a && Math.hypot(a[0] - lx, a[1] - ly);
+        if (dd < best) { best = dd; to = n.id; }
+      }
+    }
+    if (to && to !== from) {
+      if (doc.edges.some(x => pairKey(x.a, x.b) === pairKey(from, to))) toast('這兩個圖形之間已經有連線了');
+      else { const ed = { id: uid('e'), a: from, b: to, label: '', color: '', mode: 'air', dash: false }; doc.edges.push(ed); sel = new Set([ed.id]); commit(); refreshPanel(); }
+    }
+    draw(); return;
+  }
+  if (drag) { if (drag.moved) { commit(); refreshPanel(); } drag = null; }
+});
+let lastDown = null, lastEmpty = 0;
+function focusName(id) {
+  sel = new Set([id]); setTab('prop', false); draw(); refreshPanel();
+  // 等瀏覽器處理完這次按下（預設動作會把焦點拉回 body）再聚焦
+  setTimeout(() => { const f = $('panel').querySelector('[data-f="name"],[data-f="label"]'); if (f) { f.focus(); f.select(); } }, 0);
+}
+svg.addEventListener('wheel', e => { e.preventDefault(); cam.zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY); }, { passive: false });
+svg.addEventListener('contextmenu', e => e.preventDefault());
+new ResizeObserver(() => cam.apply()).observe(svg);
+
+/* ---------- 鍵盤 ---------- */
+const typing = () => { const a = document.activeElement; return a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT'); };
+document.addEventListener('keydown', e => {
+  if (!$('ov').hidden) { if (e.key === 'Escape') closePlay(); return; }
+  const ctrl = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+  if (!['Shift', 'Alt', 'Control', 'Meta'].includes(e.key)) lastDown = null;
+  if (ctrl && k === 's') { e.preventDefault(); exportJSON(); return; }
+  if (typing()) { if (e.key === 'Escape') document.activeElement.blur(); return; }
+  if (ctrl && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+  else if (ctrl && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+  else if (ctrl && k === 'd') { e.preventDefault(); duplicateSel(); }
+  else if (ctrl && k === 'c') { const c = collectClip(); if (c) clip = c; }   // 不擋預設動作，讓 copy 事件寫系統剪貼簿
+  else if (ctrl && k === 'v') { clearTimeout(pendingPaste); pendingPaste = setTimeout(() => { pendingPaste = null; pasteClip(clip); }, 80); }   // paste 事件沒來（剪貼簿被擋）時的備援
+  else if (ctrl && k === '0') { e.preventDefault(); cam.setZoom(1); }
+  else if (ctrl && (k === '=' || k === '+')) { e.preventDefault(); cam.zoomAt(1.2); }
+  else if (ctrl && (k === '-' || k === '_')) { e.preventDefault(); cam.zoomAt(1 / 1.2); }
+  else if (ctrl && k === 'a') { e.preventDefault(); sel = new Set(doc.nodes.map(n => n.id)); draw(); refreshPanel(); }
+  else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteSel(); }
+  else if (e.key === 'Escape') { link = null; drag = null; sel.clear(); draw(); refreshPanel(); }
+  else if (e.key === ' ') { e.preventDefault(); spaceDown = true; stage.style.cursor = 'grab'; }
+  else if (e.key.startsWith('Arrow') && sel.size) {
+    e.preventDefault(); const s = e.shiftKey ? GRID : 1;
+    const v = { ArrowRight: [s, -s], ArrowLeft: [-s, s], ArrowUp: [-s, -s], ArrowDown: [s, s] }[e.key];
+    if (v) nudge(v[0], v[1]);
+  }
+  else if (ctrl) return;
+  else if (k === 'f') fitView();
+  else if (k === 'r') rotate(e.shiftKey ? -1 : 1);
+  else if (k === 't') { const i = THEME_ORDER.indexOf(doc.theme); setTheme(THEME_ORDER[(i + (e.shiftKey ? -1 : 1) + THEME_ORDER.length) % THEME_ORDER.length]); }
+  else if (k === 'p') openPlay();
+  else if (e.key === '[') toggleSide('L');
+  else if (e.key === ']') toggleSide('R');
+});
+document.addEventListener('keyup', e => { if (e.key === ' ') { spaceDown = false; stage.style.cursor = ''; } });
+
+/* ---------- 工具列 ---------- */
+function rotate(dir) { doc.rot = (doc.rot + dir + 4) % 4; commit(); fitView(); toast('視角 ' + doc.rot * 90 + '°'); }
+$('bRotL').onclick = () => rotate(-1);
+$('bRotR').onclick = () => rotate(1);
+$('bFit').onclick = fitView;
+$('zoomLbl').onclick = () => cam.setZoom(1);
+$('bUndo').onclick = undo; $('bRedo').onclick = redo;
+$('selTheme').innerHTML = themeOptions('paper');
+$('selTheme').onchange = e => { setTheme(e.target.value); e.target.blur(); };
+function toggleSide(w) {
+  $('app').classList.toggle('hide' + w);
+  try { localStorage.setItem(LS_UI, JSON.stringify({ L: $('app').classList.contains('hideL'), R: $('app').classList.contains('hideR') })); } catch (e) { }
+  requestAnimationFrame(() => cam.apply());
+}
+$('bSideL').onclick = () => toggleSide('L'); $('bSideR').onclick = () => toggleSide('R');
+
+function download(name, blob) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const fname = ext => (doc.title || '2.5DUML').replace(/[\\/:*?"<>|\s]+/g, '_').slice(0, 60) + ext;
+function exportJSON() { download(fname('.json'), new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' })); toast('已匯出 JSON'); }
+$('bSave').onclick = exportJSON;
+$('bOpen').onclick = () => $('fileIn').click();
+$('fileIn').onchange = async () => {
+  const f = $('fileIn').files[0]; $('fileIn').value = ''; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (!d || !Array.isArray(d.nodes)) throw new Error('不是 2.5DUMLhtml 的 JSON（缺 nodes）');
+    loadDoc(d); commit(); toast('已開啟：' + f.name);
+  } catch (err) { toast('開啟失敗：' + err.message); }
+};
+
+function buildViewerHTML(d, startStep) {
+  const core = $('core').textContent, vcss = $('viewer-css').textContent, vjs = $('viewer-js').textContent, ccss = $('core-css').textContent;
+  const json = JSON.stringify(d).replace(/</g, '\\u003c');
+  const E = '</' + 'script>';
+  return '<!doctype html>\n<html lang="zh-Hant">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+    '<title>' + esc(d.title || '2.5D 流程') + '</title>\n<style>' + ccss + vcss + '</style>\n</head>\n<body>\n<div id="root"></div>\n' +
+    '<script type="application/json" id="doc-json">' + json + E + '\n' +
+    (startStep ? '<script>window.ISO_START=' + (+startStep) + ';' + E + '\n' : '') +
+    '<script>' + core + E + '\n<script>' + vjs + E + '\n</body>\n</html>\n';
+}
+$('bHtml').onclick = () => { download(fname('.html'), new Blob([buildViewerHTML(doc)], { type: 'text/html' })); toast('已匯出 HTML 檢視器'); };
+
+async function exportPNG() {
+  const tmp = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const r = render(tmp, doc, {}), b = r.bounds, pad = 30, th = themeOf(doc);
+  if (!isFinite(b[0])) { toast('畫布是空的'); return; }
+  const w = b[2] - b[0] + pad * 2, h = b[3] - b[1] + pad * 2, scale = 2;
+  const src = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${b[0] - pad} ${b[1] - pad} ${w} ${h}" width="${w * scale}" height="${h * scale}" font-family="Cascadia Mono, Consolas, Microsoft JhengHei, monospace"><rect x="${b[0] - pad}" y="${b[1] - pad}" width="${w}" height="${h}" fill="${th.bg}"/>${[...tmp.childNodes].map(c => new XMLSerializer().serializeToString(c)).join('')}</svg>`;
+  const img = new Image();
+  const url = URL.createObjectURL(new Blob([src], { type: 'image/svg+xml' }));
+  try {
+    await new Promise((ok, bad) => { img.onload = ok; img.onerror = () => bad(new Error('SVG 轉圖失敗')); img.src = url; });
+    const cv = document.createElement('canvas'); cv.width = Math.ceil(w * scale); cv.height = Math.ceil(h * scale);
+    cv.getContext('2d').drawImage(img, 0, 0);
+    const blob = await new Promise(ok => cv.toBlob(ok, 'image/png'));
+    if (!blob) throw new Error('canvas 轉 PNG 失敗');
+    download(fname('.png'), blob); toast('已匯出 PNG');
+  } catch (err) { toast('匯出 PNG 失敗：' + err.message); }
+  finally { URL.revokeObjectURL(url); }
+}
+$('bPng').onclick = exportPNG;
+
+function openPlay() {
+  $('ov').hidden = false;
+  $('ovf').srcdoc = buildViewerHTML(doc, tab === 'step' && stepSel >= 0 ? stepSel + 1 : 0);
+  setTimeout(() => { try { $('ovf').contentWindow.focus(); } catch (e) { } }, 300);
+}
+function closePlay() { $('ov').hidden = true; $('ovf').srcdoc = ''; }
+$('bPlay').onclick = openPlay; $('ovClose').onclick = closePlay;
+window.addEventListener('message', e => { if (e.data === 'iso-close') closePlay(); });
+
+/* 範本選單 */
+$('bTpl').onclick = e => {
+  e.stopPropagation(); closeMenu();
+  const m = document.createElement('div'); m.className = 'menu'; m.id = 'tplMenu';
+  m.innerHTML = Object.entries(TEMPLATES).map(([k, t]) => `<button data-k="${k}">${esc(t.name)}<small>${esc(t.desc)}</small></button>`).join('') + '<small style="padding:4px 12px">套用後可按 Ctrl+Z 復原</small>';
+  const r = e.currentTarget.getBoundingClientRect(); m.style.left = r.left + 'px'; m.style.top = r.bottom + 4 + 'px';
+  m.onclick = ev => { const b = ev.target.closest('button[data-k]'); if (!b) return; closeMenu(); const d = TEMPLATES[b.dataset.k].doc(); d.theme = doc.theme; d.customTheme = doc.customTheme; loadDoc(d); commit(); toast('已套用範本：' + TEMPLATES[b.dataset.k].name); };
+  document.body.appendChild(m);
+};
+function closeMenu() { const m = $('tplMenu'); if (m) m.remove(); }
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#tplMenu') && !e.target.closest('#bTpl')) closeMenu(); });
+
+/* ---------- 右側面板 ---------- */
+$('tabs').onclick = e => { const b = e.target.closest('button[data-tab]'); if (b) setTab(b.dataset.tab); };
+function setTab(t, redraw = true) {
+  tab = t; [...$('tabs').children].forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  if (t === 'step' && stepSel < 0 && doc.steps.length) stepSel = 0;
+  if (redraw) { draw(); refreshPanel(); }
+  updHint();
+}
+function updHint() {
+  $('hint').textContent = tab === 'step' && stepSel >= 0
+    ? `正在編輯步驟 ${stepSel + 1}：點連線＝加入封包路線（Alt＋點＝反方向）· 時間軸可切換步驟`
+    : '點選拖曳移動 · 選取後拉頂端「＋」建立連線 · 空白處拖曳／空白鍵＋拖曳平移 · 滾輪縮放 · Alt 拖曳不吸附';
+}
+const fld = (label, html) => `<label class="f"><span>${label}</span>${html}</label>`;
+const inp = (f, v, type = 'text', extra = '') => `<input data-f="${f}" type="${type}" value="${esc(v ?? '')}" ${extra}>`;
+const txa = (f, v, rows = 3) => `<textarea data-f="${f}" rows="${rows}">${esc(v ?? '')}</textarea>`;
+const rng = (f, v, min, max, step) => `<div class="rng"><input data-f="${f}" type="range" min="${min}" max="${max}" step="${step}" value="${v}"><em data-show="${f}">${v}</em></div>`;
+const swatches = (f, v, allowAuto) => `<div class="sw">${allowAuto ? `<button class="auto" data-sw="" data-tf="${f}" title="跟隨主題"></button>` : ''}${PALETTE.map(c => `<button style="background:${c}" data-sw="${c}" data-tf="${f}" title="${c}"></button>`).join('')}<input type="color" data-f="${f}" value="${isHex(v) ? v : '#999999'}" title="自訂顏色"></div>`;
+function bind(root, obj) {
+  root.querySelectorAll('[data-f]').forEach(el => {
+    const f = el.dataset.f;
+    el.addEventListener('input', () => {
+      let v = el.type === 'checkbox' ? el.checked : el.value;
+      if (el.type === 'number' || el.type === 'range' || el.dataset.num) { v = parseFloat(v); if (!isFinite(v)) return; }
+      obj[f] = v;
+      const show = root.querySelector(`[data-show="${f}"]`); if (show) show.textContent = v;
+      draw();
+    });
+    if (el.dataset.custom) return;   // 自己處理 change（例如換圖形類型要順便換預設值）
+    el.addEventListener('change', () => { commit(); if (el.tagName === 'SELECT') refreshPanel(); });
+  });
+  root.querySelectorAll('[data-sw]').forEach(b => b.addEventListener('click', () => { obj[b.dataset.tf] = b.dataset.sw; commit(); draw(); refreshPanel(); }));
+}
+const nodeName = id => { const n = findN(id); return n ? (n.name || SHAPES[n.type].name) : '?'; };
+
+function refreshPanel() {
+  const P = $('panel');
+  if (tab === 'prop') panelProp(P); else if (tab === 'step') panelStep(P); else panelDoc(P);
+  updHint();
+}
+function panelProp(P) {
+  const ids = [...sel];
+  if (!ids.length) {
+    P.innerHTML = `<div class="sec">還沒有選取</div><p class="muted">點畫布上的圖形、連線或區域來編輯屬性。</p>
+      <div class="sec">快捷鍵</div><div class="keys">
+      <kbd>拖曳</kbd> 移動（吸附 10）· <kbd>Alt</kbd>＋拖曳 不吸附、只拖一個<br>
+      <kbd>Shift</kbd>／<kbd>Ctrl</kbd>＋點 加選／減選 · <kbd>Ctrl</kbd>+<kbd>A</kbd> 全選<br>
+      <kbd>Ctrl</kbd>+<kbd>C</kbd>／<kbd>V</kbd> 複製／貼在最後點擊處（同一點連貼會階梯排開）<br>
+      選取後拉頂端 <kbd>＋</kbd> 到另一個圖形＝連線<br>
+      <kbd>Del</kbd> 刪除 · <kbd>Ctrl</kbd>+<kbd>D</kbd> 複製一份<br>
+      <kbd>Ctrl</kbd>+<kbd>Z</kbd>／<kbd>Y</kbd> 復原／重做 · <kbd>Ctrl</kbd>+<kbd>S</kbd> 存 JSON<br>
+      <kbd>方向鍵</kbd> 微調 1（<kbd>Shift</kbd> 10，沿等角格線，不會偏離格線）<br>
+      <kbd>Ctrl</kbd>+<kbd>0</kbd> 回到 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>／<kbd>-</kbd> 放大／縮小<br>
+      <kbd>R</kbd>／<kbd>Shift</kbd>+<kbd>R</kbd> 旋轉視角 · <kbd>F</kbd> 適配<br>
+      <kbd>T</kbd>／<kbd>Shift</kbd>+<kbd>T</kbd> 依序切換主題<br>
+      <kbd>P</kbd> 播放預覽 · <kbd>[</kbd> <kbd>]</kbd> 收合側欄<br>
+      滾輪縮放 · 空白處拖曳／<kbd>空白鍵</kbd>＋拖曳 平移 · 雙擊空白處 適配<br>
+      雙擊圖形＝直接改名稱</div>`;
+    return;
+  }
+  if (ids.length > 1) {
+    P.innerHTML = `<div class="sec">已選取 ${ids.length} 個項目</div>
+      ${fld('一起換顏色（圖形）', `<div class="sw">${PALETTE.map(c => `<button style="background:${c}" data-mc="${c}"></button>`).join('')}</div>`)}
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">複製一份</button><button class="btn sm" data-act="del">刪除</button></div>`;
+    P.querySelectorAll('[data-mc]').forEach(b => b.onclick = () => { ids.forEach(id => { const n = findN(id); if (n) n.color = b.dataset.mc; }); commit(); draw(); });
+    P.querySelector('[data-act=dup]').onclick = duplicateSel; P.querySelector('[data-act=del]').onclick = deleteSel;
+    return;
+  }
+  const id = ids[0], n = findN(id), p = findP(id), e = findE(id);
+  if (n) {
+    P.innerHTML = `<div class="sec">圖形</div>
+      ${fld('類型', `<select data-f="type" data-custom="1">${Object.entries(SHAPES).map(([k, s]) => `<option value="${k}" ${k === n.type ? 'selected' : ''}>${s.name}（${s.desc}）</option>`).join('')}</select>`)}
+      ${fld('名稱', inp('name', n.name))}
+      ${fld('副標（第二行小字）', inp('sub', n.sub))}
+      ${fld('頂面圖示（emoji 或短字，留空＝不顯示）', inp('icon', n.icon))}
+      ${fld('顏色', swatches('color', n.color, false))}
+      ${fld('大小', rng('size', n.size, .4, 2, .05))}
+      ${fld('高度', rng('h', n.h, 4, 220, 2))}
+      <div class="row2">${fld('X', inp('x', n.x, 'number', 'step="10"'))}${fld('Y', inp('y', n.y, 'number', 'step="10"'))}</div>
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">複製一份</button><button class="btn sm" data-act="del">刪除</button></div>
+      <p class="muted" style="margin-top:12px">刪除圖形會一併刪掉它的連線與步驟裡的封包路線。</p>`;
+    const oldType = n.type;
+    bind(P, n);
+    P.querySelector('[data-f=type]').addEventListener('change', () => {
+      const def = SHAPES[n.type].def, od = SHAPES[oldType].def;
+      n.h = def.h; if (!n.icon || n.icon === od.icon) n.icon = def.icon; if (n.color === od.color) n.color = def.color;
+      if (n.name === SHAPES[oldType].name) n.name = SHAPES[n.type].name;
+      commit(); draw(); refreshPanel();
+    });
+  } else if (e) {
+    P.innerHTML = `<div class="sec">連線</div>
+      <p><b>${esc(nodeName(e.a))}</b> → <b>${esc(nodeName(e.b))}</b></p>
+      ${fld('文字（顯示在線中間）', inp('label', e.label))}
+      ${fld('路徑', `<select data-f="mode"><option value="air" ${e.mode === 'air' ? 'selected' : ''}>直線（空中）</option><option value="ground-xy" ${e.mode === 'ground-xy' ? 'selected' : ''}>地面 L 形（先 X 後 Y）</option><option value="ground-yx" ${e.mode === 'ground-yx' ? 'selected' : ''}>地面 L 形（先 Y 後 X）</option></select>`)}
+      ${fld('線色', swatches('color', e.color, true))}
+      <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="dash" ${e.dash ? 'checked' : ''}><span>虛線</span></label>
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="swap">⇄ 反轉方向</button><button class="btn sm" data-act="del">刪除</button></div>
+      <p class="muted" style="margin-top:12px">步驟播放時，線會改用步驟類型的顏色；封包走哪個方向由步驟決定，不受這條線的方向影響。</p>`;
+    bind(P, e);
+    P.querySelector('[data-act=swap]').onclick = () => { [e.a, e.b] = [e.b, e.a]; commit(); draw(); refreshPanel(); };
+  } else if (p) {
+    P.innerHTML = `<div class="sec">區域平台</div>
+      ${fld('標籤（平貼在地上）', inp('label', p.label))}
+      ${fld('底色', swatches('color', p.color, true))}
+      <div class="row2">${fld('寬（X 方向）', inp('w', p.w, 'number', 'step="10" min="40"'))}${fld('深（Y 方向）', inp('d', p.d, 'number', 'step="10" min="40"'))}</div>
+      <div class="row2">${fld('X', inp('x', p.x, 'number', 'step="10"'))}${fld('Y', inp('y', p.y, 'number', 'step="10"'))}</div>
+      <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">複製一份</button><button class="btn sm" data-act="del">刪除</button></div>
+      <p class="muted" style="margin-top:12px">拖平台時，上面的圖形會一起走（按 Alt 只拖平台）。拖兩個白色圓點可以改大小。刪除平台不會刪掉上面的圖形。</p>`;
+    bind(P, p);
+  }
+  const dup = P.querySelector('[data-act=dup]'), del = P.querySelector('[data-act=del]');
+  if (dup) dup.onclick = duplicateSel; if (del) del.onclick = deleteSel;
+}
+
+function addHopFromEdge(eid, reverse) {
+  const s = doc.steps[stepSel], e = findE(eid); if (!s || !e) return;
+  const h = reverse ? { a: e.b, b: e.a, label: '' } : { a: e.a, b: e.b, label: '' };
+  s.hops.push(h); commit(); draw(); refreshPanel();
+  toast(`已加入：${nodeName(h.a)} → ${nodeName(h.b)}`);
+}
+function panelStep(P) {
+  const list = doc.steps.map((s, i) => `<div class="li ${i === stepSel ? 'on' : ''}" data-i="${i}"><span class="dot" style="background:${STEP_TYPES[s.type].c}"></span><span class="t">${i + 1}. ${esc(s.short || s.title || '（未命名）')}</span>
+    <button data-act="up" title="上移">↑</button><button data-act="down" title="下移">↓</button><button data-act="rm" title="刪除這個步驟">✕</button></div>`).join('');
+  const s = doc.steps[stepSel];
+  let body = '';
+  if (s) {
+    const opts = doc.nodes.map(n => `<option value="${esc(n.id)}">${esc(n.name || SHAPES[n.type].name)}</option>`).join('');
+    body = `<div class="sec">步驟 ${stepSel + 1}</div>
+      <div class="row2">${fld('時間軸短名', inp('short', s.short))}${fld('類型（決定顏色）', `<select data-f="type">${Object.entries(STEP_TYPES).map(([k, t]) => `<option value="${k}" ${k === s.type ? 'selected' : ''}>${esc(t.n)}</option>`).join('')}</select>`)}</div>
+      ${fld('標題', inp('title', s.title))}
+      ${fld('說明', txa('desc', s.desc, 3))}
+      ${fld('程式碼區塊標題', inp('cap', s.cap))}
+      ${fld('程式碼區塊（留空＝不顯示）', txa('code', s.code, 4))}
+      <div class="sec">封包路線（依序接力）</div>
+      ${s.hops.length ? s.hops.map((h, j) => `<div class="hop" data-j="${j}"><span class="p" title="${esc(nodeName(h.a))} → ${esc(nodeName(h.b))}">${j + 1}. ${esc(nodeName(h.a))} → ${esc(nodeName(h.b))}</span>
+        <input data-hl="${j}" value="${esc(h.label)}" placeholder="封包文字"><span class="ops"><button data-act="hsw" title="反方向">⇄</button><button data-act="hup" title="上移">↑</button><button data-act="hrm" title="移除">✕</button></span></div>`).join('')
+        : '<p class="muted">還沒有路線。直接點畫布上的連線就會加進來（Alt＋點＝反方向）。</p>'}
+      ${doc.nodes.length >= 2 ? `<div class="addhop"><select id="hopA">${opts}</select><span>→</span><select id="hopB">${opts}</select><button class="btn sm" data-act="hadd">加入</button></div>
+      <p class="muted" style="font-size:11.5px">兩個圖形之間沒有連線也可以加，封包會走直線。</p>` : ''}`;
+  }
+  P.innerHTML = `<div class="sec">步驟清單</div><div class="list">${list || '<p class="muted">還沒有步驟。</p>'}</div>
+    <button class="btn sm" data-act="add">＋ 新增步驟</button>
+    <button class="btn sm" data-act="play" ${doc.steps.length ? '' : 'disabled'}>▶ 從這步播放</button>${body}`;
+  P.querySelector('.list').onclick = ev => {
+    const li = ev.target.closest('.li'); if (!li) return; const i = +li.dataset.i, act = ev.target.dataset.act;
+    if (act === 'up' && i > 0) { [doc.steps[i - 1], doc.steps[i]] = [doc.steps[i], doc.steps[i - 1]]; stepSel = i - 1; commit(); }
+    else if (act === 'down' && i < doc.steps.length - 1) { [doc.steps[i + 1], doc.steps[i]] = [doc.steps[i], doc.steps[i + 1]]; stepSel = i + 1; commit(); }
+    else if (act === 'rm') { doc.steps.splice(i, 1); stepSel = Math.min(stepSel, doc.steps.length - 1); commit(); }
+    else stepSel = i;
+    draw(); refreshPanel();
+  };
+  P.querySelector('[data-act=add]').onclick = () => addStep();
+  P.querySelector('[data-act=play]').onclick = openPlay;
+  if (!s) return;
+  bind(P, s);
+  P.querySelectorAll('[data-hl]').forEach(el => {
+    el.addEventListener('input', () => { s.hops[+el.dataset.hl].label = el.value; });
+    el.addEventListener('change', commit);
+  });
+  P.querySelectorAll('.hop').forEach(row => row.addEventListener('click', ev => {
+    const act = ev.target.dataset.act, j = +row.dataset.j; if (!act) return;
+    const h = s.hops[j];
+    if (act === 'hsw') [h.a, h.b] = [h.b, h.a];
+    else if (act === 'hup' && j > 0) [s.hops[j - 1], s.hops[j]] = [s.hops[j], s.hops[j - 1]];
+    else if (act === 'hrm') s.hops.splice(j, 1);
+    commit(); draw(); refreshPanel();
+  }));
+  const add = P.querySelector('[data-act=hadd]');
+  if (add) {
+    if (doc.nodes[1]) P.querySelector('#hopB').value = doc.nodes[1].id;
+    add.onclick = () => {
+      const a = P.querySelector('#hopA').value, b = P.querySelector('#hopB').value;
+      if (a === b) { toast('起點和終點不能是同一個'); return; }
+      s.hops.push({ a, b, label: '' }); commit(); draw(); refreshPanel();
+    };
+  }
+}
+function panelDoc(P) {
+  P.innerHTML = `<div class="sec">文件（匯出的 HTML 會顯示這些）</div>
+    ${fld('標題', inp('title', doc.title))}
+    ${fld('麵包屑（最上面一行小字）', inp('crumb', doc.crumb))}
+    ${fld('副標', inp('subtitle', doc.subtitle))}
+    ${fld('標籤（逗號分隔）', `<input id="dTags" type="text" value="${esc(doc.tags.join(', '))}">`)}
+    ${fld('重點卡片（一行一張：標題|內容|類型）', `<textarea id="dCards" rows="5">${esc(doc.cards.map(c => [c.k, c.v, c.type].join('|')).join('\n'))}</textarea>`)}
+    <p class="muted" style="font-size:11.5px;margin-top:-4px">類型可填 ${Object.keys(STEP_TYPES).join(' / ')}，決定卡片左邊的顏色。</p>
+    <div class="sec">播放</div>
+    ${fld('封包每段速度', `<select data-f="speed" data-num="1">${(() => { const o = [[1600, '慢'], [1100, '中'], [700, '快'], [400, '極快']]; if (!o.some(x => x[0] === doc.speed)) o.push([doc.speed, '自訂']); return o; })().map(([v, l]) => `<option value="${v}" ${doc.speed === v ? 'selected' : ''}>${l}（${v}ms）</option>`).join('')}</select>`)}
+    <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="autoplay" ${doc.autoplay ? 'checked' : ''}><span>開啟時自動輪播</span></label>
+    <div class="sec">外觀</div>
+    ${fld('主題（也會記成你的偏好，開新範本時沿用）', `<select id="dTheme">${themeOptions(doc.theme)}</select>`)}
+    ${doc.theme === 'custom' ? `<div class="row2">${CUSTOM_FIELDS.map(([k, l]) => fld(l, `<input type="color" data-ct="${k}" value="${doc.customTheme[k]}" style="width:100%;height:30px;border:1.5px solid var(--soft);border-radius:7px;background:var(--bg);padding:2px">`)).join('')}</div>
+      ${fld('拿預設主題當起點', `<select id="dCtBase"><option value="">（選一套覆蓋上面的顏色）</option>${THEME_ORDER.map(k => `<option value="${k}">${THEMES[k].name}</option>`).join('')}</select>`)}
+      <p class="muted" style="font-size:11.5px;margin-top:-4px">卡片、次要文字、格線、標籤底色等由這 6 色自動推導。拖色盤即時預覽，放開才記一筆復原點。</p>` : ''}
+    <p class="muted">視角：${doc.rot * 90}°（工具列 ⟲ ⟳ 或 R 鍵切換，匯出時會保留）</p>
+    <div class="sec">統計</div>
+    <p class="muted">圖形 ${doc.nodes.length} · 連線 ${doc.edges.length} · 區域 ${doc.plates.length} · 步驟 ${doc.steps.length}</p>`;
+  bind(P, doc);
+  $('dTheme').onchange = e => setTheme(e.target.value);
+  P.querySelectorAll('[data-ct]').forEach(el => {
+    el.addEventListener('input', () => { doc.customTheme[el.dataset.ct] = el.value; doc.customTheme.edited = true; applyTheme(); draw(); });
+    el.addEventListener('change', () => { commit(); savePref(); });
+  });
+  const ctb = $('dCtBase');
+  if (ctb) ctb.onchange = () => { if (!ctb.value) return; doc.customTheme = { ...customFrom(ctb.value), edited: true }; commit(); savePref(); applyTheme(); draw(); refreshPanel(); };
+  const tags = $('dTags'), cards = $('dCards');
+  tags.addEventListener('input', () => { doc.tags = tags.value.split(/[,，]/).map(s => s.trim()).filter(Boolean); });
+  tags.addEventListener('change', commit);
+  cards.addEventListener('input', () => {
+    doc.cards = cards.value.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const [k, v, t] = l.split('|').map(s => (s || '').trim()); return { k, v: v || '', type: STEP_TYPES[t] ? t : '' }; });
+  });
+  cards.addEventListener('change', commit);
+}
+
+/* 欄位打字時只改記憶體、失焦才記錄；關分頁或切走前補記一次，避免掉最後一次輸入 */
+window.addEventListener('beforeunload', () => commit());
+document.addEventListener('visibilitychange', () => { if (document.hidden) commit(); });
+
+/* ---------- 啟動 ---------- */
+try { const u = JSON.parse(localStorage.getItem(LS_UI) || '{}'); if (u.L) $('app').classList.add('hideL'); if (u.R) $('app').classList.add('hideR'); } catch (e) { }
+let start = null;
+let corrupt = false;
+try { const raw = localStorage.getItem(LS_KEY); if (raw) { try { start = JSON.parse(raw); } catch (e) { corrupt = true; localStorage.setItem(LS_KEY + '-corrupt', raw); } } } catch (e) { start = null; }
+const pref = loadPref();
+if (!start) { start = TEMPLATES.xverify.doc(); if (pref) { start.theme = pref.theme; start.customTheme = pref.customTheme; } }
+loadDoc(start, false);
+last = JSON.stringify(doc); save(); updUndo();
+if (corrupt) setTimeout(() => toast('上次的自動存檔壞掉了，原內容已備份到 localStorage「' + LS_KEY + '-corrupt」'), 300);
+requestAnimationFrame(() => { cam.apply(); fitView(); });
+if (/[?&]test\b/.test(location.search)) window.__iso = { get doc() { return doc; }, get sel() { return sel; }, cam, buildViewerHTML, TEMPLATES, loadDoc, commit, undo, redo };
+})();
+</script>
+</body>
+</html>
