@@ -29,15 +29,18 @@ html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 #app{display:grid;height:100vh;grid-template-columns:200px minmax(0,1fr) 340px;grid-template-rows:50px minmax(0,1fr) 96px;
+
   grid-template-areas:"tb tb tb" "left stage right" "left tl right"}
 #app.hideL{grid-template-columns:0 minmax(0,1fr) 340px}
 #app.hideR{grid-template-columns:200px minmax(0,1fr) 0}
 #app.hideL.hideR{grid-template-columns:0 minmax(0,1fr) 0}
 .tb{grid-area:tb;display:flex;align-items:center;gap:6px;padding:0 10px;border-bottom:2px solid var(--soft);background:var(--card);overflow-x:auto;white-space:nowrap}
+
 .tb .logo{font-weight:700;font-size:15px;margin-right:2px}
 #langSel{padding:3px 6px;margin-right:6px}
 .tb .sep{width:2px;height:24px;background:var(--soft);margin:0 4px;flex:none}
 .btn{border:2px solid var(--ink);border-radius:8px;background:var(--card);padding:4px 10px;cursor:pointer;font-weight:700;flex:none}
+
 .btn:hover{background:var(--soft)}
 .btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.sm{padding:2px 7px;font-size:12px;border-width:1.5px}
@@ -45,14 +48,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 #zoomLbl{min-width:58px;text-align:center}
 #left{grid-area:left;border-right:2px solid var(--soft);background:var(--card);overflow:auto;padding:10px}
 #right{grid-area:right;border-left:2px solid var(--soft);background:var(--card);overflow:auto;display:flex;flex-direction:column}
+
 #app.hideL #left,#app.hideR #right{display:none}
 .sec{font-size:11px;color:var(--muted);letter-spacing:.08em;margin:12px 0 6px;font-weight:700}
 .sec:first-child{margin-top:0}
 .pal{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .pal button{border:2px solid var(--soft);border-radius:10px;background:var(--bg);padding:6px 4px;cursor:grab;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;touch-action:none}
+
 .pal button:hover{border-color:var(--accent)}
 .pal svg{width:64px;height:52px;pointer-events:none}
 #stage{grid-area:stage;position:relative;overflow:hidden;background:radial-gradient(circle,var(--dot) 1px,transparent 1.3px) 0 0/22px 22px,var(--bg)}
+
 #cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;user-select:none}
 #cv .iso-node,#cv .iso-plate{cursor:move}
 #cv .iso-hit{cursor:pointer}
@@ -61,20 +67,25 @@ button,input,select,textarea{font:inherit;color:inherit}
 #stage.panning #cv,#stage.panning #cv *{cursor:grabbing!important}
 #hint{position:absolute;left:10px;bottom:8px;right:10px;font-size:11.5px;color:var(--muted);pointer-events:none}
 #toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:6px 14px;border-radius:8px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none}
+
 #toast.on{opacity:.92}
 #tl{grid-area:tl;border-top:2px solid var(--soft);background:var(--card);padding:8px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+
 #tl .tlh{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
 #tlSteps{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;align-items:center}
 .tls{flex:none;display:flex;align-items:center;gap:6px;border:2px solid var(--soft);border-radius:999px;padding:3px 10px 3px 3px;cursor:pointer;background:var(--bg)}
+
 .tls b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px}
 .tls.on{border-color:var(--ink);font-weight:700}
 .tabs{display:flex;border-bottom:2px solid var(--soft);flex:none}
 .tabs button{flex:1;border:0;background:none;padding:10px 4px;cursor:pointer;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+
 .tabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
 #panel{padding:12px 14px 30px;overflow:auto;flex:1}
 .f{display:flex;flex-direction:column;gap:3px;margin-bottom:9px}
 .f>span{font-size:11px;color:var(--muted);font-weight:700}
 .f input[type=text],.f input[type=number],.f select,.f textarea{width:100%;border:1.5px solid var(--soft);border-radius:7px;background:var(--bg);padding:5px 7px}
+
 .f textarea{resize:vertical;min-height:60px;line-height:1.5}
 .f input:focus,.f select:focus,.f textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -83,30 +94,37 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sw button.auto{background:linear-gradient(135deg,var(--card) 45%,#d64545 47%,#d64545 53%,var(--card) 55%)}
 .sw input[type=color]{width:30px;height:24px;border:0;padding:0;background:none;cursor:pointer}
 .rng{display:flex;align-items:center;gap:8px}.rng input{flex:1}.rng em{font-style:normal;min-width:40px;text-align:right}
+
 .muted{color:var(--muted)}
 .list{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
 .li{display:flex;align-items:center;gap:6px;border:1.5px solid var(--soft);border-radius:8px;padding:4px 6px;background:var(--bg);cursor:pointer}
+
 .li.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
 .li .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .li .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .li button{border:0;background:none;cursor:pointer;padding:0 3px;font-size:13px;color:var(--muted)}
 .li button:hover{color:var(--ink)}
 .hop{display:grid;grid-template-columns:1fr 86px auto;gap:4px;align-items:center;border:1.5px solid var(--soft);border-radius:8px;padding:4px 6px;margin-bottom:4px;background:var(--bg)}
+
 .hop .p{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hop input{width:100%;border:1.5px solid var(--soft);border-radius:6px;background:var(--card);padding:2px 5px;font-size:12px}
+
 .hop .ops{display:flex}.hop .ops button{border:0;background:none;cursor:pointer;padding:0 3px;color:var(--muted)}
 .hop .ops button:hover{color:var(--ink)}
 .addhop{display:grid;grid-template-columns:1fr auto 1fr auto;gap:4px;align-items:center}
 .addhop select{border:1.5px solid var(--soft);border-radius:6px;background:var(--bg);padding:3px;min-width:0}
 .keys{line-height:1.9;font-size:12px}
 .keys kbd{border:1.5px solid var(--soft);border-bottom-width:3px;border-radius:5px;padding:0 5px;background:var(--bg);font-family:inherit;font-size:11px}
+
 .menu{position:fixed;z-index:20;background:var(--card);border:2px solid var(--ink);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+
 .menu button{border:0;background:none;text-align:left;padding:6px 12px;border-radius:6px;cursor:pointer}
 .menu button:hover{background:var(--soft)}
 .menu small{display:block;color:var(--muted);font-size:11px}
 #ov{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column}
 #ov[hidden]{display:none}
 #ov .bar{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:2px solid var(--soft);background:var(--card)}
+
 #ov iframe{flex:1;border:0;width:100%}
 </style>
 </head>
@@ -167,7 +185,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 <div id="ov" hidden>
   <div class="bar"><b data-i18n="tb.play">▶ Play preview</b><span class="muted" data-i18n="ov.note">This is exactly what "Export HTML" produces</span>
+
     <button class="btn" id="ovClose" style="margin-left:auto" data-i18n="ov.close">✕ Back to editor (Esc)</button></div>
+
   <iframe id="ovf" data-i18n-title="tb.play" title="Play preview"></iframe>
 </div>
 
@@ -190,26 +210,33 @@ const STEP_TYPES = {
 };
 const THEMES = {
   paper: { name: 'Paper', bg: '#f4efe4', card: '#fbf8f1', ink: '#2d2a24', muted: '#7a7366', soft: '#e4dccb', dot: '#e2d9c6',
+
            stroke: '#2d2a24', plate: '#ece5d5', grid: '#dcd3bf', plateText: '#8f8572', pill: '#fffdf8',
            edge: '#8a8172', future: '#bdb39f', accent: '#2f7fd6' },
   night: { name: 'Night', bg: '#1b1e25', card: '#232731', ink: '#e9e5db', muted: '#9aa1ad', soft: '#353a46', dot: '#2c313b',
+
            stroke: '#0c0e12', plate: '#2a2f3a', grid: '#363c4a', plateText: '#8d95a5', pill: '#2a2f39',
            edge: '#9aa1ad', future: '#4a5060', accent: '#6aa8ff' },
 };
 Object.assign(THEMES, {
   light:     { name: 'Light', bg: '#f4f6fa', card: '#ffffff', ink: '#1c2331', muted: '#6b7688', soft: '#d8dee8', dot: '#e2e7f0',
+
                stroke: '#2a3242', plate: '#e9edf4', grid: '#d5dce8', plateText: '#8a94a6', pill: '#ffffff',
                edge: '#69748a', future: '#c3cad6', accent: '#2f6fe0' },
   midnight:  { name: 'Midnight', bg: '#12151c', card: '#1a1f2b', ink: '#e6ebf5', muted: '#8b95ab', soft: '#2e3648', dot: '#232a39',
+
                stroke: '#0a0c10', plate: '#202736', grid: '#2c3447', plateText: '#7d88a0', pill: '#222836',
                edge: '#8d9ab5', future: '#3a4458', accent: '#4c8dff' },
   graphite:  { name: 'Graphite', bg: '#17181a', card: '#1f2123', ink: '#ececed', muted: '#9a9ea3', soft: '#3a3e42', dot: '#2a2d30',
+
                stroke: '#0b0c0d', plate: '#26292c', grid: '#34383c', plateText: '#8a8f95', pill: '#292c2f',
                edge: '#9aa0a6', future: '#45494e', accent: '#f0a03c' },
   blueprint: { name: 'Blueprint', bg: '#0a2444', card: '#0d2e56', ink: '#dbeaff', muted: '#7fa8d6', soft: '#1d4f80', dot: '#164274',
+
                stroke: '#061a33', plate: '#0f3463', grid: '#1d4f80', plateText: '#7fa8d6', pill: '#12385f',
                edge: '#9fd0ff', future: '#2a5a8c', accent: '#4fd1e6' },
   forest:    { name: 'Forest', bg: '#101a15', card: '#16241d', ink: '#e2f0e7', muted: '#84a394', soft: '#2b4438', dot: '#1e3129',
+
                stroke: '#07100b', plate: '#1b2c23', grid: '#29413a', plateText: '#7c9a8c', pill: '#1d2f26',
                edge: '#8bb5a0', future: '#34503f', accent: '#4ec98a' },
 });
@@ -217,15 +244,19 @@ const THEME_ORDER = ['paper', 'light', 'night', 'midnight', 'graphite', 'bluepri
 
 /* 自訂主題：只調 6 個主色，其餘次要色自動推導 */
 const CUSTOM_FIELDS = [['bg', 'Canvas'], ['ink', 'Text'], ['accent', 'Accent'], ['plate', 'Zone plate'], ['edge', 'Lines'], ['stroke', 'Shape outline']];
+
 const TXT = { untitled: 'Untitled' };   // 編輯器會依語言改掉
 const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
 const mixHex = (a, b, t) => { const pa = hexRgb(a), pb = hexRgb(b); return '#' + pa.map((v, i) => Math.round(v + (pb[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+
 const lum = h => { const [r, g, b] = hexRgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
 function customFrom(key) { const t = THEMES[key] || THEMES.paper; const o = {}; CUSTOM_FIELDS.forEach(([k]) => o[k] = t[k]); return o; }
+
 function expandCustom(c) {
   const { bg, ink, plate, edge } = c, dark = lum(bg) < 0.45;
   return { name: 'Custom', bg, ink, accent: c.accent, plate, edge, stroke: c.stroke,
     card: dark ? mixHex(bg, '#ffffff', .04) : mixHex(bg, '#ffffff', .55), muted: mixHex(ink, bg, .42), soft: mixHex(bg, ink, .15),
+
     dot: mixHex(bg, ink, .09), grid: mixHex(plate, ink, .12), plateText: mixHex(plate, ink, .45),
     pill: dark ? mixHex(bg, ink, .08) : mixHex(bg, '#ffffff', .75), future: mixHex(edge, bg, .55) };
 }
@@ -242,7 +273,9 @@ function shade(hex, f) {
   return `rgb(${ch.join(',')})`;
 }
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
 const textW = (t, size = 13) => [...String(t ?? '')].reduce((s, c) => s + (c.charCodeAt(0) > 255 ? size * 1.05 : size * 0.6), 0);
+
 const num = (v, d) => (typeof v === 'number' && isFinite(v)) ? v : d;
 const pairKey = (a, b) => (a < b ? a + '|' + b : b + '|' + a);
 
@@ -265,6 +298,7 @@ let gradSeq = 0;
 function Draw(pj, th) {
   const d = { defs: '', stroke: th.stroke, bb: [Infinity, Infinity, -Infinity, -Infinity], depth: pj.depth };
   const grow = (x, y) => { const b = d.bb; if (x < b[0]) b[0] = x; if (y < b[1]) b[1] = y; if (x > b[2]) b[2] = x; if (y > b[3]) b[3] = y; };
+
   const P0 = (a, b, z = 0) => { const p = pj.P0(a, b, z); grow(p[0], p[1]); return p; };
   d.grow = grow; d.P0 = P0;
   d.P = (x, y, z = 0) => { const r = pj.R(x, y); return P0(r[0], r[1], z); };
@@ -287,6 +321,7 @@ function Draw(pj, th) {
     let s = '';
     for (const f of faces) {
       const q = [P0(f.a[0], f.a[1], z0), P0(f.b[0], f.b[1], z0), P0(f.b[0], f.b[1], z0 + h), P0(f.a[0], f.a[1], z0 + h)];
+
       s += `<polygon points="${d.pts(q)}" fill="${shade(color, 0.74 + 0.13 * (f.ny - f.nx))}" ${sw}/>`;
     }
     s += `<polygon points="${d.pts(rp.map(p => P0(p[0], p[1], z0 + h)))}" fill="${shade(color, 1.18)}" ${sw}/>`;
@@ -304,14 +339,18 @@ function Draw(pj, th) {
     grow(sx - rx, ty - ry); grow(sx + rx, sy + ry);
     const id = 'isog' + (gradSeq++);
     d.defs += `<linearGradient id="${id}" x1="0" x2="1"><stop offset="0" stop-color="${shade(color, .95)}"/><stop offset=".35" stop-color="${shade(color, 1.12)}"/><stop offset="1" stop-color="${shade(color, .7)}"/></linearGradient>`;
+
     const by = sy - h * 0.42;
     return `<path d="M${sx - rx},${ty} L${sx - rx},${sy} A${rx},${ry} 0 0 0 ${sx + rx},${sy} L${sx + rx},${ty} Z" fill="url(#${id})" ${sw}/>` +
+
       (band ? `<path d="M${sx - rx},${by} A${rx},${ry} 0 0 0 ${sx + rx},${by}" fill="none" stroke="${th.stroke}" stroke-width="1.3" opacity=".55"/>` : '') +
+
       `<ellipse cx="${sx}" cy="${ty}" rx="${rx}" ry="${ry}" fill="${shade(color, 1.22)}" ${sw}/>`;
   };
   d.text = (x, y, z, t, size = 13, weight = 700, fill = SHAPE_INK) => {
     const [sx, sy] = d.P(x, y, z);
     return `<text x="${sx.toFixed(1)}" y="${sy.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${size}" font-weight="${weight}" fill="${fill}">${esc(t)}</text>`;
+
   };
   return d;
 }
@@ -321,9 +360,11 @@ function Draw(pj, th) {
    top(n)：頂面高度（圖示放這裡；連線接在 top/2） */
 const rect = (x, y, w, dd) => [[x, y], [x + w, y], [x + w, y + dd], [x, y + dd]];
 const longest = faces => faces.reduce((m, f) => Math.hypot(f.b[0] - f.a[0], f.b[1] - f.a[1]) > Math.hypot(m.b[0] - m.a[0], m.b[1] - m.a[1]) ? f : m);
+
 const SHAPES = {
   hex:    { name: 'App', desc: 'hex prism', def: { color: '#9cc3ec', h: 48, icon: '⚙' }, foot: 58, top: n => n.h,
             draw: (d, n, s) => d.prism([0, 1, 2, 3, 4, 5].map(k => [n.x + 58 * s * Math.cos(k * Math.PI / 3), n.y + 58 * s * Math.sin(k * Math.PI / 3)]), 0, n.h, n.color).svg },
+
   box:    { name: 'Service', desc: 'block', def: { color: '#f0b070', h: 58, icon: '🔐' }, foot: 42, top: n => n.h,
             draw: (d, n, s) => d.prism(rect(n.x - 42 * s, n.y - 42 * s, 84 * s, 84 * s), 0, n.h, n.color).svg },
   cyl:    { name: 'Database', desc: 'cylinder', def: { color: '#8fd0a8', h: 84, icon: '🛢' }, foot: 50, top: n => n.h,
@@ -332,19 +373,26 @@ const SHAPES = {
             draw: (d, n, s) => {
               const pr = d.prism(rect(n.x - 35 * s, n.y - 25 * s, 70 * s, 50 * s), 0, n.h, n.color); let o = pr.svg;
               for (const f of pr.faces) for (let i = 1; i <= 4; i++) { const z = n.h * i / 5; o += `<polygon points="${d.inset(f, .12, .88, z - 3, z + 1)}" fill="${shade(n.color, .45)}"/>`; }
+
               return o; } },
   phone:  { name: 'Client', desc: 'phone', def: { color: '#f2c98a', h: 92, icon: '📱' }, foot: 30, top: n => n.h + 14,
             draw: (d, n, s) => {
               const pr = d.prism(rect(n.x - 25 * s, n.y - 7 * s, 50 * s, 14 * s), 0, n.h, n.color);
               return pr.svg + `<polygon points="${d.inset(longest(pr.faces), .12, .88, 12, n.h - 10)}" fill="#2b3a55" stroke="${d.stroke}" stroke-width="1.2"/>`; } },
+
   desktop: { name: 'Client', desc: 'desktop', def: { color: '#cfd6de', h: 84, icon: '' }, foot: 50, top: n => n.h,
             draw: (d, n, s) => {
               const neck = n.h * 0.32;
               let o = d.prism(rect(n.x - 24 * s, n.y - 16 * s, 48 * s, 32 * s), 0, 5, shade(n.color, .85)).svg;   // 底座
+
               o += d.prism(rect(n.x - 4 * s, n.y - 3 * s, 8 * s, 6 * s), 5, neck - 5, shade(n.color, .8)).svg;    // 支架
+
               const scr = d.prism(rect(n.x - 50 * s, n.y - 5 * s, 100 * s, 10 * s), neck, n.h - neck, n.color);  // 螢幕
+
               return o + scr.svg + `<polygon points="${d.inset(longest(scr.faces), .06, .94, neck + 5, n.h - 5)}" fill="#2b3a55" stroke="${d.stroke}" stroke-width="1.2"/>`; } },
+
   gate:   { name: 'Gateway', desc: 'gate', def: { color: '#b9a6e8', h: 74, icon: 'GATEWAY' }, foot: 56, top: n => n.h + 16,
+
             draw: (d, n, s) => {
               const parts = [[n.x - 46 * s, n.y - 16 * s], [n.x + 30 * s, n.y - 16 * s]]
                 .sort((p, q) => d.depth(p[0] + 8 * s, p[1] + 16 * s) - d.depth(q[0] + 8 * s, q[1] + 16 * s));
@@ -355,17 +403,20 @@ const SHAPES = {
               let o = d.prism(rect(n.x - 60 * s, n.y - 45 * s, 120 * s, 90 * s), 0, n.h, n.color).svg;
               const cols = ['#9cc3ec', '#f2c98a', '#b9a6e8', '#8fd0a8', '#f0b070', '#e8a0a0'], ppl = [];
               for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) ppl.push([n.x + (-36 + i * 36) * s, n.y + (-20 + j * 40) * s, cols[(i * 2 + j) % 6]]);
+
               ppl.sort((p, q) => d.depth(p[0], p[1]) - d.depth(q[0], q[1]));
               for (const [px, py, c] of ppl) {
                 o += d.cyl(px, py, 7 * s, n.h, 18 * s, c, false);
                 const [hx, hy] = d.P(px, py, n.h + 18 * s + 8 * s);
                 o += `<circle cx="${hx}" cy="${hy}" r="${7 * s}" fill="${shade(c, 1.15)}" stroke="${d.stroke}" stroke-width="1.4"/>`;
+
               }
               return o; } },
   file:   { name: 'File', desc: 'file stack', def: { color: '#f5f1e6', h: 24, icon: '📄' }, foot: 48, top: n => n.h,
             draw: (d, n, s) => {
               let o = ''; const k = 3, t = n.h / k;
               for (let i = 0; i < k; i++) { const off = i * 4 * s; o += d.prism(rect(n.x - 36 * s + off, n.y - 46 * s - off, 72 * s, 92 * s), i * t, t - 1, i === k - 1 ? n.color : shade(n.color, .9)).svg; }
+
               return o; } },
 };
 
@@ -378,7 +429,9 @@ function normalize(raw) {
     v: 1, title: String(d.title ?? TXT.untitled), crumb: String(d.crumb ?? ''), subtitle: String(d.subtitle ?? ''),
     tags: Array.isArray(d.tags) ? d.tags.map(String) : [],
     cards: Array.isArray(d.cards) ? d.cards.map(c => ({ k: String(c.k ?? ''), v: String(c.v ?? ''), type: String(c.type ?? '') })) : [],
+
     theme: (THEMES[d.theme] || d.theme === 'custom') ? d.theme : 'paper', customTheme: null, rot: (((d.rot | 0) % 4) + 4) % 4,
+
     speed: num(d.speed, 1100), autoplay: d.autoplay !== false,
     plates: [], nodes: [], edges: [], steps: [],
   };
@@ -388,9 +441,11 @@ function normalize(raw) {
   const ids = new Set();
   const SAFE_ID = /^[\w-]{1,64}$/;   // id 會寫進 HTML 屬性，只收英數、底線、連字號（防 XSS）
   const okId = (id, p) => { const v = (typeof id === 'string' && SAFE_ID.test(id) && !ids.has(id)) ? id : uid(p); ids.add(v); return v; };
+
   const nodeMap = new Map();   // 匯入的原始節點 id → 實際使用的 id
   for (const p of (Array.isArray(d.plates) ? d.plates : [])) out.plates.push({
     id: okId(p.id, 'p'), x: num(p.x, 0), y: num(p.y, 0), w: Math.max(40, num(p.w, 200)), d: Math.max(40, num(p.d, 200)),
+
     label: String(p.label ?? ''), color: isHex(p.color) ? p.color : '' });
   for (const n of (Array.isArray(d.nodes) ? d.nodes : [])) {
     const type = SHAPES[n.type] ? n.type : 'box', def = SHAPES[type].def;
@@ -408,8 +463,10 @@ function normalize(raw) {
   }
   for (const s of (Array.isArray(d.steps) ? d.steps : [])) out.steps.push({
     id: okId(s.id, 's'), type: STEP_TYPES[s.type] ? s.type : 'req', short: String(s.short ?? ''), title: String(s.title ?? ''),
+
     desc: String(s.desc ?? ''), cap: String(s.cap ?? ''), code: String(s.code ?? ''),
     hops: (Array.isArray(s.hops) ? s.hops : []).map(h => h && { a: ref(h.a), b: ref(h.b), label: String(h.label ?? '') })
+
       .filter(h => h && h.a && h.b && h.a !== h.b) });
   return out;
 }
@@ -454,21 +511,26 @@ function render(svg, doc, st = {}) {
   let out = '';
   /* 1. 區域平台 */
   const plateOrder = doc.plates.slice().sort((a, b) => pj.depth(a.x + a.w / 2, a.y + a.d / 2) - pj.depth(b.x + b.w / 2, b.y + b.d / 2));
+
   for (const p of plateOrder) {
     const col = p.color || th.plate;
     let s = d.prism(rect(p.x, p.y, p.w, p.d), -10, 10, col).svg;
     for (let gx = p.x + 40; gx < p.x + p.w - 1; gx += 40) { const a = d.P(gx, p.y), b = d.P(gx, p.y + p.d); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${th.grid}" stroke-width="1" pointer-events="none"/>`; }
+
     for (let gy = p.y + 40; gy < p.y + p.d - 1; gy += 40) { const a = d.P(p.x, gy), b = d.P(p.x + p.w, gy); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${th.grid}" stroke-width="1" pointer-events="none"/>`; }
+
     if (p.label) {
       const rc = rect(p.x, p.y, p.w, p.d).map(q => pj.R(q[0], q[1]));
       const minA = Math.min(...rc.map(q => q[0])), maxB = Math.max(...rc.map(q => q[1]));
       const [tx, ty] = d.P0(minA + 14, maxB - 12, 0);
       s += `<text transform="matrix(${C},${S},${-C},${S},${tx.toFixed(1)},${ty.toFixed(1)})" font-size="15" font-weight="700" fill="${th.plateText}" letter-spacing="2" pointer-events="none">${esc(p.label)}</text>`;
+
     }
     out += `<g class="iso-plate" data-id="${esc(p.id)}">${s}</g>`;
     if (sel.has(p.id)) {
       const q = rect(p.x, p.y, p.w, p.d).map(c => d.P(c[0], c[1], 0));
       out += `<polygon class="iso-sel" points="${d.pts(q)}" fill="none" stroke="${th.accent}" stroke-width="2.5" pointer-events="none"/>`;
+
     }
   }
   /* 2. 連線 */
@@ -483,8 +545,11 @@ function render(svg, doc, st = {}) {
     else if (ps.s === 'done') attr = `stroke="${ps.c}" stroke-width="2.6" opacity=".45"`;
     else attr = `stroke="${th.future}" stroke-width="2" stroke-dasharray="3 7"`;
     if (sel.has(e.id)) out += `<path d="${pathD(p)}" fill="none" stroke="${th.accent}" stroke-width="10" opacity=".28" stroke-linecap="round" stroke-linejoin="round"/>`;
+
     out += `<path d="${pathD(p)}" fill="none" stroke-linecap="round" stroke-linejoin="round" ${attr} pointer-events="none"/>`;
+
     out += `<path class="iso-hit" data-id="${esc(e.id)}" d="${pathD(p)}" fill="none" stroke="transparent" stroke-width="16"/>`;
+
     if (e.label) labels.push([e, p]);
   }
   /* 3. 節點（依深度排序，遠的先畫） */
@@ -492,7 +557,9 @@ function render(svg, doc, st = {}) {
   for (const n of order) {
     const sh = SHAPES[n.type] || SHAPES.box, s = n.size || 1, [gx, gy] = d.P(n.x, n.y, 0), rx = sh.foot * s * 1.45;
     if (onNodes.has(n.id)) out += `<ellipse class="iso-pulse" cx="${gx}" cy="${gy}" rx="${rx}" ry="${rx * 0.58}" fill="none" stroke="${stepColor}" stroke-width="3" pointer-events="none"/>`;
+
     if (sel.has(n.id)) out += `<ellipse class="iso-sel" cx="${gx}" cy="${gy}" rx="${rx * 0.95}" ry="${rx * 0.55}" fill="${th.accent}" fill-opacity=".1" stroke="${th.accent}" stroke-width="2.5" pointer-events="none"/>`;
+
     let g = sh.draw(d, n, s);
     if (n.icon) { const big = [...n.icon].length <= 2; g += d.text(n.x, n.y, top(n), n.icon, big ? 20 : 12, 700); }
     out += `<g class="iso-node${onNodes.has(n.id) ? ' on' : ''}" data-id="${esc(n.id)}">${g}</g>`;
@@ -501,18 +568,24 @@ function render(svg, doc, st = {}) {
   for (const n of doc.nodes) {
     if (!n.name && !n.sub) continue;
     const sh = SHAPES[n.type] || SHAPES.box, s = n.size || 1, [gx, gy] = d.P(n.x, n.y, 0), y = gy + sh.foot * s * 0.8 + 22;
+
     const w = Math.max(textW(n.name, 15), textW(n.sub, 12)) + 24, h = n.sub ? 42 : 28;
     const stc = sel.has(n.id) ? th.accent : onNodes.has(n.id) ? stepColor : th.ink;
     d.grow(gx - w / 2, y - 15); d.grow(gx + w / 2, y - 15 + h);
     out += `<g class="iso-node" data-id="${esc(n.id)}"><rect x="${(gx - w / 2).toFixed(1)}" y="${(y - 15).toFixed(1)}" width="${w.toFixed(1)}" height="${h}" rx="10" fill="${th.pill}" stroke="${stc}" stroke-width="2"/>` +
+
       `<text x="${gx.toFixed(1)}" y="${(y + 1).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="700" fill="${th.ink}">${esc(n.name)}</text>` +
+
       (n.sub ? `<text x="${gx.toFixed(1)}" y="${(y + 18).toFixed(1)}" text-anchor="middle" font-size="12" fill="${th.muted}">${esc(n.sub)}</text>` : '') + `</g>`;
+
   }
   /* 5. 連線文字 */
   for (const [e, p] of labels) {
     const m = along(p, .5, 0), w = textW(e.label, 12) + 16;
     out += `<g class="iso-hit" data-id="${esc(e.id)}"><rect x="${(m[0] - w / 2).toFixed(1)}" y="${(m[1] - 11).toFixed(1)}" width="${w.toFixed(1)}" height="22" rx="11" fill="${th.pill}" stroke="${e.color || th.edge}" stroke-width="1.6"/>` +
+
       `<text x="${m[0].toFixed(1)}" y="${(m[1] + 1).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="${th.ink}">${esc(e.label)}</text></g>`;
+
   }
   /* 6. 編輯用控制點 */
   if (st.handles) {
@@ -520,16 +593,20 @@ function render(svg, doc, st = {}) {
     if (one && N[one]) {
       const n = N[one], [hx, hy] = d.P(n.x, n.y, top(n) + 30);
       out += `<g data-handle="link"><line x1="${hx}" y1="${hy + 10}" x2="${hx}" y2="${hy + 22}" stroke="${th.accent}" stroke-width="2"/><circle cx="${hx}" cy="${hy}" r="11" fill="${th.accent}" stroke="#fff" stroke-width="2"/><text x="${hx}" y="${hy + 1}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="16" font-weight="700" pointer-events="none">+</text></g>`;
+
     }
     const pl = one && doc.plates.find(p => p.id === one);
     if (pl) {
       const a = d.P(pl.x, pl.y, 0), b = d.P(pl.x + pl.w, pl.y + pl.d, 0);
       out += `<circle data-handle="p0" cx="${a[0]}" cy="${a[1]}" r="8" fill="#fff" stroke="${th.accent}" stroke-width="3"/>`;
+
       out += `<circle data-handle="p1" cx="${b[0]}" cy="${b[1]}" r="8" fill="#fff" stroke="${th.accent}" stroke-width="3"/>`;
+
     }
     if (st.link && N[st.link.from]) {
       const a = anchor(N[st.link.from]);
       out += `<line x1="${a[0]}" y1="${a[1]}" x2="${st.link.to[0]}" y2="${st.link.to[1]}" stroke="${th.accent}" stroke-width="3" stroke-dasharray="8 6" pointer-events="none"/>`;
+
     }
   }
   /* 7. 封包（播放時才會顯示） */
@@ -544,6 +621,7 @@ function render(svg, doc, st = {}) {
 function along(pts, u, off = 9) {
   const seg = []; let L = 0;
   for (let i = 0; i < pts.length - 1; i++) { const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+
   let t = Math.max(0, Math.min(1, u)) * L;
   for (let i = 0; i < seg.length; i++) {
     if (t <= seg[i] || i === seg.length - 1) {
@@ -560,6 +638,7 @@ function Camera(svg, onChange) {
   const cam = { x: -400, y: -300, z: 1 };
   const box = () => svg.getBoundingClientRect();
   cam.apply = () => { const r = box(); svg.setAttribute('viewBox', `${cam.x} ${cam.y} ${Math.max(1, r.width) / cam.z} ${Math.max(1, r.height) / cam.z}`); onChange && onChange(cam); };
+
   cam.fit = (bb, pad = 50) => {
     const r = box();
     if (!bb || !isFinite(bb[0])) { cam.z = 1; cam.x = -r.width / 2; cam.y = -r.height / 2; return cam.apply(); }
@@ -586,6 +665,7 @@ function applyThemeVars(el, th) {
 }
 
 return { C, S, TXT, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, customFrom, SHAPES, shade, esc, textW, isHex, pairKey, proj, normalize, render, along, Camera, applyThemeVars, uid };
+
 })();
 </script>
 
@@ -595,27 +675,35 @@ return { C, S, TXT, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, cus
 <script type="text/plain" id="viewer-css">
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cascadia Mono",Consolas,"Microsoft JhengHei",monospace}
+
 .wrap{max-width:1500px;margin:0 auto;padding:16px 22px 28px}
 .crumb{color:var(--muted);font-size:13px}
 .head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:6px 0 4px}
 h1{font-size:28px;margin:0}
 .tag{border:2px solid var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;background:var(--card)}
+
 .sub{color:var(--muted);font-size:14px;margin:4px 0 12px}
 .cards{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 .card{border:2px solid var(--soft);border-left:5px solid var(--c);border-radius:10px;padding:6px 14px;background:var(--card);min-width:140px}
+
 .card .k{font-size:11px;color:var(--muted);letter-spacing:.06em}
 .card .v{font-weight:700;font-size:16px}
 .main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px}
 .main.nosteps{grid-template-columns:1fr}
 .stage{border:2px solid var(--soft);border-radius:14px;background:radial-gradient(circle,var(--dot) 1px,transparent 1.2px) 0 0/22px 22px,var(--card);position:relative;overflow:hidden;height:min(68vh,680px);min-height:360px}
+
 .stage svg{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none;user-select:none}
 .stage svg.drag{cursor:grabbing}
 .legend{position:absolute;left:14px;bottom:10px;display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);pointer-events:none}
+
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 .zoom{position:absolute;right:10px;bottom:10px;display:flex;gap:4px}
 .zoom button{font:inherit;font-weight:700;border:2px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink);padding:2px 9px;cursor:pointer}
+
 .panel{border:2px solid var(--ink);border-radius:14px;background:var(--card);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+
 .badge{font-size:12px;font-weight:700;color:#fff;background:var(--c);border-radius:6px;padding:2px 8px;align-self:flex-start}
+
 .panel h2{margin:0;font-size:20px}
 .panel p{margin:0;font-size:14px;line-height:1.65;white-space:pre-wrap}
 .code{border:2px solid var(--ink);border-radius:10px;background:var(--bg);padding:10px 12px}
@@ -623,14 +711,18 @@ h1{font-size:28px;margin:0}
 .code pre{margin:0;font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-all;font-family:inherit}
 .ctrl{display:flex;gap:8px;margin-top:auto}
 .ctrl button{flex:1;font:inherit;font-weight:700;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);padding:8px;cursor:pointer}
+
 .ctrl button:hover,.zoom button:hover{background:var(--soft)}
 .tl{margin-top:16px;border-top:2px solid var(--soft);padding-top:12px}
 .tl .row{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
+
 .steps{display:flex;align-items:flex-start;position:relative}
 .steps::before{content:"";position:absolute;left:18px;right:18px;top:17px;height:3px;background:var(--soft)}
 .steps .fill{position:absolute;left:18px;top:17px;height:3px;background:var(--ink);transition:width .4s}
 .st{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;cursor:pointer;font-size:12px;text-align:center;color:var(--muted)}
+
 .st b{width:36px;height:36px;border-radius:50%;border:2px solid var(--ink);background:var(--card);display:grid;place-items:center;font-size:14px;color:var(--ink)}
+
 .st.on b{background:var(--c);color:#fff;transform:scale(1.12)}
 .st.done b{background:var(--soft)}
 .st.on{color:var(--ink);font-weight:700}
@@ -645,6 +737,7 @@ const doc = ISO.normalize(JSON.parse(document.getElementById('doc-json').textCon
 const th = ISO.themeOf(doc), T = ISO.STEP_TYPES, esc = ISO.esc, steps = doc.steps;
 /* 介面文字：匯出當下編輯器的語言（window.ISO_L10N），沒有就用英文 */
 const L = Object.assign({ steps: '⏱ {n} steps', zoomOut: 'Zoom out', fit: 'Fit', fitTitle: 'Fit (or double-click the canvas)', zoomIn: 'Zoom in',
+
   prev: '◀ Prev', next: 'Next ▶', play: '▶ Play', pause: '❚❚ Pause', inFlow: 'IN THIS FLOW', step: 'Step {n}',
   badge: 'STEP {n} / {t}', count: 'Step {n} of {t}' }, window.ISO_L10N || {});
 const fmt = (k, v) => String(L[k]).replace(/\{(\w+)\}/g, (m, x) => (v && v[x] != null) ? v[x] : m);
@@ -655,17 +748,24 @@ const used = [...new Set(steps.map(s => s.type))];
 document.getElementById('root').innerHTML = `<div class="wrap">
   ${doc.crumb ? `<div class="crumb">${esc(doc.crumb)}</div>` : ''}
   <div class="head"><h1>${esc(doc.title)}</h1>${steps.length ? `<span class="tag">${esc(fmt('steps', { n: steps.length }))}</span>` : ''}${doc.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+
   ${doc.subtitle ? `<div class="sub">${esc(doc.subtitle)}</div>` : ''}
   ${doc.cards.length ? `<div class="cards">${doc.cards.map(c => `<div class="card" style="--c:${(T[c.type] || {}).c || th.muted}"><div class="k">${esc(c.k)}</div><div class="v">${esc(c.v)}</div></div>`).join('')}</div>` : ''}
+
   <div class="main ${steps.length ? '' : 'nosteps'}">
     <div class="stage"><svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
       <div class="legend">${used.map(t => `<span><i style="background:${T[t].c}"></i>${esc(T[t].n)}</span>`).join('')}</div>
+
       <div class="zoom"><button data-z="out" title="${esc(L.zoomOut)}">−</button><button data-z="fit" title="${esc(L.fitTitle)}">${esc(L.fit)}</button><button data-z="in" title="${esc(L.zoomIn)}">＋</button></div></div>
+
     ${steps.length ? `<div class="panel" id="panel"><span class="badge" id="pBadge"></span><h2 id="pTitle"></h2><p id="pDesc"></p>
+
       <div class="code" id="pCodeBox"><div class="cap" id="pCap"></div><pre id="pCode"></pre></div>
       <div class="ctrl"><button id="bPrev">${esc(L.prev)}</button><button id="bPlay"></button><button id="bNext">${esc(L.next)}</button></div></div>` : ''}
+
   </div>
   ${steps.length ? `<div class="tl"><div class="row"><span>${esc(L.inFlow)}</span><span id="tlCount"></span></div><div class="steps" id="steps"><div class="fill" id="fill"></div></div></div>` : ''}
+
 </div>`;
 const $ = id => document.getElementById(id), svg = $('svg'), cam = ISO.Camera(svg);
 let res = ISO.render(svg, doc, { step: steps.length ? 0 : -1 });
@@ -674,9 +774,12 @@ fit();
 let userMoved = false;
 new ResizeObserver(() => userMoved ? cam.apply() : fit()).observe(svg);
 svg.addEventListener('wheel', e => { e.preventDefault(); userMoved = true; cam.zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY); }, { passive: false });
+
 let pan = null;
 svg.addEventListener('pointerdown', e => { pan = [e.clientX, e.clientY]; svg.classList.add('drag'); svg.setPointerCapture(e.pointerId); });
+
 svg.addEventListener('pointermove', e => { if (!pan) return; userMoved = true; cam.panBy(e.clientX - pan[0], e.clientY - pan[1]); pan = [e.clientX, e.clientY]; });
+
 svg.addEventListener('pointerup', () => { pan = null; svg.classList.remove('drag'); });
 svg.addEventListener('dblclick', () => { userMoved = false; fit(); });
 document.querySelector('.zoom').addEventListener('click', e => {
@@ -684,6 +787,7 @@ document.querySelector('.zoom').addEventListener('click', e => {
   if (z === 'fit') { userMoved = false; fit(); } else { userMoved = true; cam.zoomAt(z === 'in' ? 1.2 : 1 / 1.2); }
 });
 if (window.parent !== window) document.addEventListener('keydown', e => { if (e.key === 'Escape') window.parent.postMessage('iso-close', '*'); });
+
 if (!steps.length) return;
 
 const stepsEl = $('steps');
@@ -709,6 +813,7 @@ function go(i, manual) {
   $('pCap').textContent = s.cap; $('pCode').textContent = s.code;
   $('tlCount').textContent = fmt('count', { n: cur + 1, t: steps.length });
   [...stepsEl.querySelectorAll('.st')].forEach((d, j) => { d.classList.toggle('on', j === cur); d.classList.toggle('done', j < cur); });
+
   $('fill').style.width = steps.length > 1 ? `calc((100% - 36px) * ${cur / (steps.length - 1)})` : '0';
   $('iso-pktR').setAttribute('fill', col);
 }
@@ -814,8 +919,11 @@ function LANG_EN_US() {
     'shape.file': 'File', 'shape.file.desc': 'file stack',
     'theme.paper': 'Paper', 'theme.light': 'Light', 'theme.night': 'Night', 'theme.midnight': 'Midnight',
     'theme.graphite': 'Graphite', 'theme.blueprint': 'Blueprint', 'theme.forest': 'Forest', 'theme.customPick': 'Custom…',
+
     'type.req': 'request', 'type.crypto': 'crypto', 'type.ext': 'external', 'type.resp': 'response', 'type.err': 'error', 'type.job': 'other',
+
     'cust.bg': 'Canvas', 'cust.ink': 'Text', 'cust.accent': 'Accent', 'cust.plate': 'Zone plate', 'cust.edge': 'Lines', 'cust.stroke': 'Shape outline',
+
     'tpl.blank': 'Blank canvas', 'tpl.blank.desc': 'Start from scratch',
     'tpl.xverify': 'Cross-org identity verification', 'tpl.xverify.desc': '7 steps, 3 zones, relayed response',
     'tpl.web3': 'Three-tier website', 'tpl.web3.desc': 'Users → gateway → two app servers → cache / database',
@@ -840,13 +948,17 @@ function LANG_EN_US() {
     'err.notDoc': 'Not a 2.5DUMLhtml JSON (no nodes)', 'err.svg': 'Could not convert SVG to an image', 'err.png': 'Could not convert the canvas to PNG',
 
     'hint.step': 'Editing step {n}: click a line = add it to the packet route (Alt+click = reverse) · switch steps on the timeline',
+
     'hint.main': 'Drag to move · select, then drag the "＋" on top to connect · drag empty space / Space+drag to pan · wheel to zoom · Alt+drag skips snapping',
+
     'sw.auto': 'Follow theme', 'sw.custom': 'Custom color',
     'p.none': 'NOTHING SELECTED', 'p.noneHint': 'Click a shape, line or zone on the canvas to edit its properties.',
     'p.keys': 'SHORTCUTS',
     'p.keysHtml': '<kbd>Drag</kbd> move (snaps to 10) · <kbd>Alt</kbd>+drag no snapping, only that item<br>' +
       '<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+click add/remove from selection · <kbd>Ctrl</kbd>+<kbd>A</kbd> select all<br>' +
+
       '<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> copy / paste at the last click (repeated pastes step diagonally)<br>' +
+
       'Select, then drag the <kbd>＋</kbd> on top to another shape = connect<br>' +
       '<kbd>Del</kbd> delete · <kbd>Ctrl</kbd>+<kbd>D</kbd> duplicate<br>' +
       '<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> undo / redo · <kbd>Ctrl</kbd>+<kbd>S</kbd> save JSON<br>' +
@@ -864,11 +976,14 @@ function LANG_EN_US() {
     'p.shapeNote': 'Deleting a shape also removes its lines and its packet routes in steps.',
     'p.edge': 'LINE', 'f.label': 'Text (shown mid-line)', 'f.mode': 'Path',
     'mode.air': 'Straight (in the air)', 'mode.xy': 'Ground L-shape (X then Y)', 'mode.yx': 'Ground L-shape (Y then X)',
+
     'f.lineColor': 'Line color', 'f.dash': 'Dashed',
     'p.edgeNote': 'During step playback the line takes the step type\'s color. The packet direction comes from the step, not from this line.',
+
     'p.plate': 'ZONE PLATE', 'f.plateLabel': 'Label (lies flat on the ground)', 'f.plateColor': 'Fill',
     'f.w': 'Width (X)', 'f.d': 'Depth (Y)',
     'p.plateNote': 'Dragging a plate moves the shapes on it (hold Alt to drag only the plate). Drag the two white dots to resize. Deleting a plate keeps its shapes.',
+
     's.unnamed': '(untitled)', 's.up': 'Move up', 's.down': 'Move down', 's.rm': 'Delete this step',
     'f.short': 'Timeline label', 'f.stype': 'Type (sets the color)', 'f.title': 'Title', 'f.desc': 'Description',
     'f.cap': 'Code block caption', 'f.code': 'Code block (empty = hidden)',
@@ -877,19 +992,23 @@ function LANG_EN_US() {
     's.noEdgeOk': 'You can add a hop even if the two shapes aren\'t connected; the packet travels in a straight line.',
     's.list': 'STEP LIST', 's.none': 'No steps yet.', 's.playFrom': '▶ Play from this step',
     'd.head': 'DOCUMENT (shown in the exported HTML)', 'f.crumb': 'Breadcrumb (small top line)', 'f.subtitle': 'Subtitle',
+
     'f.tags': 'Tags (comma-separated)', 'f.cards': 'Key cards (one per line: title|value|type)',
     'd.cardTypes': 'Type can be {types}; it sets the card\'s left color.',
     'd.play': 'PLAYBACK', 'f.speed': 'Packet speed per hop',
     'speed.slow': 'Slow', 'speed.mid': 'Medium', 'speed.fast': 'Fast', 'speed.vfast': 'Very fast', 'speed.custom': 'Custom',
+
     'speed.opt': '{name} ({ms} ms)',
     'f.autoplay': 'Auto-play when opened',
     'd.look': 'APPEARANCE', 'f.theme': 'Theme (also remembered as your preference for new templates)',
     'f.ctBase': 'Start from a preset theme', 'd.ctPick': '(pick one to overwrite the colors above)',
     'd.ctNote': 'Cards, secondary text, grid, label fills etc. are derived from these 6 colors. Dragging a picker previews live; releasing it records one undo step.',
+
     'd.view': 'View: {deg}° (toolbar ⟲ ⟳ or R; kept on export)',
     'd.stats': 'STATS', 'd.statsLine': 'Shapes {n} · Lines {e} · Zones {p} · Steps {s}',
 
     'v.steps': '⏱ {n} steps', 'v.zoomOut': 'Zoom out', 'v.fit': 'Fit', 'v.fitTitle': 'Fit (or double-click the canvas)', 'v.zoomIn': 'Zoom in',
+
     'v.prev': '◀ Prev', 'v.next': 'Next ▶', 'v.play': '▶ Play', 'v.pause': '❚❚ Pause', 'v.inFlow': 'IN THIS FLOW',
     'v.step': 'Step {n}', 'v.badge': 'STEP {n} / {t}', 'v.count': 'Step {n} of {t}',
   };
@@ -932,7 +1051,9 @@ function LANG_ZH_TW() {
     'theme.paper': '紙本', 'theme.light': '淺色', 'theme.night': '夜間', 'theme.midnight': '深邃',
     'theme.graphite': '石墨', 'theme.blueprint': '藍圖', 'theme.forest': '森林', 'theme.customPick': '自訂…',
     'type.req': 'request', 'type.crypto': '加解密', 'type.ext': '外部', 'type.resp': 'response', 'type.err': '錯誤', 'type.job': '其他',
+
     'cust.bg': '畫布底色', 'cust.ink': '文字', 'cust.accent': '強調色', 'cust.plate': '區域平台', 'cust.edge': '連線', 'cust.stroke': '圖形外框',
+
     'tpl.blank': '空白畫布', 'tpl.blank.desc': '從零開始',
     'tpl.xverify': '跨機構身分驗證', 'tpl.xverify.desc': '7 個步驟、三塊區域、接力回應',
     'tpl.web3': '三層式網站', 'tpl.web3.desc': '使用者 → 閘道 → 兩台 AP → 快取／資料庫',
@@ -958,6 +1079,7 @@ function LANG_ZH_TW() {
 
     'hint.step': '正在編輯步驟 {n}：點連線＝加入封包路線（Alt＋點＝反方向）· 時間軸可切換步驟',
     'hint.main': '點選拖曳移動 · 選取後拉頂端「＋」建立連線 · 空白處拖曳／空白鍵＋拖曳平移 · 滾輪縮放 · Alt 拖曳不吸附',
+
     'sw.auto': '跟隨主題', 'sw.custom': '自訂顏色',
     'p.none': '還沒有選取', 'p.noneHint': '點畫布上的圖形、連線或區域來編輯屬性。',
     'p.keys': '快捷鍵',
@@ -986,6 +1108,7 @@ function LANG_ZH_TW() {
     'p.plate': '區域平台', 'f.plateLabel': '標籤（平貼在地上）', 'f.plateColor': '底色',
     'f.w': '寬（X 方向）', 'f.d': '深（Y 方向）',
     'p.plateNote': '拖平台時，上面的圖形會一起走（按 Alt 只拖平台）。拖兩個白色圓點可以改大小。刪除平台不會刪掉上面的圖形。',
+
     's.unnamed': '（未命名）', 's.up': '上移', 's.down': '下移', 's.rm': '刪除這個步驟',
     'f.short': '時間軸短名', 'f.stype': '類型（決定顏色）', 'f.title': '標題', 'f.desc': '說明',
     'f.cap': '程式碼區塊標題', 'f.code': '程式碼區塊（留空＝不顯示）',
@@ -1007,13 +1130,1096 @@ function LANG_ZH_TW() {
     'd.stats': '統計', 'd.statsLine': '圖形 {n} · 連線 {e} · 區域 {p} · 步驟 {s}',
 
     'v.steps': '⏱ {n} 個步驟', 'v.zoomOut': '縮小', 'v.fit': '適配', 'v.fitTitle': '適配（雙擊畫面也可以）', 'v.zoomIn': '放大',
+
     'v.prev': '◀ 上一步', 'v.next': '下一步 ▶', 'v.play': '▶ 播放', 'v.pause': '❚❚ 暫停', 'v.inFlow': '流程步驟',
     'v.step': '步驟 {n}', 'v.badge': 'STEP {n} / {t}', 'v.count': '第 {n} 步，共 {t} 步',
   };
 }
 
+function LANG_JA_JP() {
+  return {
+    "app.title": "2.5DUMLhtml · アイソメトリック フロー エディター",
+    "app.lang": "言語",
+    "tb.tpl": "テンプレート ▾", "tb.tplTitle": "テンプレートを適用（Ctrl+Z で元に戻せます）",
+    "tb.open": "開く", "tb.openTitle": "JSON を開く",
+    "tb.save": "JSON 保存", "tb.saveTitle": "JSON をエクスポート（Ctrl+S）",
+    "tb.html": "HTML 出力", "tb.htmlTitle": "再生できる HTML ビューアーを出力",
+    "tb.png": "PNG 出力", "tb.pngTitle": "PNG を出力（2 倍解像度）",
+    "tb.undo": "元に戻す（Ctrl+Z）", "tb.redo": "やり直す（Ctrl+Y）",
+    "tb.rotL": "視点を左に 90° 回転（Shift+R）", "tb.rotR": "視点を右に 90° 回転（R）",
+    "tb.fit": "全体表示", "tb.fitTitle": "全体が収まるようにズーム（F）",
+    "tb.zoom100": "100% に戻す",
+    "tb.theme": "テーマ切替（T で順番に切替）",
+    "tb.sideL": "左パネルを折りたたむ（[）", "tb.sideR": "右パネルを折りたたむ（]）",
+    "tb.play": "▶ プレビュー再生", "tb.playTitle": "プレビュー再生（P）",
+    "left.shapes": "図形（クリックまたはキャンバスへドラッグ）", "left.zones": "エリア",
+    "tab.prop": "プロパティ", "tab.step": "ステップ", "tab.doc": "ドキュメント",
+    "tl.title": "ステップ タイムライン", "tl.add": "＋ ステップ追加",
+    "tl.info": "ステップ {n} 個 · クリックで編集", "tl.empty": "ステップがありません：右の「＋ ステップ追加」をクリック",
+    "step.n": "ステップ {n}",
+    "ov.note": "これが「HTML 出力」の結果そのものです", "ov.close": "✕ エディターに戻る（Esc）",
+    "pal.plate": "エリア板", "pal.plateTitle": "エリア板：ドラッグすると上の図形も一緒に動きます",
+    "pal.shapeTitle": "{name}（{desc}）",
+
+    "shape.hex": "アプリ", "shape.hex.desc": "六角柱",
+    "shape.box": "サービス", "shape.box.desc": "ブロック",
+    "shape.cyl": "データベース", "shape.cyl.desc": "円柱",
+    "shape.server": "サーバー", "shape.server.desc": "ラック",
+    "shape.phone": "フロント", "shape.phone.desc": "スマホ",
+    "shape.desktop": "フロント", "shape.desktop.desc": "PC",
+    "shape.gate": "ゲートウェイ", "shape.gate.desc": "ゲート",
+    "shape.users": "ユーザー", "shape.users.desc": "人々",
+    "shape.file": "ファイル", "shape.file.desc": "ファイル束",
+    "theme.paper": "ペーパー", "theme.light": "ライト", "theme.night": "ナイト", "theme.midnight": "ミッドナイト",
+    "theme.graphite": "グラファイト", "theme.blueprint": "ブループリント", "theme.forest": "フォレスト", "theme.customPick": "カスタム…",
+    "type.req": "リクエスト", "type.crypto": "暗号化", "type.ext": "外部", "type.resp": "レスポンス", "type.err": "エラー", "type.job": "その他",
+
+    "cust.bg": "キャンバス", "cust.ink": "文字", "cust.accent": "アクセント", "cust.plate": "エリア板", "cust.edge": "線", "cust.stroke": "図形の輪郭",
+
+    "tpl.blank": "白紙", "tpl.blank.desc": "ゼロから作成",
+    "tpl.xverify": "機関間の本人確認", "tpl.xverify.desc": "7 ステップ・3 エリア・リレー応答",
+    "tpl.web3": "3 層 Web サイト", "tpl.web3.desc": "ユーザー → ゲートウェイ → AP サーバー 2 台 → キャッシュ / DB",
+    "tpl.file": "ファイル処理", "tpl.file.desc": "上流ファイル → 変換 → 基幹",
+    "tpl.undoNote": "適用後も Ctrl+Z で元に戻せます",
+    "doc.untitled": "無題", "doc.defTitle": "2.5D フロー", "new.plate": "新しいエリア",
+
+    "toast.saveFail": "自動保存に失敗しました（ブラウザーが localStorage をブロック）",
+    "toast.customHint": "カスタム色は「ドキュメント」タブで調整できます",
+    "toast.theme": "テーマ：{name}",
+    "toast.addStep": "キャンバスの線をクリックするとこのステップに追加されます",
+    "toast.pasted": "{n} 件貼り付けました", "toast.copied": "{n} 件コピーしました",
+    "toast.dupEdge": "この 2 つの図形はすでに接続されています",
+    "toast.rot": "視点 {deg}°",
+    "toast.jsonOut": "JSON を出力しました", "toast.htmlOut": "HTML ビューアーを出力しました", "toast.pngOut": "PNG を出力しました",
+
+    "toast.opened": "開きました：{name}", "toast.openFail": "開けません：{msg}",
+    "toast.empty": "キャンバスが空です", "toast.pngFail": "PNG 出力に失敗：{msg}",
+    "toast.tpl": "テンプレートを適用：{name}",
+    "toast.hopAdded": "追加：{a} → {b}",
+    "toast.sameNode": "始点と終点に同じ図形は使えません",
+    "toast.corrupt": "前回の自動保存が壊れていました。元データは localStorage「{key}」にバックアップしました",
+    "err.notDoc": "2.5DUMLhtml の JSON ではありません（nodes がない）", "err.svg": "SVG を画像に変換できません", "err.png": "キャンバスを PNG に変換できません",
+
+    "hint.step": "ステップ {n} を編集中：線をクリック＝パケット経路に追加（Alt+クリック＝逆向き）· タイムラインでステップ切替",
+    "hint.main": "ドラッグで移動 · 選択して上の「＋」をドラッグで接続 · 空白ドラッグ／Space+ドラッグでパン · ホイールでズーム · Alt+ドラッグでスナップなし",
+
+    "sw.auto": "テーマに合わせる", "sw.custom": "カスタム色",
+    "p.none": "未選択", "p.noneHint": "キャンバス上の図形・線・エリアをクリックするとプロパティを編集できます。",
+    "p.keys": "ショートカット",
+    "p.keysHtml": "<kbd>ドラッグ</kbd> 移動（10 単位スナップ）· <kbd>Alt</kbd>+ドラッグ スナップなし・その項目だけ<br>" +
+      "<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+クリック 選択に追加／解除 · <kbd>Ctrl</kbd>+<kbd>A</kbd> すべて選択<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> コピー／最後にクリックした位置へ貼り付け（連続貼り付けは斜めにずらす）<br>" +
+      "選択して上の <kbd>＋</kbd> を別の図形へドラッグ＝接続<br>" +
+      "<kbd>Del</kbd> 削除 · <kbd>Ctrl</kbd>+<kbd>D</kbd> 複製<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> 元に戻す／やり直す · <kbd>Ctrl</kbd>+<kbd>S</kbd> JSON 保存<br>" +
+      "<kbd>矢印キー</kbd> 1 ずつ移動（<kbd>Shift</kbd> で 10、アイソメ格子に沿う）<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>0</kbd> 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> 拡大／縮小<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> 視点回転 · <kbd>F</kbd> 全体表示<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> テーマ切替<br>" +
+      "<kbd>P</kbd> プレビュー再生 · <kbd>[</kbd> <kbd>]</kbd> 左右パネルの折りたたみ<br>" +
+      "ホイールでズーム · 空白ドラッグ／<kbd>Space</kbd>+ドラッグでパン · 空白をダブルクリック＝全体表示<br>" +
+      "図形をダブルクリック＝名前変更",
+    "p.multi": "{n} 件選択中", "p.multiColor": "まとめて色変更（図形）",
+    "btn.dup": "複製", "btn.del": "削除", "btn.add": "追加", "btn.swap": "⇄ 向きを反転",
+    "p.shape": "図形", "f.type": "種類", "f.name": "名前", "f.sub": "サブタイトル（小さい 2 行目）",
+    "f.icon": "上部アイコン（絵文字か短い文字、空＝なし）", "f.color": "色", "f.size": "サイズ", "f.h": "高さ",
+    "p.shapeNote": "図形を削除すると、その線とステップ内のパケット経路も削除されます。",
+    "p.edge": "線", "f.label": "テキスト（線の中央に表示）", "f.mode": "経路",
+    "mode.air": "直線（空中）", "mode.xy": "地面の L 字（X → Y）", "mode.yx": "地面の L 字（Y → X）",
+    "f.lineColor": "線の色", "f.dash": "破線",
+    "p.edgeNote": "ステップ再生中は線がステップ種類の色になります。パケットの向きは線ではなくステップで決まります。",
+    "p.plate": "エリア板", "f.plateLabel": "ラベル（地面に寝かせて表示）", "f.plateColor": "塗り",
+    "f.w": "幅（X）", "f.d": "奥行き（Y）",
+    "p.plateNote": "エリア板をドラッグすると上の図形も動きます（Alt を押すと板だけ）。白い 2 点をドラッグでサイズ変更。板を削除しても図形は残ります。",
+    "s.unnamed": "（無題）", "s.up": "上へ", "s.down": "下へ", "s.rm": "このステップを削除",
+    "f.short": "タイムライン表示名", "f.stype": "種類（色が決まる）", "f.title": "タイトル", "f.desc": "説明",
+    "f.cap": "コードブロックの見出し", "f.code": "コードブロック（空＝非表示）",
+    "s.route": "パケット経路（順にリレー）", "s.pktPh": "パケットの文字", "s.rev": "反転", "s.hrm": "削除",
+    "s.noRoute": "経路がありません。キャンバスの線をクリックで追加（Alt+クリック＝逆向き）。",
+    "s.noEdgeOk": "2 つの図形が未接続でもホップを追加できます。パケットは直線で移動します。",
+    "s.list": "ステップ一覧", "s.none": "ステップがありません。", "s.playFrom": "▶ このステップから再生",
+    "d.head": "ドキュメント（出力 HTML に表示）", "f.crumb": "パンくず（上部の小さい行）", "f.subtitle": "サブタイトル",
+    "f.tags": "タグ（カンマ区切り）", "f.cards": "要点カード（1 行 1 枚：タイトル|値|種類）",
+    "d.cardTypes": "種類は {types} が使え、カード左端の色になります。",
+    "d.play": "再生", "f.speed": "1 ホップあたりのパケット速度",
+    "speed.slow": "遅い", "speed.mid": "普通", "speed.fast": "速い", "speed.vfast": "とても速い", "speed.custom": "カスタム",
+    "speed.opt": "{name}（{ms} ms）",
+    "f.autoplay": "開いたら自動再生",
+    "d.look": "外観", "f.theme": "テーマ（新しいテンプレートの既定としても記憶）",
+    "f.ctBase": "プリセットテーマから開始", "d.ctPick": "（選ぶと上の色を上書き）",
+    "d.ctNote": "カード、補助文字、グリッド、ラベル塗りなどはこの 6 色から自動計算されます。ドラッグ中はライブプレビュー、離すと 1 回分の取り消しとして記録されます。",
+    "d.view": "視点：{deg}°（ツールバー ⟲ ⟳ または R、出力時も保持）",
+    "d.stats": "統計", "d.statsLine": "図形 {n} · 線 {e} · エリア {p} · ステップ {s}",
+
+    "v.steps": "⏱ {n} ステップ", "v.zoomOut": "縮小", "v.fit": "全体", "v.fitTitle": "全体表示（キャンバスをダブルクリックでも可）", "v.zoomIn": "拡大",
+
+    "v.prev": "◀ 前へ", "v.next": "次へ ▶", "v.play": "▶ 再生", "v.pause": "❚❚ 一時停止", "v.inFlow": "フローのステップ",
+    "v.step": "ステップ {n}", "v.badge": "STEP {n} / {t}", "v.count": "{t} ステップ中 {n}",
+  };
+}
+
+function LANG_ZH_CN() {
+  return {
+    "app.title": "2.5DUMLhtml · 等角流程图编辑器",
+    "app.lang": "语言",
+    "tb.tpl": "模板 ▾", "tb.tplTitle": "套用模板（可 Ctrl+Z 撤销）",
+    "tb.open": "打开", "tb.openTitle": "打开 JSON",
+    "tb.save": "存 JSON", "tb.saveTitle": "导出 JSON（Ctrl+S）",
+    "tb.html": "导出 HTML", "tb.htmlTitle": "导出可播放的 HTML 查看器",
+    "tb.png": "导出 PNG", "tb.pngTitle": "导出 PNG（2 倍分辨率）",
+    "tb.undo": "撤销（Ctrl+Z）", "tb.redo": "重做（Ctrl+Y）",
+    "tb.rotL": "视角向左转 90°（Shift+R）", "tb.rotR": "视角向右转 90°（R）",
+    "tb.fit": "适合", "tb.fitTitle": "缩放到能看见全部（F）",
+    "tb.zoom100": "回到 100%",
+    "tb.theme": "切换主题（T 依序切换）",
+    "tb.sideL": "收起左栏（[）", "tb.sideR": "收起右栏（]）",
+    "tb.play": "▶ 播放预览", "tb.playTitle": "播放预览（P）",
+    "left.shapes": "图形（点击或拖到画布）", "left.zones": "区域",
+    "tab.prop": "属性", "tab.step": "步骤", "tab.doc": "文件",
+    "tl.title": "步骤时间轴", "tl.add": "＋ 新增步骤",
+    "tl.info": "共 {n} 步 · 点击可编辑", "tl.empty": "还没有步骤：点右侧「＋ 新增步骤」",
+    "step.n": "步骤 {n}",
+    "ov.note": "这就是「导出 HTML」的成品", "ov.close": "✕ 回编辑器（Esc）",
+    "pal.plate": "区域底板", "pal.plateTitle": "区域底板：拖动时上面的图形会跟着走",
+    "pal.shapeTitle": "{name}（{desc}）",
+
+    "shape.hex": "应用", "shape.hex.desc": "六角柱",
+    "shape.box": "服务", "shape.box.desc": "方块",
+    "shape.cyl": "数据库", "shape.cyl.desc": "圆柱",
+    "shape.server": "服务器", "shape.server.desc": "机架",
+    "shape.phone": "前端", "shape.phone.desc": "手机",
+    "shape.desktop": "前端", "shape.desktop.desc": "电脑",
+    "shape.gate": "网关", "shape.gate.desc": "闸门",
+    "shape.users": "用户", "shape.users.desc": "人群",
+    "shape.file": "文件", "shape.file.desc": "文件堆",
+    "theme.paper": "纸本", "theme.light": "明亮", "theme.night": "夜间", "theme.midnight": "午夜",
+    "theme.graphite": "石墨", "theme.blueprint": "蓝图", "theme.forest": "森林", "theme.customPick": "自定义…",
+    "type.req": "请求", "type.crypto": "加解密", "type.ext": "外部", "type.resp": "响应", "type.err": "错误", "type.job": "其他",
+
+    "cust.bg": "画布", "cust.ink": "文字", "cust.accent": "强调色", "cust.plate": "区域底板", "cust.edge": "线条", "cust.stroke": "图形轮廓",
+
+    "tpl.blank": "空白画布", "tpl.blank.desc": "从零开始",
+    "tpl.xverify": "跨机构身份验证", "tpl.xverify.desc": "7 步、3 个区域、接力回应",
+    "tpl.web3": "三层式网站", "tpl.web3.desc": "用户 → 网关 → 两台应用服务器 → 缓存 / 数据库",
+    "tpl.file": "文件处理", "tpl.file.desc": "上游文件 → 转换 → 核心",
+    "tpl.undoNote": "套用后可按 Ctrl+Z 撤销",
+    "doc.untitled": "未命名", "doc.defTitle": "2.5D 流程", "new.plate": "新区域",
+
+    "toast.saveFail": "自动保存失败（浏览器阻止了 localStorage）",
+    "toast.customHint": "自定义颜色在「文件」页签调整",
+    "toast.theme": "主题：{name}",
+    "toast.addStep": "点击画布上的线条即可加入这一步",
+    "toast.pasted": "已粘贴 {n} 项", "toast.copied": "已复制 {n} 项",
+    "toast.dupEdge": "这两个图形已经连线了",
+    "toast.rot": "视角 {deg}°",
+    "toast.jsonOut": "已导出 JSON", "toast.htmlOut": "已导出 HTML 查看器", "toast.pngOut": "已导出 PNG",
+    "toast.opened": "已打开：{name}", "toast.openFail": "无法打开：{msg}",
+    "toast.empty": "画布是空的", "toast.pngFail": "PNG 导出失败：{msg}",
+    "toast.tpl": "已套用模板：{name}",
+    "toast.hopAdded": "已加入：{a} → {b}",
+    "toast.sameNode": "起点和终点不能是同一个图形",
+    "toast.corrupt": "上次自动保存的数据已损坏，原始内容已备份到 localStorage「{key}」",
+    "err.notDoc": "不是 2.5DUMLhtml 的 JSON（没有 nodes）", "err.svg": "SVG 无法转成图片", "err.png": "画布无法转成 PNG",
+
+    "hint.step": "正在编辑步骤 {n}：点线条＝加入数据包路线（Alt+点击＝反向）· 在时间轴切换步骤",
+    "hint.main": "拖动可移动 · 选中后拖上方的「＋」可连线 · 拖空白处／Space+拖动可平移 · 滚轮缩放 · Alt+拖动不吸附",
+    "sw.auto": "跟随主题", "sw.custom": "自定义颜色",
+    "p.none": "未选取", "p.noneHint": "点击画布上的图形、线条或区域即可编辑属性。",
+    "p.keys": "快捷键",
+    "p.keysHtml": "<kbd>拖动</kbd> 移动（吸附到 10）· <kbd>Alt</kbd>+拖动 不吸附、只动该项<br>" +
+      "<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+点击 加选／取消 · <kbd>Ctrl</kbd>+<kbd>A</kbd> 全选<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> 复制／粘贴到最后点击处（连续粘贴会斜向错开）<br>" +
+      "选中后把上方 <kbd>＋</kbd> 拖到另一个图形＝连线<br>" +
+      "<kbd>Del</kbd> 删除 · <kbd>Ctrl</kbd>+<kbd>D</kbd> 复制一份<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> 撤销／重做 · <kbd>Ctrl</kbd>+<kbd>S</kbd> 存 JSON<br>" +
+      "<kbd>方向键</kbd> 微调 1（<kbd>Shift</kbd> 为 10，沿等角格线）<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>0</kbd> 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> 放大／缩小<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> 旋转视角 · <kbd>F</kbd> 适合<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> 切换主题<br>" +
+      "<kbd>P</kbd> 播放预览 · <kbd>[</kbd> <kbd>]</kbd> 收起左右栏<br>" +
+      "滚轮缩放 · 拖空白处／<kbd>Space</kbd>+拖动平移 · 双击空白处＝适合<br>" +
+      "双击图形＝改名",
+    "p.multi": "已选 {n} 项", "p.multiColor": "一起改色（图形）",
+    "btn.dup": "复制", "btn.del": "删除", "btn.add": "新增", "btn.swap": "⇄ 反转方向",
+    "p.shape": "图形", "f.type": "类型", "f.name": "名称", "f.sub": "副标题（第二行小字）",
+    "f.icon": "顶部图标（emoji 或短文字，空白＝不显示）", "f.color": "颜色", "f.size": "大小", "f.h": "高度",
+    "p.shapeNote": "删除图形会一并删除它的线条和步骤中的数据包路线。",
+    "p.edge": "线条", "f.label": "文字（显示在线条中间）", "f.mode": "路径",
+    "mode.air": "直线（空中）", "mode.xy": "贴地 L 形（先 X 后 Y）", "mode.yx": "贴地 L 形（先 Y 后 X）",
+    "f.lineColor": "线条颜色", "f.dash": "虚线",
+    "p.edgeNote": "播放步骤时线条会变成该步骤类型的颜色。数据包方向由步骤决定，不由这条线决定。",
+    "p.plate": "区域底板", "f.plateLabel": "标签（平躺在地面上）", "f.plateColor": "填色",
+    "f.w": "宽度（X）", "f.d": "深度（Y）",
+    "p.plateNote": "拖动底板时上面的图形会跟着走（按住 Alt 只拖底板）。拖两个白点可调大小。删除底板不会删除图形。",
+    "s.unnamed": "（未命名）", "s.up": "上移", "s.down": "下移", "s.rm": "删除此步骤",
+    "f.short": "时间轴标签", "f.stype": "类型（决定颜色）", "f.title": "标题", "f.desc": "说明",
+    "f.cap": "代码块标题", "f.code": "代码块（空白＝不显示）",
+    "s.route": "数据包路线（依序接力）", "s.pktPh": "数据包文字", "s.rev": "反向", "s.hrm": "移除",
+    "s.noRoute": "还没有路线。点击画布上的线条即可加入（Alt+点击＝反向）。",
+    "s.noEdgeOk": "两个图形没连线也能加入一段；数据包会走直线。",
+    "s.list": "步骤列表", "s.none": "还没有步骤。", "s.playFrom": "▶ 从这一步开始播放",
+    "d.head": "文件（显示在导出的 HTML）", "f.crumb": "面包屑（顶部小字）", "f.subtitle": "副标题",
+    "f.tags": "标签（逗号分隔）", "f.cards": "重点卡片（一行一张：标题|值|类型）",
+    "d.cardTypes": "类型可用 {types}，决定卡片左侧颜色。",
+    "d.play": "播放", "f.speed": "每段数据包速度",
+    "speed.slow": "慢", "speed.mid": "中", "speed.fast": "快", "speed.vfast": "很快", "speed.custom": "自定义",
+    "speed.opt": "{name}（{ms} 毫秒）",
+    "f.autoplay": "打开时自动播放",
+    "d.look": "外观", "f.theme": "主题（也会记成新模板的默认值）",
+    "f.ctBase": "从预设主题开始", "d.ctPick": "（选一个覆盖上面的颜色）",
+    "d.ctNote": "卡片、次要文字、网格、标签底色等都由这 6 个颜色推算。拖动取色器时即时预览，放开后记录一次撤销。",
+    "d.view": "视角：{deg}°（工具栏 ⟲ ⟳ 或 R；导出时保留）",
+    "d.stats": "统计", "d.statsLine": "图形 {n} · 线条 {e} · 区域 {p} · 步骤 {s}",
+
+    "v.steps": "⏱ {n} 步", "v.zoomOut": "缩小", "v.fit": "适合", "v.fitTitle": "适合（或双击画布）", "v.zoomIn": "放大",
+    "v.prev": "◀ 上一步", "v.next": "下一步 ▶", "v.play": "▶ 播放", "v.pause": "❚❚ 暂停", "v.inFlow": "流程步骤",
+    "v.step": "步骤 {n}", "v.badge": "STEP {n} / {t}", "v.count": "第 {n} 步，共 {t} 步",
+  };
+}
+
+function LANG_KO_KR() {
+  return {
+    "app.title": "2.5DUMLhtml · 아이소메트릭 흐름도 편집기",
+    "app.lang": "언어",
+    "tb.tpl": "템플릿 ▾", "tb.tplTitle": "템플릿 적용 (Ctrl+Z로 취소 가능)",
+    "tb.open": "열기", "tb.openTitle": "JSON 열기",
+    "tb.save": "JSON 저장", "tb.saveTitle": "JSON 내보내기 (Ctrl+S)",
+    "tb.html": "HTML 내보내기", "tb.htmlTitle": "재생 가능한 HTML 뷰어 내보내기",
+    "tb.png": "PNG 내보내기", "tb.pngTitle": "PNG 내보내기 (2배 해상도)",
+    "tb.undo": "실행 취소 (Ctrl+Z)", "tb.redo": "다시 실행 (Ctrl+Y)",
+    "tb.rotL": "시점을 왼쪽으로 90° 회전 (Shift+R)", "tb.rotR": "시점을 오른쪽으로 90° 회전 (R)",
+    "tb.fit": "맞춤", "tb.fitTitle": "전체가 보이도록 확대/축소 (F)",
+    "tb.zoom100": "100%로 돌아가기",
+    "tb.theme": "테마 전환 (T로 순서대로 전환)",
+    "tb.sideL": "왼쪽 패널 접기 ([)", "tb.sideR": "오른쪽 패널 접기 (])",
+    "tb.play": "▶ 미리보기 재생", "tb.playTitle": "미리보기 재생 (P)",
+    "left.shapes": "도형 (클릭하거나 캔버스로 드래그)", "left.zones": "영역",
+    "tab.prop": "속성", "tab.step": "단계", "tab.doc": "문서",
+    "tl.title": "단계 타임라인", "tl.add": "＋ 단계 추가",
+    "tl.info": "단계 {n}개 · 클릭하여 편집", "tl.empty": "단계가 없습니다: 오른쪽의 「＋ 단계 추가」를 클릭하세요",
+    "step.n": "단계 {n}",
+    "ov.note": "「HTML 내보내기」 결과가 바로 이 화면입니다", "ov.close": "✕ 편집기로 돌아가기 (Esc)",
+    "pal.plate": "영역 판", "pal.plateTitle": "영역 판: 드래그하면 위의 도형도 함께 움직입니다",
+    "pal.shapeTitle": "{name} ({desc})",
+
+    "shape.hex": "앱", "shape.hex.desc": "육각기둥",
+    "shape.box": "서비스", "shape.box.desc": "블록",
+    "shape.cyl": "데이터베이스", "shape.cyl.desc": "원기둥",
+    "shape.server": "서버", "shape.server.desc": "랙",
+    "shape.phone": "클라이언트", "shape.phone.desc": "휴대폰",
+    "shape.desktop": "클라이언트", "shape.desktop.desc": "PC",
+    "shape.gate": "게이트웨이", "shape.gate.desc": "게이트",
+    "shape.users": "사용자", "shape.users.desc": "군중",
+    "shape.file": "파일", "shape.file.desc": "파일 묶음",
+    "theme.paper": "페이퍼", "theme.light": "라이트", "theme.night": "나이트", "theme.midnight": "미드나이트",
+    "theme.graphite": "그래파이트", "theme.blueprint": "블루프린트", "theme.forest": "포레스트", "theme.customPick": "사용자 지정…",
+
+    "type.req": "요청", "type.crypto": "암호화", "type.ext": "외부", "type.resp": "응답", "type.err": "오류", "type.job": "기타",
+
+    "cust.bg": "캔버스", "cust.ink": "글자", "cust.accent": "강조색", "cust.plate": "영역 판", "cust.edge": "선", "cust.stroke": "도형 윤곽",
+
+    "tpl.blank": "빈 캔버스", "tpl.blank.desc": "처음부터 시작",
+    "tpl.xverify": "기관 간 본인 확인", "tpl.xverify.desc": "7단계, 영역 3개, 릴레이 응답",
+    "tpl.web3": "3계층 웹사이트", "tpl.web3.desc": "사용자 → 게이트웨이 → 앱 서버 2대 → 캐시 / DB",
+    "tpl.file": "파일 처리", "tpl.file.desc": "상위 파일 → 변환 → 코어",
+    "tpl.undoNote": "적용 후 Ctrl+Z로 취소할 수 있습니다",
+    "doc.untitled": "제목 없음", "doc.defTitle": "2.5D 흐름", "new.plate": "새 영역",
+
+    "toast.saveFail": "자동 저장 실패 (브라우저가 localStorage를 차단함)",
+    "toast.customHint": "사용자 지정 색은 「문서」 탭에서 조정하세요",
+    "toast.theme": "테마: {name}",
+    "toast.addStep": "캔버스의 선을 클릭하면 이 단계에 추가됩니다",
+    "toast.pasted": "{n}개 붙여넣음", "toast.copied": "{n}개 복사함",
+    "toast.dupEdge": "두 도형은 이미 연결되어 있습니다",
+    "toast.rot": "시점 {deg}°",
+    "toast.jsonOut": "JSON을 내보냈습니다", "toast.htmlOut": "HTML 뷰어를 내보냈습니다", "toast.pngOut": "PNG를 내보냈습니다",
+
+    "toast.opened": "열림: {name}", "toast.openFail": "열 수 없음: {msg}",
+    "toast.empty": "캔버스가 비어 있습니다", "toast.pngFail": "PNG 내보내기 실패: {msg}",
+    "toast.tpl": "템플릿 적용: {name}",
+    "toast.hopAdded": "추가됨: {a} → {b}",
+    "toast.sameNode": "시작과 끝은 같은 도형일 수 없습니다",
+    "toast.corrupt": "마지막 자동 저장이 손상되었습니다. 원본은 localStorage 「{key}」에 백업했습니다",
+    "err.notDoc": "2.5DUMLhtml JSON이 아닙니다 (nodes 없음)", "err.svg": "SVG를 이미지로 변환할 수 없습니다", "err.png": "캔버스를 PNG로 변환할 수 없습니다",
+
+    "hint.step": "단계 {n} 편집 중: 선 클릭 = 패킷 경로에 추가 (Alt+클릭 = 역방향) · 타임라인에서 단계 전환",
+    "hint.main": "드래그로 이동 · 선택 후 위의 「＋」를 드래그하여 연결 · 빈 곳 드래그 / Space+드래그로 이동 · 휠로 확대/축소 · Alt+드래그는 스냅 안 함",
+
+    "sw.auto": "테마 따르기", "sw.custom": "사용자 지정 색",
+    "p.none": "선택 없음", "p.noneHint": "캔버스의 도형, 선, 영역을 클릭하면 속성을 편집할 수 있습니다.",
+    "p.keys": "단축키",
+    "p.keysHtml": "<kbd>드래그</kbd> 이동 (10 단위 스냅) · <kbd>Alt</kbd>+드래그 스냅 없이 해당 항목만<br>" +
+      "<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+클릭 선택 추가/해제 · <kbd>Ctrl</kbd>+<kbd>A</kbd> 모두 선택<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> 복사 / 마지막 클릭 위치에 붙여넣기 (연속 붙여넣기는 대각선으로 이동)<br>" +
+
+      "선택 후 위의 <kbd>＋</kbd>를 다른 도형으로 드래그 = 연결<br>" +
+      "<kbd>Del</kbd> 삭제 · <kbd>Ctrl</kbd>+<kbd>D</kbd> 복제<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> 실행 취소 / 다시 실행 · <kbd>Ctrl</kbd>+<kbd>S</kbd> JSON 저장<br>" +
+      "<kbd>방향키</kbd> 1씩 이동 (<kbd>Shift</kbd>는 10, 아이소메트릭 격자 방향)<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>0</kbd> 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> 확대 / 축소<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> 시점 회전 · <kbd>F</kbd> 맞춤<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> 테마 전환<br>" +
+      "<kbd>P</kbd> 미리보기 재생 · <kbd>[</kbd> <kbd>]</kbd> 양쪽 패널 접기<br>" +
+      "휠 확대/축소 · 빈 곳 드래그 / <kbd>Space</kbd>+드래그 이동 · 빈 곳 더블클릭 = 맞춤<br>" +
+      "도형 더블클릭 = 이름 바꾸기",
+    "p.multi": "{n}개 선택됨", "p.multiColor": "한꺼번에 색 변경 (도형)",
+    "btn.dup": "복제", "btn.del": "삭제", "btn.add": "추가", "btn.swap": "⇄ 방향 반전",
+    "p.shape": "도형", "f.type": "종류", "f.name": "이름", "f.sub": "부제목 (작은 두 번째 줄)",
+    "f.icon": "상단 아이콘 (이모지나 짧은 글자, 비우면 없음)", "f.color": "색", "f.size": "크기", "f.h": "높이",
+    "p.shapeNote": "도형을 삭제하면 연결된 선과 단계의 패킷 경로도 함께 삭제됩니다.",
+    "p.edge": "선", "f.label": "텍스트 (선 가운데 표시)", "f.mode": "경로",
+    "mode.air": "직선 (공중)", "mode.xy": "바닥 L자 (X 다음 Y)", "mode.yx": "바닥 L자 (Y 다음 X)",
+    "f.lineColor": "선 색", "f.dash": "점선",
+    "p.edgeNote": "단계 재생 중에는 선이 단계 종류의 색으로 바뀝니다. 패킷 방향은 이 선이 아니라 단계가 정합니다.",
+    "p.plate": "영역 판", "f.plateLabel": "라벨 (바닥에 눕혀 표시)", "f.plateColor": "채우기",
+    "f.w": "너비 (X)", "f.d": "깊이 (Y)",
+    "p.plateNote": "판을 드래그하면 위의 도형도 함께 움직입니다 (Alt를 누르면 판만). 흰 점 두 개를 드래그하여 크기 조절. 판을 삭제해도 도형은 남습니다.",
+
+    "s.unnamed": "(제목 없음)", "s.up": "위로", "s.down": "아래로", "s.rm": "이 단계 삭제",
+    "f.short": "타임라인 라벨", "f.stype": "종류 (색 결정)", "f.title": "제목", "f.desc": "설명",
+    "f.cap": "코드 블록 제목", "f.code": "코드 블록 (비우면 숨김)",
+    "s.route": "패킷 경로 (순서대로 릴레이)", "s.pktPh": "패킷 텍스트", "s.rev": "반전", "s.hrm": "제거",
+    "s.noRoute": "경로가 없습니다. 캔버스의 선을 클릭하여 추가하세요 (Alt+클릭 = 역방향).",
+    "s.noEdgeOk": "두 도형이 연결되어 있지 않아도 구간을 추가할 수 있으며, 패킷은 직선으로 이동합니다.",
+    "s.list": "단계 목록", "s.none": "단계가 없습니다.", "s.playFrom": "▶ 이 단계부터 재생",
+    "d.head": "문서 (내보낸 HTML에 표시)", "f.crumb": "경로 표시 (상단 작은 줄)", "f.subtitle": "부제목",
+    "f.tags": "태그 (쉼표로 구분)", "f.cards": "핵심 카드 (한 줄에 하나: 제목|값|종류)",
+    "d.cardTypes": "종류는 {types} 중 하나이며 카드 왼쪽 색을 정합니다.",
+    "d.play": "재생", "f.speed": "구간당 패킷 속도",
+    "speed.slow": "느림", "speed.mid": "보통", "speed.fast": "빠름", "speed.vfast": "매우 빠름", "speed.custom": "사용자 지정",
+
+    "speed.opt": "{name} ({ms} ms)",
+    "f.autoplay": "열면 자동 재생",
+    "d.look": "모양", "f.theme": "테마 (새 템플릿의 기본값으로도 기억)",
+    "f.ctBase": "기본 테마에서 시작", "d.ctPick": "(선택하면 위의 색을 덮어씀)",
+    "d.ctNote": "카드, 보조 글자, 격자, 라벨 배경 등은 이 6가지 색에서 계산됩니다. 색상 선택기를 드래그하면 실시간 미리보기, 놓으면 실행 취소 1회로 기록됩니다.",
+
+    "d.view": "시점: {deg}° (도구 모음 ⟲ ⟳ 또는 R, 내보낼 때 유지)",
+    "d.stats": "통계", "d.statsLine": "도형 {n} · 선 {e} · 영역 {p} · 단계 {s}",
+
+    "v.steps": "⏱ {n}단계", "v.zoomOut": "축소", "v.fit": "맞춤", "v.fitTitle": "맞춤 (캔버스 더블클릭도 가능)", "v.zoomIn": "확대",
+
+    "v.prev": "◀ 이전", "v.next": "다음 ▶", "v.play": "▶ 재생", "v.pause": "❚❚ 일시정지", "v.inFlow": "흐름 단계",
+    "v.step": "단계 {n}", "v.badge": "STEP {n} / {t}", "v.count": "{t}단계 중 {n}단계",
+  };
+}
+
+function LANG_ES_ES() {
+  return {
+    "app.title": "2.5DUMLhtml · Editor de flujos isométrico",
+    "app.lang": "Idioma",
+    "tb.tpl": "Plantillas ▾", "tb.tplTitle": "Aplicar una plantilla (Ctrl+Z la deshace)",
+    "tb.open": "Abrir", "tb.openTitle": "Abrir JSON",
+    "tb.save": "Guardar JSON", "tb.saveTitle": "Exportar JSON (Ctrl+S)",
+    "tb.html": "Exportar HTML", "tb.htmlTitle": "Exportar un visor HTML reproducible",
+    "tb.png": "Exportar PNG", "tb.pngTitle": "Exportar PNG (resolución 2×)",
+    "tb.undo": "Deshacer (Ctrl+Z)", "tb.redo": "Rehacer (Ctrl+Y)",
+    "tb.rotL": "Girar la vista 90° a la izquierda (Shift+R)", "tb.rotR": "Girar la vista 90° a la derecha (R)",
+    "tb.fit": "Ajustar", "tb.fitTitle": "Ajustar el zoom para verlo todo (F)",
+    "tb.zoom100": "Volver al 100%",
+    "tb.theme": "Cambiar tema (T los recorre)",
+    "tb.sideL": "Plegar panel izquierdo ([)", "tb.sideR": "Plegar panel derecho (])",
+    "tb.play": "▶ Reproducir vista previa", "tb.playTitle": "Reproducir vista previa (P)",
+    "left.shapes": "FORMAS (clic o arrastrar al lienzo)", "left.zones": "ZONAS",
+    "tab.prop": "Propiedades", "tab.step": "Pasos", "tab.doc": "Documento",
+    "tl.title": "Línea de pasos", "tl.add": "＋ Añadir paso",
+    "tl.info": "Pasos: {n} · clic para editar", "tl.empty": "Aún no hay pasos: haz clic en «＋ Añadir paso» a la derecha",
+
+    "step.n": "Paso {n}",
+    "ov.note": "Esto es exactamente lo que genera «Exportar HTML»", "ov.close": "✕ Volver al editor (Esc)",
+    "pal.plate": "Placa de zona", "pal.plateTitle": "Placa de zona: al arrastrarla se mueven las formas que tiene encima",
+
+    "pal.shapeTitle": "{name} ({desc})",
+
+    "shape.hex": "App", "shape.hex.desc": "prisma hexagonal",
+    "shape.box": "Servicio", "shape.box.desc": "bloque",
+    "shape.cyl": "Base de datos", "shape.cyl.desc": "cilindro",
+    "shape.server": "Servidor", "shape.server.desc": "rack",
+    "shape.phone": "Cliente", "shape.phone.desc": "móvil",
+    "shape.desktop": "Cliente", "shape.desktop.desc": "ordenador",
+    "shape.gate": "Pasarela", "shape.gate.desc": "puerta",
+    "shape.users": "Usuarios", "shape.users.desc": "grupo",
+    "shape.file": "Archivo", "shape.file.desc": "pila de archivos",
+    "theme.paper": "Papel", "theme.light": "Claro", "theme.night": "Noche", "theme.midnight": "Medianoche",
+    "theme.graphite": "Grafito", "theme.blueprint": "Plano", "theme.forest": "Bosque", "theme.customPick": "Personalizado…",
+
+    "type.req": "petición", "type.crypto": "cifrado", "type.ext": "externo", "type.resp": "respuesta", "type.err": "error", "type.job": "otro",
+
+    "cust.bg": "Lienzo", "cust.ink": "Texto", "cust.accent": "Acento", "cust.plate": "Placa de zona", "cust.edge": "Líneas", "cust.stroke": "Contorno de formas",
+
+    "tpl.blank": "Lienzo en blanco", "tpl.blank.desc": "Empezar desde cero",
+    "tpl.xverify": "Verificación de identidad entre entidades", "tpl.xverify.desc": "7 pasos, 3 zonas, respuesta en relevo",
+
+    "tpl.web3": "Sitio web de tres capas", "tpl.web3.desc": "Usuarios → pasarela → dos servidores de aplicación → caché / base de datos",
+
+    "tpl.file": "Procesamiento de archivos", "tpl.file.desc": "Archivo de origen → conversión → sistema central",
+    "tpl.undoNote": "Tras aplicarla puedes pulsar Ctrl+Z para deshacer",
+    "doc.untitled": "Sin título", "doc.defTitle": "Flujo 2.5D", "new.plate": "Nueva zona",
+
+    "toast.saveFail": "Falló el guardado automático (el navegador bloquea localStorage)",
+    "toast.customHint": "Ajusta los colores personalizados en la pestaña Documento",
+    "toast.theme": "Tema: {name}",
+    "toast.addStep": "Haz clic en una línea del lienzo para añadirla a este paso",
+    "toast.pasted": "{n} elemento(s) pegado(s)", "toast.copied": "{n} elemento(s) copiado(s)",
+    "toast.dupEdge": "Estas dos formas ya están conectadas",
+    "toast.rot": "Vista {deg}°",
+    "toast.jsonOut": "JSON exportado", "toast.htmlOut": "Visor HTML exportado", "toast.pngOut": "PNG exportado",
+    "toast.opened": "Abierto: {name}", "toast.openFail": "No se pudo abrir: {msg}",
+    "toast.empty": "El lienzo está vacío", "toast.pngFail": "Falló la exportación PNG: {msg}",
+    "toast.tpl": "Plantilla aplicada: {name}",
+    "toast.hopAdded": "Añadido: {a} → {b}",
+    "toast.sameNode": "El inicio y el final no pueden ser la misma forma",
+    "toast.corrupt": "El último guardado automático estaba dañado; el original se copió en localStorage «{key}»",
+    "err.notDoc": "No es un JSON de 2.5DUMLhtml (sin nodes)", "err.svg": "No se pudo convertir el SVG en imagen", "err.png": "No se pudo convertir el lienzo a PNG",
+
+    "hint.step": "Editando el paso {n}: clic en una línea = añadirla a la ruta del paquete (Alt+clic = invertir) · cambia de paso en la línea de pasos",
+
+    "hint.main": "Arrastra para mover · selecciona y arrastra el «＋» superior para conectar · arrastra el vacío / Espacio+arrastrar para desplazar · rueda para zoom · Alt+arrastrar sin ajuste",
+
+    "sw.auto": "Seguir el tema", "sw.custom": "Color personalizado",
+    "p.none": "NADA SELECCIONADO", "p.noneHint": "Haz clic en una forma, línea o zona del lienzo para editar sus propiedades.",
+
+    "p.keys": "ATAJOS",
+    "p.keysHtml": "<kbd>Arrastrar</kbd> mover (ajusta a 10) · <kbd>Alt</kbd>+arrastrar sin ajuste, solo ese elemento<br>" +
+
+      "<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+clic añadir/quitar de la selección · <kbd>Ctrl</kbd>+<kbd>A</kbd> seleccionar todo<br>" +
+
+      "<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> copiar / pegar en el último clic (pegados repetidos se desplazan en diagonal)<br>" +
+
+      "Selecciona y arrastra el <kbd>＋</kbd> superior a otra forma = conectar<br>" +
+      "<kbd>Supr</kbd> eliminar · <kbd>Ctrl</kbd>+<kbd>D</kbd> duplicar<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> deshacer / rehacer · <kbd>Ctrl</kbd>+<kbd>S</kbd> guardar JSON<br>" +
+      "<kbd>Flechas</kbd> mover 1 (<kbd>Shift</kbd> 10, sobre la cuadrícula isométrica)<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>0</kbd> 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> acercar / alejar<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> girar la vista · <kbd>F</kbd> ajustar<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> cambiar de tema<br>" +
+      "<kbd>P</kbd> reproducir vista previa · <kbd>[</kbd> <kbd>]</kbd> plegar paneles laterales<br>" +
+      "Rueda zoom · arrastrar el vacío / <kbd>Espacio</kbd>+arrastrar desplazar · doble clic en el vacío = ajustar<br>" +
+
+      "Doble clic en una forma = renombrarla",
+    "p.multi": "{n} ELEMENTOS SELECCIONADOS", "p.multiColor": "Cambiar color juntos (formas)",
+    "btn.dup": "Duplicar", "btn.del": "Eliminar", "btn.add": "Añadir", "btn.swap": "⇄ Invertir sentido",
+    "p.shape": "FORMA", "f.type": "Tipo", "f.name": "Nombre", "f.sub": "Subtítulo (segunda línea pequeña)",
+    "f.icon": "Icono superior (emoji o texto corto; vacío = ninguno)", "f.color": "Color", "f.size": "Tamaño", "f.h": "Altura",
+
+    "p.shapeNote": "Eliminar una forma también elimina sus líneas y sus rutas de paquete en los pasos.",
+    "p.edge": "LÍNEA", "f.label": "Texto (en el centro de la línea)", "f.mode": "Trazado",
+    "mode.air": "Recto (en el aire)", "mode.xy": "En L por el suelo (X y luego Y)", "mode.yx": "En L por el suelo (Y y luego X)",
+
+    "f.lineColor": "Color de línea", "f.dash": "Discontinua",
+    "p.edgeNote": "Durante la reproducción la línea toma el color del tipo de paso. El sentido del paquete lo marca el paso, no esta línea.",
+
+    "p.plate": "PLACA DE ZONA", "f.plateLabel": "Etiqueta (tumbada en el suelo)", "f.plateColor": "Relleno",
+    "f.w": "Ancho (X)", "f.d": "Fondo (Y)",
+    "p.plateNote": "Al arrastrar una placa se mueven las formas que tiene encima (mantén Alt para mover solo la placa). Arrastra los dos puntos blancos para cambiar el tamaño. Eliminar una placa conserva sus formas.",
+
+    "s.unnamed": "(sin título)", "s.up": "Subir", "s.down": "Bajar", "s.rm": "Eliminar este paso",
+    "f.short": "Etiqueta en la línea de pasos", "f.stype": "Tipo (define el color)", "f.title": "Título", "f.desc": "Descripción",
+
+    "f.cap": "Título del bloque de código", "f.code": "Bloque de código (vacío = oculto)",
+    "s.route": "RUTA DEL PAQUETE (en relevo, en orden)", "s.pktPh": "Texto del paquete", "s.rev": "Invertir", "s.hrm": "Quitar",
+
+    "s.noRoute": "Aún no hay ruta. Haz clic en una línea del lienzo para añadirla (Alt+clic = invertir).",
+    "s.noEdgeOk": "Puedes añadir un tramo aunque las dos formas no estén conectadas; el paquete viaja en línea recta.",
+    "s.list": "LISTA DE PASOS", "s.none": "Aún no hay pasos.", "s.playFrom": "▶ Reproducir desde este paso",
+    "d.head": "DOCUMENTO (se muestra en el HTML exportado)", "f.crumb": "Ruta de navegación (línea superior pequeña)", "f.subtitle": "Subtítulo",
+
+    "f.tags": "Etiquetas (separadas por comas)", "f.cards": "Tarjetas clave (una por línea: título|valor|tipo)",
+    "d.cardTypes": "El tipo puede ser {types}; define el color izquierdo de la tarjeta.",
+    "d.play": "REPRODUCCIÓN", "f.speed": "Velocidad del paquete por tramo",
+    "speed.slow": "Lenta", "speed.mid": "Media", "speed.fast": "Rápida", "speed.vfast": "Muy rápida", "speed.custom": "Personalizada",
+
+    "speed.opt": "{name} ({ms} ms)",
+    "f.autoplay": "Reproducir automáticamente al abrir",
+    "d.look": "APARIENCIA", "f.theme": "Tema (también se recuerda como preferencia para plantillas nuevas)",
+    "f.ctBase": "Partir de un tema predefinido", "d.ctPick": "(elige uno para sobrescribir los colores de arriba)",
+    "d.ctNote": "Tarjetas, texto secundario, cuadrícula, fondos de etiquetas, etc. se derivan de estos 6 colores. Arrastrar un selector muestra una vista previa en vivo; al soltarlo se registra un paso de deshacer.",
+
+    "d.view": "Vista: {deg}° (barra ⟲ ⟳ o R; se conserva al exportar)",
+    "d.stats": "ESTADÍSTICAS", "d.statsLine": "Formas {n} · Líneas {e} · Zonas {p} · Pasos {s}",
+
+    "v.steps": "⏱ {n} pasos", "v.zoomOut": "Alejar", "v.fit": "Ajustar", "v.fitTitle": "Ajustar (o doble clic en el lienzo)", "v.zoomIn": "Acercar",
+
+    "v.prev": "◀ Anterior", "v.next": "Siguiente ▶", "v.play": "▶ Reproducir", "v.pause": "❚❚ Pausa", "v.inFlow": "EN ESTE FLUJO",
+
+    "v.step": "Paso {n}", "v.badge": "STEP {n} / {t}", "v.count": "Paso {n} de {t}",
+  };
+}
+
+function LANG_FR_FR() {
+  return {
+    "app.title": "2.5DUMLhtml · Éditeur de flux isométrique",
+    "app.lang": "Langue",
+    "tb.tpl": "Modèles ▾", "tb.tplTitle": "Appliquer un modèle (Ctrl+Z pour annuler)",
+    "tb.open": "Ouvrir", "tb.openTitle": "Ouvrir un JSON",
+    "tb.save": "Enregistrer JSON", "tb.saveTitle": "Exporter en JSON (Ctrl+S)",
+    "tb.html": "Exporter HTML", "tb.htmlTitle": "Exporter une visionneuse HTML animée",
+    "tb.png": "Exporter PNG", "tb.pngTitle": "Exporter en PNG (résolution 2×)",
+    "tb.undo": "Annuler (Ctrl+Z)", "tb.redo": "Rétablir (Ctrl+Y)",
+    "tb.rotL": "Pivoter la vue de 90° à gauche (Shift+R)", "tb.rotR": "Pivoter la vue de 90° à droite (R)",
+    "tb.fit": "Ajuster", "tb.fitTitle": "Zoomer pour tout voir (F)",
+    "tb.zoom100": "Revenir à 100 %",
+    "tb.theme": "Changer de thème (T pour les parcourir)",
+    "tb.sideL": "Replier le panneau gauche ([)", "tb.sideR": "Replier le panneau droit (])",
+    "tb.play": "▶ Lire l’aperçu", "tb.playTitle": "Lire l’aperçu (P)",
+    "left.shapes": "FORMES (cliquer ou glisser sur le canevas)", "left.zones": "ZONES",
+    "tab.prop": "Propriétés", "tab.step": "Étapes", "tab.doc": "Document",
+    "tl.title": "Frise des étapes", "tl.add": "＋ Ajouter une étape",
+    "tl.info": "Étapes : {n} · cliquer pour modifier", "tl.empty": "Aucune étape : cliquez sur « ＋ Ajouter une étape » à droite",
+
+    "step.n": "Étape {n}",
+    "ov.note": "C’est exactement ce que produit « Exporter HTML »", "ov.close": "✕ Retour à l’éditeur (Échap)",
+    "pal.plate": "Plaque de zone", "pal.plateTitle": "Plaque de zone : en la déplaçant, les formes posées dessus suivent",
+
+    "pal.shapeTitle": "{name} ({desc})",
+
+    "shape.hex": "Appli", "shape.hex.desc": "prisme hexagonal",
+    "shape.box": "Service", "shape.box.desc": "bloc",
+    "shape.cyl": "Base de données", "shape.cyl.desc": "cylindre",
+    "shape.server": "Serveur", "shape.server.desc": "baie",
+    "shape.phone": "Client", "shape.phone.desc": "mobile",
+    "shape.desktop": "Client", "shape.desktop.desc": "ordinateur",
+    "shape.gate": "Passerelle", "shape.gate.desc": "portique",
+    "shape.users": "Utilisateurs", "shape.users.desc": "groupe",
+    "shape.file": "Fichier", "shape.file.desc": "pile de fichiers",
+    "theme.paper": "Papier", "theme.light": "Clair", "theme.night": "Nuit", "theme.midnight": "Minuit",
+    "theme.graphite": "Graphite", "theme.blueprint": "Plan bleu", "theme.forest": "Forêt", "theme.customPick": "Personnalisé…",
+
+    "type.req": "requête", "type.crypto": "chiffrement", "type.ext": "externe", "type.resp": "réponse", "type.err": "erreur", "type.job": "autre",
+
+    "cust.bg": "Canevas", "cust.ink": "Texte", "cust.accent": "Accent", "cust.plate": "Plaque de zone", "cust.edge": "Lignes", "cust.stroke": "Contour des formes",
+
+    "tpl.blank": "Canevas vierge", "tpl.blank.desc": "Partir de zéro",
+    "tpl.xverify": "Vérification d’identité inter-organismes", "tpl.xverify.desc": "7 étapes, 3 zones, réponse en relais",
+
+    "tpl.web3": "Site web trois tiers", "tpl.web3.desc": "Utilisateurs → passerelle → deux serveurs d’application → cache / base de données",
+
+    "tpl.file": "Traitement de fichiers", "tpl.file.desc": "Fichier amont → conversion → système central",
+    "tpl.undoNote": "Après application, Ctrl+Z permet d’annuler",
+    "doc.untitled": "Sans titre", "doc.defTitle": "Flux 2.5D", "new.plate": "Nouvelle zone",
+
+    "toast.saveFail": "Échec de l’enregistrement automatique (le navigateur bloque localStorage)",
+    "toast.customHint": "Réglez les couleurs personnalisées dans l’onglet Document",
+    "toast.theme": "Thème : {name}",
+    "toast.addStep": "Cliquez sur une ligne du canevas pour l’ajouter à cette étape",
+    "toast.pasted": "{n} élément(s) collé(s)", "toast.copied": "{n} élément(s) copié(s)",
+    "toast.dupEdge": "Ces deux formes sont déjà reliées",
+    "toast.rot": "Vue {deg}°",
+    "toast.jsonOut": "JSON exporté", "toast.htmlOut": "Visionneuse HTML exportée", "toast.pngOut": "PNG exporté",
+    "toast.opened": "Ouvert : {name}", "toast.openFail": "Ouverture impossible : {msg}",
+    "toast.empty": "Le canevas est vide", "toast.pngFail": "Échec de l’export PNG : {msg}",
+    "toast.tpl": "Modèle appliqué : {name}",
+    "toast.hopAdded": "Ajouté : {a} → {b}",
+    "toast.sameNode": "Le départ et l’arrivée ne peuvent pas être la même forme",
+    "toast.corrupt": "Le dernier enregistrement automatique était corrompu ; l’original a été sauvegardé dans localStorage « {key} »",
+
+    "err.notDoc": "Ce n’est pas un JSON 2.5DUMLhtml (pas de nodes)", "err.svg": "Impossible de convertir le SVG en image", "err.png": "Impossible de convertir le canevas en PNG",
+
+    "hint.step": "Modification de l’étape {n} : clic sur une ligne = l’ajouter au trajet du paquet (Alt+clic = sens inverse) · changez d’étape sur la frise",
+
+    "hint.main": "Glisser pour déplacer · sélectionner puis glisser le « ＋ » du dessus pour relier · glisser le vide / Espace+glisser pour défiler · molette pour zoomer · Alt+glisser sans magnétisme",
+
+    "sw.auto": "Suivre le thème", "sw.custom": "Couleur personnalisée",
+    "p.none": "AUCUNE SÉLECTION", "p.noneHint": "Cliquez sur une forme, une ligne ou une zone du canevas pour modifier ses propriétés.",
+
+    "p.keys": "RACCOURCIS",
+    "p.keysHtml": "<kbd>Glisser</kbd> déplacer (magnétisme 10) · <kbd>Alt</kbd>+glisser sans magnétisme, cet élément seul<br>" +
+
+      "<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+clic ajouter/retirer de la sélection · <kbd>Ctrl</kbd>+<kbd>A</kbd> tout sélectionner<br>" +
+
+      "<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> copier / coller au dernier clic (les collages répétés se décalent en diagonale)<br>" +
+
+      "Sélectionner puis glisser le <kbd>＋</kbd> du dessus sur une autre forme = relier<br>" +
+      "<kbd>Suppr</kbd> supprimer · <kbd>Ctrl</kbd>+<kbd>D</kbd> dupliquer<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> annuler / rétablir · <kbd>Ctrl</kbd>+<kbd>S</kbd> enregistrer JSON<br>" +
+
+      "<kbd>Flèches</kbd> déplacer de 1 (<kbd>Shift</kbd> 10, selon la grille isométrique)<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>0</kbd> 100 % · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> zoom avant / arrière<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> pivoter la vue · <kbd>F</kbd> ajuster<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> changer de thème<br>" +
+      "<kbd>P</kbd> lire l’aperçu · <kbd>[</kbd> <kbd>]</kbd> replier les panneaux<br>" +
+      "Molette zoom · glisser le vide / <kbd>Espace</kbd>+glisser défiler · double-clic dans le vide = ajuster<br>" +
+      "Double-clic sur une forme = la renommer",
+    "p.multi": "{n} ÉLÉMENTS SÉLECTIONNÉS", "p.multiColor": "Recolorer ensemble (formes)",
+    "btn.dup": "Dupliquer", "btn.del": "Supprimer", "btn.add": "Ajouter", "btn.swap": "⇄ Inverser le sens",
+    "p.shape": "FORME", "f.type": "Type", "f.name": "Nom", "f.sub": "Sous-titre (petite deuxième ligne)",
+    "f.icon": "Icône du dessus (emoji ou texte court ; vide = aucune)", "f.color": "Couleur", "f.size": "Taille", "f.h": "Hauteur",
+
+    "p.shapeNote": "Supprimer une forme supprime aussi ses lignes et ses trajets de paquet dans les étapes.",
+    "p.edge": "LIGNE", "f.label": "Texte (au milieu de la ligne)", "f.mode": "Tracé",
+    "mode.air": "Droit (en l’air)", "mode.xy": "En L au sol (X puis Y)", "mode.yx": "En L au sol (Y puis X)",
+    "f.lineColor": "Couleur de ligne", "f.dash": "Pointillés",
+    "p.edgeNote": "Pendant la lecture, la ligne prend la couleur du type d’étape. Le sens du paquet est défini par l’étape, pas par cette ligne.",
+
+    "p.plate": "PLAQUE DE ZONE", "f.plateLabel": "Libellé (posé à plat au sol)", "f.plateColor": "Remplissage",
+    "f.w": "Largeur (X)", "f.d": "Profondeur (Y)",
+    "p.plateNote": "Déplacer une plaque déplace les formes posées dessus (maintenez Alt pour la plaque seule). Glissez les deux points blancs pour redimensionner. Supprimer une plaque conserve ses formes.",
+
+    "s.unnamed": "(sans titre)", "s.up": "Monter", "s.down": "Descendre", "s.rm": "Supprimer cette étape",
+    "f.short": "Libellé de la frise", "f.stype": "Type (définit la couleur)", "f.title": "Titre", "f.desc": "Description",
+
+    "f.cap": "Légende du bloc de code", "f.code": "Bloc de code (vide = masqué)",
+    "s.route": "TRAJET DU PAQUET (en relais, dans l’ordre)", "s.pktPh": "Texte du paquet", "s.rev": "Inverser", "s.hrm": "Retirer",
+
+    "s.noRoute": "Aucun trajet. Cliquez sur une ligne du canevas pour l’ajouter (Alt+clic = sens inverse).",
+    "s.noEdgeOk": "Vous pouvez ajouter un tronçon même si les deux formes ne sont pas reliées ; le paquet voyage en ligne droite.",
+
+    "s.list": "LISTE DES ÉTAPES", "s.none": "Aucune étape.", "s.playFrom": "▶ Lire à partir de cette étape",
+    "d.head": "DOCUMENT (affiché dans le HTML exporté)", "f.crumb": "Fil d’Ariane (petite ligne du haut)", "f.subtitle": "Sous-titre",
+
+    "f.tags": "Étiquettes (séparées par des virgules)", "f.cards": "Cartes clés (une par ligne : titre|valeur|type)",
+    "d.cardTypes": "Le type peut être {types} ; il définit la couleur à gauche de la carte.",
+    "d.play": "LECTURE", "f.speed": "Vitesse du paquet par tronçon",
+    "speed.slow": "Lente", "speed.mid": "Moyenne", "speed.fast": "Rapide", "speed.vfast": "Très rapide", "speed.custom": "Personnalisée",
+
+    "speed.opt": "{name} ({ms} ms)",
+    "f.autoplay": "Lecture automatique à l’ouverture",
+    "d.look": "APPARENCE", "f.theme": "Thème (aussi mémorisé comme préférence pour les nouveaux modèles)",
+    "f.ctBase": "Partir d’un thème prédéfini", "d.ctPick": "(en choisir un écrase les couleurs ci-dessus)",
+    "d.ctNote": "Cartes, texte secondaire, grille, fonds des libellés, etc. sont déduits de ces 6 couleurs. Faire glisser un sélecteur affiche un aperçu en direct ; le relâcher enregistre une étape d’annulation.",
+
+    "d.view": "Vue : {deg}° (barre d’outils ⟲ ⟳ ou R ; conservée à l’export)",
+    "d.stats": "STATISTIQUES", "d.statsLine": "Formes {n} · Lignes {e} · Zones {p} · Étapes {s}",
+
+    "v.steps": "⏱ {n} étapes", "v.zoomOut": "Zoom arrière", "v.fit": "Ajuster", "v.fitTitle": "Ajuster (ou double-clic sur le canevas)", "v.zoomIn": "Zoom avant",
+
+    "v.prev": "◀ Précédent", "v.next": "Suivant ▶", "v.play": "▶ Lire", "v.pause": "❚❚ Pause", "v.inFlow": "DANS CE FLUX",
+
+    "v.step": "Étape {n}", "v.badge": "STEP {n} / {t}", "v.count": "Étape {n} sur {t}",
+  };
+}
+
+function LANG_DE_DE() {
+  return {
+    "app.title": "2.5DUMLhtml · Isometrischer Ablauf-Editor",
+    "app.lang": "Sprache",
+    "tb.tpl": "Vorlagen ▾", "tb.tplTitle": "Vorlage anwenden (Strg+Z macht es rückgängig)",
+    "tb.open": "Öffnen", "tb.openTitle": "JSON öffnen",
+    "tb.save": "JSON speichern", "tb.saveTitle": "Als JSON exportieren (Strg+S)",
+    "tb.html": "HTML exportieren", "tb.htmlTitle": "Abspielbaren HTML-Viewer exportieren",
+    "tb.png": "PNG exportieren", "tb.pngTitle": "Als PNG exportieren (2-fache Auflösung)",
+    "tb.undo": "Rückgängig (Strg+Z)", "tb.redo": "Wiederholen (Strg+Y)",
+    "tb.rotL": "Ansicht 90° nach links drehen (Shift+R)", "tb.rotR": "Ansicht 90° nach rechts drehen (R)",
+    "tb.fit": "Einpassen", "tb.fitTitle": "Alles ins Bild zoomen (F)",
+    "tb.zoom100": "Zurück auf 100 %",
+    "tb.theme": "Design wechseln (T schaltet weiter)",
+    "tb.sideL": "Linkes Feld einklappen ([)", "tb.sideR": "Rechtes Feld einklappen (])",
+    "tb.play": "▶ Vorschau abspielen", "tb.playTitle": "Vorschau abspielen (P)",
+    "left.shapes": "FORMEN (klicken oder auf die Fläche ziehen)", "left.zones": "ZONEN",
+    "tab.prop": "Eigenschaften", "tab.step": "Schritte", "tab.doc": "Dokument",
+    "tl.title": "Schritt-Zeitleiste", "tl.add": "＋ Schritt hinzufügen",
+    "tl.info": "Schritte: {n} · zum Bearbeiten klicken", "tl.empty": "Noch keine Schritte: rechts auf „＋ Schritt hinzufügen“ klicken",
+
+    "step.n": "Schritt {n}",
+    "ov.note": "Genau das erzeugt „HTML exportieren“", "ov.close": "✕ Zurück zum Editor (Esc)",
+    "pal.plate": "Zonenplatte", "pal.plateTitle": "Zonenplatte: beim Ziehen wandern die Formen darauf mit",
+    "pal.shapeTitle": "{name} ({desc})",
+
+    "shape.hex": "App", "shape.hex.desc": "Sechskantprisma",
+    "shape.box": "Dienst", "shape.box.desc": "Block",
+    "shape.cyl": "Datenbank", "shape.cyl.desc": "Zylinder",
+    "shape.server": "Server", "shape.server.desc": "Rack",
+    "shape.phone": "Client", "shape.phone.desc": "Handy",
+    "shape.desktop": "Client", "shape.desktop.desc": "Computer",
+    "shape.gate": "Gateway", "shape.gate.desc": "Tor",
+    "shape.users": "Benutzer", "shape.users.desc": "Gruppe",
+    "shape.file": "Datei", "shape.file.desc": "Dateistapel",
+    "theme.paper": "Papier", "theme.light": "Hell", "theme.night": "Nacht", "theme.midnight": "Mitternacht",
+    "theme.graphite": "Graphit", "theme.blueprint": "Blaupause", "theme.forest": "Wald", "theme.customPick": "Eigenes…",
+
+    "type.req": "Anfrage", "type.crypto": "Krypto", "type.ext": "extern", "type.resp": "Antwort", "type.err": "Fehler", "type.job": "Sonstiges",
+
+    "cust.bg": "Fläche", "cust.ink": "Text", "cust.accent": "Akzent", "cust.plate": "Zonenplatte", "cust.edge": "Linien", "cust.stroke": "Formumriss",
+
+    "tpl.blank": "Leere Fläche", "tpl.blank.desc": "Bei null anfangen",
+    "tpl.xverify": "Organisationsübergreifende Identitätsprüfung", "tpl.xverify.desc": "7 Schritte, 3 Zonen, Antwort per Staffel",
+
+    "tpl.web3": "Dreischichtige Website", "tpl.web3.desc": "Benutzer → Gateway → zwei App-Server → Cache / Datenbank",
+    "tpl.file": "Dateiverarbeitung", "tpl.file.desc": "Vorgelagerte Datei → Konvertierung → Kernsystem",
+    "tpl.undoNote": "Nach dem Anwenden mit Strg+Z rückgängig machen",
+    "doc.untitled": "Ohne Titel", "doc.defTitle": "2.5D-Ablauf", "new.plate": "Neue Zone",
+
+    "toast.saveFail": "Automatisches Speichern fehlgeschlagen (Browser blockiert localStorage)",
+    "toast.customHint": "Eigene Farben im Reiter Dokument anpassen",
+    "toast.theme": "Design: {name}",
+    "toast.addStep": "Eine Linie auf der Fläche anklicken, um sie diesem Schritt hinzuzufügen",
+    "toast.pasted": "{n} Element(e) eingefügt", "toast.copied": "{n} Element(e) kopiert",
+    "toast.dupEdge": "Diese beiden Formen sind bereits verbunden",
+    "toast.rot": "Ansicht {deg}°",
+    "toast.jsonOut": "JSON exportiert", "toast.htmlOut": "HTML-Viewer exportiert", "toast.pngOut": "PNG exportiert",
+    "toast.opened": "Geöffnet: {name}", "toast.openFail": "Öffnen nicht möglich: {msg}",
+    "toast.empty": "Die Fläche ist leer", "toast.pngFail": "PNG-Export fehlgeschlagen: {msg}",
+    "toast.tpl": "Vorlage angewendet: {name}",
+    "toast.hopAdded": "Hinzugefügt: {a} → {b}",
+    "toast.sameNode": "Start und Ziel dürfen nicht dieselbe Form sein",
+    "toast.corrupt": "Die letzte automatische Speicherung war beschädigt; das Original wurde in localStorage „{key}“ gesichert",
+
+    "err.notDoc": "Kein 2.5DUMLhtml-JSON (keine nodes)", "err.svg": "SVG konnte nicht in ein Bild umgewandelt werden", "err.png": "Fläche konnte nicht in PNG umgewandelt werden",
+
+    "hint.step": "Schritt {n} wird bearbeitet: Linie anklicken = zur Paketroute hinzufügen (Alt+Klick = umgekehrt) · Schritte in der Zeitleiste wechseln",
+
+    "hint.main": "Ziehen zum Verschieben · auswählen, dann das „＋“ oben ziehen zum Verbinden · Leerfläche ziehen / Leertaste+Ziehen zum Schwenken · Mausrad zoomt · Alt+Ziehen ohne Einrasten",
+
+    "sw.auto": "Design folgen", "sw.custom": "Eigene Farbe",
+    "p.none": "NICHTS AUSGEWÄHLT", "p.noneHint": "Eine Form, Linie oder Zone auf der Fläche anklicken, um ihre Eigenschaften zu bearbeiten.",
+
+    "p.keys": "TASTENKÜRZEL",
+    "p.keysHtml": "<kbd>Ziehen</kbd> verschieben (rastet auf 10) · <kbd>Alt</kbd>+Ziehen ohne Einrasten, nur dieses Element<br>" +
+
+      "<kbd>Shift</kbd>/<kbd>Strg</kbd>+Klick zur Auswahl hinzufügen/entfernen · <kbd>Strg</kbd>+<kbd>A</kbd> alles auswählen<br>" +
+
+      "<kbd>Strg</kbd>+<kbd>C</kbd>/<kbd>V</kbd> kopieren / am letzten Klick einfügen (wiederholtes Einfügen versetzt diagonal)<br>" +
+
+      "Auswählen, dann das <kbd>＋</kbd> oben auf eine andere Form ziehen = verbinden<br>" +
+      "<kbd>Entf</kbd> löschen · <kbd>Strg</kbd>+<kbd>D</kbd> duplizieren<br>" +
+      "<kbd>Strg</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> rückgängig / wiederholen · <kbd>Strg</kbd>+<kbd>S</kbd> JSON speichern<br>" +
+
+      "<kbd>Pfeiltasten</kbd> um 1 verschieben (<kbd>Shift</kbd> 10, entlang des Isometrierasters)<br>" +
+      "<kbd>Strg</kbd>+<kbd>0</kbd> 100 % · <kbd>Strg</kbd>+<kbd>+</kbd>/<kbd>-</kbd> vergrößern / verkleinern<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> Ansicht drehen · <kbd>F</kbd> einpassen<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> Design wechseln<br>" +
+      "<kbd>P</kbd> Vorschau abspielen · <kbd>[</kbd> <kbd>]</kbd> Seitenfelder einklappen<br>" +
+      "Mausrad zoomt · Leerfläche ziehen / <kbd>Leertaste</kbd>+Ziehen schwenkt · Doppelklick auf Leerfläche = einpassen<br>" +
+
+      "Doppelklick auf eine Form = umbenennen",
+    "p.multi": "{n} ELEMENTE AUSGEWÄHLT", "p.multiColor": "Gemeinsam umfärben (Formen)",
+    "btn.dup": "Duplizieren", "btn.del": "Löschen", "btn.add": "Hinzufügen", "btn.swap": "⇄ Richtung umkehren",
+    "p.shape": "FORM", "f.type": "Typ", "f.name": "Name", "f.sub": "Untertitel (kleine zweite Zeile)",
+    "f.icon": "Symbol oben (Emoji oder kurzer Text; leer = keins)", "f.color": "Farbe", "f.size": "Größe", "f.h": "Höhe",
+
+    "p.shapeNote": "Beim Löschen einer Form werden auch ihre Linien und ihre Paketrouten in den Schritten gelöscht.",
+    "p.edge": "LINIE", "f.label": "Text (in der Linienmitte)", "f.mode": "Verlauf",
+    "mode.air": "Gerade (in der Luft)", "mode.xy": "L-Form am Boden (erst X, dann Y)", "mode.yx": "L-Form am Boden (erst Y, dann X)",
+
+    "f.lineColor": "Linienfarbe", "f.dash": "Gestrichelt",
+    "p.edgeNote": "Beim Abspielen nimmt die Linie die Farbe des Schritttyps an. Die Paketrichtung bestimmt der Schritt, nicht diese Linie.",
+
+    "p.plate": "ZONENPLATTE", "f.plateLabel": "Beschriftung (liegt flach am Boden)", "f.plateColor": "Füllung",
+    "f.w": "Breite (X)", "f.d": "Tiefe (Y)",
+    "p.plateNote": "Beim Ziehen einer Platte wandern die Formen darauf mit (Alt gedrückt halten = nur die Platte). Die zwei weißen Punkte ziehen, um die Größe zu ändern. Beim Löschen einer Platte bleiben ihre Formen erhalten.",
+
+    "s.unnamed": "(ohne Titel)", "s.up": "Nach oben", "s.down": "Nach unten", "s.rm": "Diesen Schritt löschen",
+    "f.short": "Beschriftung in der Zeitleiste", "f.stype": "Typ (bestimmt die Farbe)", "f.title": "Titel", "f.desc": "Beschreibung",
+
+    "f.cap": "Überschrift des Codeblocks", "f.code": "Codeblock (leer = ausgeblendet)",
+    "s.route": "PAKETROUTE (der Reihe nach weitergereicht)", "s.pktPh": "Pakettext", "s.rev": "Umkehren", "s.hrm": "Entfernen",
+
+    "s.noRoute": "Noch keine Route. Eine Linie auf der Fläche anklicken, um sie hinzuzufügen (Alt+Klick = umgekehrt).",
+    "s.noEdgeOk": "Ein Abschnitt kann auch ohne Verbindung der beiden Formen hinzugefügt werden; das Paket fliegt dann geradeaus.",
+
+    "s.list": "SCHRITTLISTE", "s.none": "Noch keine Schritte.", "s.playFrom": "▶ Ab diesem Schritt abspielen",
+    "d.head": "DOKUMENT (im exportierten HTML angezeigt)", "f.crumb": "Brotkrümelpfad (kleine Zeile oben)", "f.subtitle": "Untertitel",
+
+    "f.tags": "Schlagwörter (durch Kommas getrennt)", "f.cards": "Kernkarten (eine pro Zeile: Titel|Wert|Typ)",
+    "d.cardTypes": "Als Typ geht {types}; er bestimmt die linke Farbe der Karte.",
+    "d.play": "WIEDERGABE", "f.speed": "Paketgeschwindigkeit pro Abschnitt",
+    "speed.slow": "Langsam", "speed.mid": "Mittel", "speed.fast": "Schnell", "speed.vfast": "Sehr schnell", "speed.custom": "Eigene",
+
+    "speed.opt": "{name} ({ms} ms)",
+    "f.autoplay": "Beim Öffnen automatisch abspielen",
+    "d.look": "DARSTELLUNG", "f.theme": "Design (wird auch als Vorgabe für neue Vorlagen gemerkt)",
+    "f.ctBase": "Von einem Standarddesign ausgehen", "d.ctPick": "(Auswahl überschreibt die Farben oben)",
+    "d.ctNote": "Karten, Nebentext, Raster, Beschriftungsflächen usw. werden aus diesen 6 Farben abgeleitet. Ziehen am Farbwähler zeigt eine Live-Vorschau; Loslassen speichert einen Rückgängig-Schritt.",
+
+    "d.view": "Ansicht: {deg}° (Werkzeugleiste ⟲ ⟳ oder R; bleibt beim Export erhalten)",
+    "d.stats": "STATISTIK", "d.statsLine": "Formen {n} · Linien {e} · Zonen {p} · Schritte {s}",
+
+    "v.steps": "⏱ {n} Schritte", "v.zoomOut": "Verkleinern", "v.fit": "Einpassen", "v.fitTitle": "Einpassen (oder Doppelklick auf die Fläche)", "v.zoomIn": "Vergrößern",
+
+    "v.prev": "◀ Zurück", "v.next": "Weiter ▶", "v.play": "▶ Abspielen", "v.pause": "❚❚ Pause", "v.inFlow": "IN DIESEM ABLAUF",
+
+    "v.step": "Schritt {n}", "v.badge": "STEP {n} / {t}", "v.count": "Schritt {n} von {t}",
+  };
+}
+
+function LANG_PT_PT() {
+  return {
+    "app.title": "2.5DUMLhtml · Editor de fluxos isométrico",
+    "app.lang": "Idioma",
+    "tb.tpl": "Modelos ▾", "tb.tplTitle": "Aplicar um modelo (Ctrl+Z anula)",
+    "tb.open": "Abrir", "tb.openTitle": "Abrir JSON",
+    "tb.save": "Guardar JSON", "tb.saveTitle": "Exportar JSON (Ctrl+S)",
+    "tb.html": "Exportar HTML", "tb.htmlTitle": "Exportar um visualizador HTML reproduzível",
+    "tb.png": "Exportar PNG", "tb.pngTitle": "Exportar PNG (resolução 2×)",
+    "tb.undo": "Anular (Ctrl+Z)", "tb.redo": "Refazer (Ctrl+Y)",
+    "tb.rotL": "Rodar a vista 90° para a esquerda (Shift+R)", "tb.rotR": "Rodar a vista 90° para a direita (R)",
+    "tb.fit": "Ajustar", "tb.fitTitle": "Ajustar o zoom para ver tudo (F)",
+    "tb.zoom100": "Voltar a 100%",
+    "tb.theme": "Mudar de tema (T percorre-os)",
+    "tb.sideL": "Recolher painel esquerdo ([)", "tb.sideR": "Recolher painel direito (])",
+    "tb.play": "▶ Reproduzir pré-visualização", "tb.playTitle": "Reproduzir pré-visualização (P)",
+    "left.shapes": "FORMAS (clicar ou arrastar para a tela)", "left.zones": "ZONAS",
+    "tab.prop": "Propriedades", "tab.step": "Passos", "tab.doc": "Documento",
+    "tl.title": "Linha de passos", "tl.add": "＋ Adicionar passo",
+    "tl.info": "Passos: {n} · clique para editar", "tl.empty": "Ainda não há passos: clique em «＋ Adicionar passo» à direita",
+
+    "step.n": "Passo {n}",
+    "ov.note": "É exatamente isto que «Exportar HTML» produz", "ov.close": "✕ Voltar ao editor (Esc)",
+    "pal.plate": "Placa de zona", "pal.plateTitle": "Placa de zona: ao arrastá-la, as formas em cima acompanham",
+    "pal.shapeTitle": "{name} ({desc})",
+
+    "shape.hex": "App", "shape.hex.desc": "prisma hexagonal",
+    "shape.box": "Serviço", "shape.box.desc": "bloco",
+    "shape.cyl": "Base de dados", "shape.cyl.desc": "cilindro",
+    "shape.server": "Servidor", "shape.server.desc": "bastidor",
+    "shape.phone": "Cliente", "shape.phone.desc": "telemóvel",
+    "shape.desktop": "Cliente", "shape.desktop.desc": "computador",
+    "shape.gate": "Gateway", "shape.gate.desc": "portão",
+    "shape.users": "Utilizadores", "shape.users.desc": "grupo",
+    "shape.file": "Ficheiro", "shape.file.desc": "pilha de ficheiros",
+    "theme.paper": "Papel", "theme.light": "Claro", "theme.night": "Noite", "theme.midnight": "Meia-noite",
+    "theme.graphite": "Grafite", "theme.blueprint": "Planta", "theme.forest": "Floresta", "theme.customPick": "Personalizado…",
+
+    "type.req": "pedido", "type.crypto": "cifra", "type.ext": "externo", "type.resp": "resposta", "type.err": "erro", "type.job": "outro",
+
+    "cust.bg": "Tela", "cust.ink": "Texto", "cust.accent": "Destaque", "cust.plate": "Placa de zona", "cust.edge": "Linhas", "cust.stroke": "Contorno das formas",
+
+    "tpl.blank": "Tela em branco", "tpl.blank.desc": "Começar do zero",
+    "tpl.xverify": "Verificação de identidade entre entidades", "tpl.xverify.desc": "7 passos, 3 zonas, resposta em estafeta",
+
+    "tpl.web3": "Site de três camadas", "tpl.web3.desc": "Utilizadores → gateway → dois servidores de aplicação → cache / base de dados",
+
+    "tpl.file": "Processamento de ficheiros", "tpl.file.desc": "Ficheiro de origem → conversão → sistema central",
+    "tpl.undoNote": "Depois de aplicar pode premir Ctrl+Z para anular",
+    "doc.untitled": "Sem título", "doc.defTitle": "Fluxo 2.5D", "new.plate": "Nova zona",
+
+    "toast.saveFail": "Falha na gravação automática (o navegador bloqueia o localStorage)",
+    "toast.customHint": "Ajuste as cores personalizadas no separador Documento",
+    "toast.theme": "Tema: {name}",
+    "toast.addStep": "Clique numa linha da tela para a adicionar a este passo",
+    "toast.pasted": "{n} elemento(s) colado(s)", "toast.copied": "{n} elemento(s) copiado(s)",
+    "toast.dupEdge": "Estas duas formas já estão ligadas",
+    "toast.rot": "Vista {deg}°",
+    "toast.jsonOut": "JSON exportado", "toast.htmlOut": "Visualizador HTML exportado", "toast.pngOut": "PNG exportado",
+    "toast.opened": "Aberto: {name}", "toast.openFail": "Não foi possível abrir: {msg}",
+    "toast.empty": "A tela está vazia", "toast.pngFail": "Falha ao exportar PNG: {msg}",
+    "toast.tpl": "Modelo aplicado: {name}",
+    "toast.hopAdded": "Adicionado: {a} → {b}",
+    "toast.sameNode": "O início e o fim não podem ser a mesma forma",
+    "toast.corrupt": "A última gravação automática estava corrompida; o original foi guardado em localStorage «{key}»",
+    "err.notDoc": "Não é um JSON do 2.5DUMLhtml (sem nodes)", "err.svg": "Não foi possível converter o SVG em imagem", "err.png": "Não foi possível converter a tela em PNG",
+
+    "hint.step": "A editar o passo {n}: clicar numa linha = adicioná-la à rota do pacote (Alt+clique = inverter) · mude de passo na linha de passos",
+
+    "hint.main": "Arraste para mover · selecione e arraste o «＋» de cima para ligar · arraste o vazio / Espaço+arrastar para deslocar · roda para zoom · Alt+arrastar sem encaixe",
+
+    "sw.auto": "Seguir o tema", "sw.custom": "Cor personalizada",
+    "p.none": "NADA SELECIONADO", "p.noneHint": "Clique numa forma, linha ou zona da tela para editar as propriedades.",
+
+    "p.keys": "ATALHOS",
+    "p.keysHtml": "<kbd>Arrastar</kbd> mover (encaixa a 10) · <kbd>Alt</kbd>+arrastar sem encaixe, só esse elemento<br>" +
+
+      "<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+clique adicionar/retirar da seleção · <kbd>Ctrl</kbd>+<kbd>A</kbd> selecionar tudo<br>" +
+
+      "<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> copiar / colar no último clique (colagens repetidas deslocam-se na diagonal)<br>" +
+
+      "Selecione e arraste o <kbd>＋</kbd> de cima para outra forma = ligar<br>" +
+      "<kbd>Del</kbd> eliminar · <kbd>Ctrl</kbd>+<kbd>D</kbd> duplicar<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> anular / refazer · <kbd>Ctrl</kbd>+<kbd>S</kbd> guardar JSON<br>" +
+      "<kbd>Setas</kbd> mover 1 (<kbd>Shift</kbd> 10, ao longo da grelha isométrica)<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>0</kbd> 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> aproximar / afastar<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> rodar a vista · <kbd>F</kbd> ajustar<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> mudar de tema<br>" +
+      "<kbd>P</kbd> reproduzir pré-visualização · <kbd>[</kbd> <kbd>]</kbd> recolher painéis laterais<br>" +
+      "Roda zoom · arrastar o vazio / <kbd>Espaço</kbd>+arrastar deslocar · duplo clique no vazio = ajustar<br>" +
+      "Duplo clique numa forma = mudar o nome",
+    "p.multi": "{n} ELEMENTOS SELECIONADOS", "p.multiColor": "Mudar a cor em conjunto (formas)",
+    "btn.dup": "Duplicar", "btn.del": "Eliminar", "btn.add": "Adicionar", "btn.swap": "⇄ Inverter sentido",
+    "p.shape": "FORMA", "f.type": "Tipo", "f.name": "Nome", "f.sub": "Subtítulo (segunda linha pequena)",
+    "f.icon": "Ícone superior (emoji ou texto curto; vazio = nenhum)", "f.color": "Cor", "f.size": "Tamanho", "f.h": "Altura",
+
+    "p.shapeNote": "Eliminar uma forma elimina também as suas linhas e as rotas de pacote nos passos.",
+    "p.edge": "LINHA", "f.label": "Texto (no meio da linha)", "f.mode": "Traçado",
+    "mode.air": "Reto (no ar)", "mode.xy": "Em L no chão (X depois Y)", "mode.yx": "Em L no chão (Y depois X)",
+    "f.lineColor": "Cor da linha", "f.dash": "Tracejada",
+    "p.edgeNote": "Durante a reprodução a linha assume a cor do tipo de passo. O sentido do pacote vem do passo, não desta linha.",
+
+    "p.plate": "PLACA DE ZONA", "f.plateLabel": "Etiqueta (deitada no chão)", "f.plateColor": "Preenchimento",
+    "f.w": "Largura (X)", "f.d": "Profundidade (Y)",
+    "p.plateNote": "Arrastar uma placa move as formas em cima (mantenha Alt para mover só a placa). Arraste os dois pontos brancos para redimensionar. Eliminar uma placa mantém as formas.",
+
+    "s.unnamed": "(sem título)", "s.up": "Subir", "s.down": "Descer", "s.rm": "Eliminar este passo",
+    "f.short": "Etiqueta na linha de passos", "f.stype": "Tipo (define a cor)", "f.title": "Título", "f.desc": "Descrição",
+
+    "f.cap": "Título do bloco de código", "f.code": "Bloco de código (vazio = oculto)",
+    "s.route": "ROTA DO PACOTE (em estafeta, por ordem)", "s.pktPh": "Texto do pacote", "s.rev": "Inverter", "s.hrm": "Remover",
+
+    "s.noRoute": "Ainda não há rota. Clique numa linha da tela para a adicionar (Alt+clique = inverter).",
+    "s.noEdgeOk": "Pode adicionar um troço mesmo que as duas formas não estejam ligadas; o pacote viaja em linha reta.",
+
+    "s.list": "LISTA DE PASSOS", "s.none": "Ainda não há passos.", "s.playFrom": "▶ Reproduzir a partir deste passo",
+    "d.head": "DOCUMENTO (mostrado no HTML exportado)", "f.crumb": "Trilho de navegação (linha pequena no topo)", "f.subtitle": "Subtítulo",
+
+    "f.tags": "Etiquetas (separadas por vírgulas)", "f.cards": "Cartões-chave (um por linha: título|valor|tipo)",
+    "d.cardTypes": "O tipo pode ser {types}; define a cor à esquerda do cartão.",
+    "d.play": "REPRODUÇÃO", "f.speed": "Velocidade do pacote por troço",
+    "speed.slow": "Lenta", "speed.mid": "Média", "speed.fast": "Rápida", "speed.vfast": "Muito rápida", "speed.custom": "Personalizada",
+
+    "speed.opt": "{name} ({ms} ms)",
+    "f.autoplay": "Reproduzir automaticamente ao abrir",
+    "d.look": "APARÊNCIA", "f.theme": "Tema (também memorizado como preferência para novos modelos)",
+    "f.ctBase": "Partir de um tema predefinido", "d.ctPick": "(escolha um para substituir as cores acima)",
+    "d.ctNote": "Cartões, texto secundário, grelha, fundos das etiquetas, etc. derivam destas 6 cores. Arrastar um seletor mostra uma pré-visualização em direto; ao largar, regista um passo de anulação.",
+
+    "d.view": "Vista: {deg}° (barra ⟲ ⟳ ou R; mantida ao exportar)",
+    "d.stats": "ESTATÍSTICAS", "d.statsLine": "Formas {n} · Linhas {e} · Zonas {p} · Passos {s}",
+
+    "v.steps": "⏱ {n} passos", "v.zoomOut": "Afastar", "v.fit": "Ajustar", "v.fitTitle": "Ajustar (ou duplo clique na tela)", "v.zoomIn": "Aproximar",
+
+    "v.prev": "◀ Anterior", "v.next": "Seguinte ▶", "v.play": "▶ Reproduzir", "v.pause": "❚❚ Pausa", "v.inFlow": "NESTE FLUXO",
+
+    "v.step": "Passo {n}", "v.badge": "STEP {n} / {t}", "v.count": "Passo {n} de {t}",
+  };
+}
+
+function LANG_RU_RU() {
+  return {
+    "app.title": "2.5DUMLhtml · Редактор изометрических схем",
+    "app.lang": "Язык",
+    "tb.tpl": "Шаблоны ▾", "tb.tplTitle": "Применить шаблон (Ctrl+Z отменяет)",
+    "tb.open": "Открыть", "tb.openTitle": "Открыть JSON",
+    "tb.save": "Сохранить JSON", "tb.saveTitle": "Экспорт в JSON (Ctrl+S)",
+    "tb.html": "Экспорт HTML", "tb.htmlTitle": "Экспортировать HTML-просмотрщик с анимацией",
+    "tb.png": "Экспорт PNG", "tb.pngTitle": "Экспорт в PNG (двойное разрешение)",
+    "tb.undo": "Отменить (Ctrl+Z)", "tb.redo": "Повторить (Ctrl+Y)",
+    "tb.rotL": "Повернуть вид на 90° влево (Shift+R)", "tb.rotR": "Повернуть вид на 90° вправо (R)",
+    "tb.fit": "Вместить", "tb.fitTitle": "Масштаб, чтобы видеть всё (F)",
+    "tb.zoom100": "Вернуть 100%",
+    "tb.theme": "Сменить тему (T — по кругу)",
+    "tb.sideL": "Свернуть левую панель ([)", "tb.sideR": "Свернуть правую панель (])",
+    "tb.play": "▶ Просмотр", "tb.playTitle": "Запустить просмотр (P)",
+    "left.shapes": "ФИГУРЫ (щёлкните или перетащите на холст)", "left.zones": "ЗОНЫ",
+    "tab.prop": "Свойства", "tab.step": "Шаги", "tab.doc": "Документ",
+    "tl.title": "Шкала шагов", "tl.add": "＋ Добавить шаг",
+    "tl.info": "Шагов: {n} · щёлкните, чтобы изменить", "tl.empty": "Шагов пока нет: нажмите «＋ Добавить шаг» справа",
+    "step.n": "Шаг {n}",
+    "ov.note": "Именно это создаёт «Экспорт HTML»", "ov.close": "✕ Назад в редактор (Esc)",
+    "pal.plate": "Плита зоны", "pal.plateTitle": "Плита зоны: при перетаскивании фигуры на ней едут вместе с ней",
+    "pal.shapeTitle": "{name} ({desc})",
+
+    "shape.hex": "Приложение", "shape.hex.desc": "шестигранная призма",
+    "shape.box": "Сервис", "shape.box.desc": "блок",
+    "shape.cyl": "База данных", "shape.cyl.desc": "цилиндр",
+    "shape.server": "Сервер", "shape.server.desc": "стойка",
+    "shape.phone": "Клиент", "shape.phone.desc": "телефон",
+    "shape.desktop": "Клиент", "shape.desktop.desc": "компьютер",
+    "shape.gate": "Шлюз", "shape.gate.desc": "ворота",
+    "shape.users": "Пользователи", "shape.users.desc": "группа",
+    "shape.file": "Файл", "shape.file.desc": "стопка файлов",
+    "theme.paper": "Бумага", "theme.light": "Светлая", "theme.night": "Ночь", "theme.midnight": "Полночь",
+    "theme.graphite": "Графит", "theme.blueprint": "Чертёж", "theme.forest": "Лес", "theme.customPick": "Своя…",
+    "type.req": "запрос", "type.crypto": "шифрование", "type.ext": "внешний", "type.resp": "ответ", "type.err": "ошибка", "type.job": "прочее",
+
+    "cust.bg": "Холст", "cust.ink": "Текст", "cust.accent": "Акцент", "cust.plate": "Плита зоны", "cust.edge": "Линии", "cust.stroke": "Контур фигур",
+
+    "tpl.blank": "Пустой холст", "tpl.blank.desc": "Начать с нуля",
+    "tpl.xverify": "Межорганизационная проверка личности", "tpl.xverify.desc": "7 шагов, 3 зоны, ответ по цепочке",
+    "tpl.web3": "Трёхуровневый сайт", "tpl.web3.desc": "Пользователи → шлюз → два сервера приложений → кэш / база данных",
+
+    "tpl.file": "Обработка файлов", "tpl.file.desc": "Входной файл → преобразование → ядро",
+    "tpl.undoNote": "После применения можно нажать Ctrl+Z для отмены",
+    "doc.untitled": "Без названия", "doc.defTitle": "Схема 2.5D", "new.plate": "Новая зона",
+
+    "toast.saveFail": "Автосохранение не удалось (браузер блокирует localStorage)",
+    "toast.customHint": "Свои цвета настраиваются на вкладке «Документ»",
+    "toast.theme": "Тема: {name}",
+    "toast.addStep": "Щёлкните линию на холсте, чтобы добавить её в этот шаг",
+    "toast.pasted": "Вставлено: {n}", "toast.copied": "Скопировано: {n}",
+    "toast.dupEdge": "Эти две фигуры уже соединены",
+    "toast.rot": "Вид {deg}°",
+    "toast.jsonOut": "JSON экспортирован", "toast.htmlOut": "HTML-просмотрщик экспортирован", "toast.pngOut": "PNG экспортирован",
+
+    "toast.opened": "Открыто: {name}", "toast.openFail": "Не удалось открыть: {msg}",
+    "toast.empty": "Холст пуст", "toast.pngFail": "Ошибка экспорта PNG: {msg}",
+    "toast.tpl": "Шаблон применён: {name}",
+    "toast.hopAdded": "Добавлено: {a} → {b}",
+    "toast.sameNode": "Начало и конец не могут быть одной фигурой",
+    "toast.corrupt": "Последнее автосохранение повреждено; оригинал сохранён в localStorage «{key}»",
+    "err.notDoc": "Это не JSON 2.5DUMLhtml (нет nodes)", "err.svg": "Не удалось преобразовать SVG в изображение", "err.png": "Не удалось преобразовать холст в PNG",
+
+    "hint.step": "Редактируется шаг {n}: щелчок по линии = добавить в маршрут пакета (Alt+щелчок = обратно) · шаги переключаются на шкале",
+
+    "hint.main": "Перетаскивание — перемещение · выделите и тяните «＋» сверху, чтобы соединить · перетаскивание пустого места / Пробел+перетаскивание — сдвиг · колесо — масштаб · Alt+перетаскивание без привязки",
+
+    "sw.auto": "Как в теме", "sw.custom": "Свой цвет",
+    "p.none": "НИЧЕГО НЕ ВЫБРАНО", "p.noneHint": "Щёлкните фигуру, линию или зону на холсте, чтобы изменить свойства.",
+    "p.keys": "СОЧЕТАНИЯ КЛАВИШ",
+    "p.keysHtml": "<kbd>Перетаскивание</kbd> перемещение (привязка к 10) · <kbd>Alt</kbd>+перетаскивание без привязки, только этот элемент<br>" +
+
+      "<kbd>Shift</kbd>/<kbd>Ctrl</kbd>+щелчок добавить/убрать из выделения · <kbd>Ctrl</kbd>+<kbd>A</kbd> выделить всё<br>" +
+
+      "<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd> копировать / вставить в точку последнего щелчка (повторные вставки сдвигаются по диагонали)<br>" +
+
+      "Выделите и перетащите <kbd>＋</kbd> сверху на другую фигуру = соединить<br>" +
+      "<kbd>Del</kbd> удалить · <kbd>Ctrl</kbd>+<kbd>D</kbd> дублировать<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>Z</kbd>/<kbd>Y</kbd> отменить / повторить · <kbd>Ctrl</kbd>+<kbd>S</kbd> сохранить JSON<br>" +
+
+      "<kbd>Стрелки</kbd> сдвиг на 1 (<kbd>Shift</kbd> на 10, по изометрической сетке)<br>" +
+      "<kbd>Ctrl</kbd>+<kbd>0</kbd> 100% · <kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>-</kbd> увеличить / уменьшить<br>" +
+      "<kbd>R</kbd>/<kbd>Shift</kbd>+<kbd>R</kbd> повернуть вид · <kbd>F</kbd> вместить<br>" +
+      "<kbd>T</kbd>/<kbd>Shift</kbd>+<kbd>T</kbd> сменить тему<br>" +
+      "<kbd>P</kbd> просмотр · <kbd>[</kbd> <kbd>]</kbd> свернуть боковые панели<br>" +
+      "Колесо — масштаб · перетаскивание пустого места / <kbd>Пробел</kbd>+перетаскивание — сдвиг · двойной щелчок по пустому месту = вместить<br>" +
+
+      "Двойной щелчок по фигуре = переименовать",
+    "p.multi": "ВЫБРАНО: {n}", "p.multiColor": "Перекрасить вместе (фигуры)",
+    "btn.dup": "Дублировать", "btn.del": "Удалить", "btn.add": "Добавить", "btn.swap": "⇄ Обратить направление",
+    "p.shape": "ФИГУРА", "f.type": "Тип", "f.name": "Название", "f.sub": "Подзаголовок (маленькая вторая строка)",
+    "f.icon": "Значок сверху (эмодзи или короткий текст; пусто = нет)", "f.color": "Цвет", "f.size": "Размер", "f.h": "Высота",
+
+    "p.shapeNote": "При удалении фигуры удаляются и её линии, и маршруты пакетов в шагах.",
+    "p.edge": "ЛИНИЯ", "f.label": "Текст (по центру линии)", "f.mode": "Путь",
+    "mode.air": "Прямая (в воздухе)", "mode.xy": "Г-образная по земле (сначала X, потом Y)", "mode.yx": "Г-образная по земле (сначала Y, потом X)",
+
+    "f.lineColor": "Цвет линии", "f.dash": "Пунктир",
+    "p.edgeNote": "При проигрывании шагов линия принимает цвет типа шага. Направление пакета задаёт шаг, а не эта линия.",
+
+    "p.plate": "ПЛИТА ЗОНЫ", "f.plateLabel": "Подпись (лежит на земле)", "f.plateColor": "Заливка",
+    "f.w": "Ширина (X)", "f.d": "Глубина (Y)",
+    "p.plateNote": "При перетаскивании плиты фигуры на ней едут вместе с ней (удерживайте Alt, чтобы двигать только плиту). Тяните две белые точки, чтобы изменить размер. При удалении плиты фигуры остаются.",
+
+    "s.unnamed": "(без названия)", "s.up": "Вверх", "s.down": "Вниз", "s.rm": "Удалить этот шаг",
+    "f.short": "Подпись на шкале", "f.stype": "Тип (задаёт цвет)", "f.title": "Заголовок", "f.desc": "Описание",
+    "f.cap": "Заголовок блока кода", "f.code": "Блок кода (пусто = скрыт)",
+    "s.route": "МАРШРУТ ПАКЕТА (по цепочке, по порядку)", "s.pktPh": "Текст пакета", "s.rev": "Обратно", "s.hrm": "Убрать",
+
+    "s.noRoute": "Маршрута пока нет. Щёлкните линию на холсте, чтобы добавить (Alt+щелчок = обратно).",
+    "s.noEdgeOk": "Участок можно добавить, даже если фигуры не соединены; пакет полетит по прямой.",
+    "s.list": "СПИСОК ШАГОВ", "s.none": "Шагов пока нет.", "s.playFrom": "▶ Играть с этого шага",
+    "d.head": "ДОКУМЕНТ (показывается в экспортированном HTML)", "f.crumb": "Навигационная цепочка (маленькая строка сверху)", "f.subtitle": "Подзаголовок",
+
+    "f.tags": "Метки (через запятую)", "f.cards": "Ключевые карточки (по одной в строке: заголовок|значение|тип)",
+    "d.cardTypes": "Тип может быть {types}; он задаёт цвет слева на карточке.",
+    "d.play": "ВОСПРОИЗВЕДЕНИЕ", "f.speed": "Скорость пакета на участке",
+    "speed.slow": "Медленно", "speed.mid": "Средне", "speed.fast": "Быстро", "speed.vfast": "Очень быстро", "speed.custom": "Своя",
+
+    "speed.opt": "{name} ({ms} мс)",
+    "f.autoplay": "Автозапуск при открытии",
+    "d.look": "ОФОРМЛЕНИЕ", "f.theme": "Тема (запоминается и как выбор для новых шаблонов)",
+    "f.ctBase": "Начать с готовой темы", "d.ctPick": "(выбор заменит цвета выше)",
+    "d.ctNote": "Карточки, второстепенный текст, сетка, фон подписей и т. п. вычисляются из этих 6 цветов. Перетаскивание палитры показывает живой просмотр; отпускание записывает один шаг отмены.",
+
+    "d.view": "Вид: {deg}° (панель ⟲ ⟳ или R; сохраняется при экспорте)",
+    "d.stats": "СТАТИСТИКА", "d.statsLine": "Фигуры {n} · Линии {e} · Зоны {p} · Шаги {s}",
+
+    "v.steps": "⏱ шагов: {n}", "v.zoomOut": "Уменьшить", "v.fit": "Вместить", "v.fitTitle": "Вместить (или двойной щелчок по холсту)", "v.zoomIn": "Увеличить",
+
+    "v.prev": "◀ Назад", "v.next": "Далее ▶", "v.play": "▶ Играть", "v.pause": "❚❚ Пауза", "v.inFlow": "В ЭТОЙ СХЕМЕ",
+    "v.step": "Шаг {n}", "v.badge": "STEP {n} / {t}", "v.count": "Шаг {n} из {t}",
+  };
+}
+
+/* 順序與 UMLhtml 相同 */
 registerLang('en-US', 'English', LANG_EN_US);
 registerLang('zh-TW', '繁體中文', LANG_ZH_TW);
+registerLang('ja-JP', '日本語', LANG_JA_JP);
+registerLang('zh-CN', '简体中文', LANG_ZH_CN);
+registerLang('ko-KR', '한국어', LANG_KO_KR);
+registerLang('es-ES', 'Español', LANG_ES_ES);
+registerLang('fr-FR', 'Français', LANG_FR_FR);
+registerLang('de-DE', 'Deutsch', LANG_DE_DE);
+registerLang('pt-PT', 'Português', LANG_PT_PT);
+registerLang('ru-RU', 'Русский', LANG_RU_RU);
 </script>
 
 <!-- ===================================================================
@@ -1023,94 +2229,152 @@ registerLang('zh-TW', '繁體中文', LANG_ZH_TW);
 (() => {
 'use strict';
 const { SHAPES, STEP_TYPES, THEMES, THEME_ORDER, CUSTOM_FIELDS, themeOf, customFrom, esc, normalize, render, Camera, applyThemeVars, uid, pairKey, isHex } = ISO;
+
 /* 範本內容只內建英文與繁中：tx(英文, 繁中)；其他語言用英文 */
 const tx = (en, zh) => curLang === 'zh-TW' ? zh : en;
 const $ = id => document.getElementById(id);
 const LS_KEY = '25dumlhtml-doc-v1', LS_UI = '25dumlhtml-ui-v1', LS_PREF = '25dumlhtml-theme-v1', MAX_UNDO = 80, GRID = 10;
+
 const PALETTE = ['#9cc3ec', '#f0b070', '#8fd0a8', '#b9a6e8', '#f2c98a', '#cfd6de', '#e8a0a0', '#f5f1e6', '#7fd1d8', '#d9c27a'];
 
 /* ---------- 範本 ---------- */
 const TEMPLATES = {   // name／desc 由語言包（tpl.*）填；圖內文字用 tx(英文, 繁中)
   blank: { name: '', desc: '', doc: () => ({ title: T('doc.untitled'), plates: [], nodes: [], edges: [], steps: [] }) },
+
   xverify: { name: '', desc: '', doc: () => {
     const plain = tx('plain', '明文');
     return {
     title: tx('Cross-org identity verification', '跨機構身分驗證流程'),
     crumb: tx('Sample system / Identity service / Cross-org verification', '範例系統 / 身分驗證服務 / 跨機構驗證'),
     subtitle: tx('Customer starts verification in the app → identity service signs & encrypts → API gateway → clearing house → other org\'s IdP',
+
                  '客戶在 App 發動跨機構驗證 → 驗證服務簽章加密 → 經 API 閘道送清算中心 → 轉送他機構 IdP'),
     tags: [tx('We initiate as RP', '我方為 RP 發動')],
     cards: [{ k: tx('Transport protection', '傳輸保護'), v: 'JWS + JWE', type: 'crypto' }, { k: tx('Outbound path', '外送路徑'), v: tx('Via API gateway', '經 API 閘道'), type: 'req' },
+
             { k: tx('Response', '回應'), v: plain, type: 'resp' }, { k: tx('External errors', '外部錯誤'), v: tx('Unified 502', '502 統一處理'), type: 'err' }],
+
     plates: [{ id: 'p1', x: -80, y: 230, w: 160, d: 140, label: tx('Client', '客戶端') }, { id: 'p2', x: 100, y: -120, w: 380, d: 500, label: tx('Internal systems', '內部系統') },
+
              { id: 'p3', x: 510, y: -290, w: 480, d: 240, label: tx('External · Clearing network', '外部 · 清算網路') }],
+
     nodes: [
       { id: 'app', type: 'phone', x: 0, y: 300, name: tx('Mobile app', '行動 App'), sub: tx('RP (relying party)', 'RP 依賴方') },
+
       { id: 'svc', type: 'hex', x: 180, y: 140, name: tx('Identity service', '身分驗證服務'), sub: 'Web API', icon: '⚙' },
+
       { id: 'crypto', type: 'box', x: 380, y: 300, name: tx('Crypto service', '加解密服務'), sub: tx('JWS sign / JWE encrypt', 'JWS 簽章 / JWE 加密') },
+
       { id: 'gw', type: 'gate', x: 360, y: -40, name: tx('API gateway', 'API 閘道'), sub: tx('Single egress', '統一對外出口') },
+
       { id: 'hub', type: 'cyl', x: 600, y: -200, name: tx('Clearing house', '清算中心'), sub: tx('Cross-org verification', '跨機構驗證'), icon: '🏛' },
+
       { id: 'idp', type: 'cyl', x: 900, y: -150, size: .8, h: 62, color: '#cfd6de', name: tx('Other org IdP', '他機構 IdP'), sub: tx('Identity provider (via clearing house)', '身分提供方（經清算中心轉送）'), icon: '🏦' }],
+
     edges: [{ a: 'app', b: 'svc' }, { a: 'svc', b: 'crypto' }, { a: 'svc', b: 'gw' }, { a: 'gw', b: 'hub' }, { a: 'hub', b: 'idp' }],
+
     steps: [
       { type: 'req', short: tx('Start', '發動'), title: tx('Customer starts cross-org verification', '客戶發動跨機構驗證'), hops: [{ a: 'app', b: 'svc', label: plain }],
+
         desc: tx('The app calls the verification API with an access token; the body is plain text.', 'App 帶著 Access Token 呼叫驗證 API，body 是明文。'),
+
         cap: 'REQUEST', code: 'POST /cross-verify/request\nAuthorization: Bearer <token>\n' + tx('Headers: ', 'Header：') + 'x-request-id / x-source-id / x-dest-id' },
+
       { type: 'crypto', short: tx('Sign+encrypt', '簽章加密'), title: tx('Hand off to the crypto service to sign + encrypt', '交給加解密服務簽章＋加密'), hops: [{ a: 'svc', b: 'crypto', label: plain }],
+
         desc: tx('The identity service sends the body to the crypto service, which uses the outbound-only keys.', '驗證服務把 body 送去加解密服務，用對外專用的金鑰處理。'),
+
         cap: tx('Key IDs', '金鑰識別'),
         code: tx('SignKeyId    = <sign-key prefix> + <org code>\nEncryptKeyId = <enc-key prefix> + x-dest-id', 'SignKeyId    = <簽章金鑰前綴> + <機構代號>\nEncryptKeyId = <加密金鑰前綴> + x-dest-id') },
+
       { type: 'crypto', short: tx('Ciphertext', '回密文'), title: tx('Get the ciphertext back', '拿回密文'), hops: [{ a: 'crypto', b: 'svc', label: 'JWS+JWE' }],
+
         desc: tx('The crypto service returns the signed + encrypted content. This API protects only the outbound leg.', '加解密服務回傳簽章＋加密後的內容。這支 API 只保護「外送」這一段。'),
+
         cap: tx('Protection mode', '保護模式'), code: tx('Outbound → sign + encrypt\nResponse → plain text (no decryption)', '外送 → 簽章 + 加密\n回應 → 明文（不用解）') },
+
       { type: 'req', short: tx('To gateway', '送閘道'), title: tx('Send out via the API gateway', '經 API 閘道外送'), hops: [{ a: 'svc', b: 'gw', label: 'JWS+JWE' }],
+
         desc: tx('The identity service never calls the clearing house directly; everything leaves through the API gateway. The Host header must be right or the request is rejected.',
+
                  '驗證服務不直連清算中心，一律走 API 閘道統一出口。Host 標頭要帶對，帶錯會被擋回。'),
         cap: 'OUTBOUND', code: 'POST https://<api-gateway>/cross-verify/request\n\n' + tx('503 → check the outgoing Host header first', '503 → 先檢查送出的 Host 標頭') },
+
       { type: 'ext', short: tx('To clearing', '到清算中心'), title: tx('API gateway → clearing house', 'API 閘道 → 清算中心'), hops: [{ a: 'gw', b: 'hub', label: 'SSL' }],
+
         desc: tx('The API gateway connects to the clearing house over SSL. Rotating the SSL certificate only affects this leg; the JWS / JWE keys are unaffected.',
+
                  'API 閘道以 SSL 憑證連到清算中心。換 SSL 憑證只影響這一段，JWS／JWE 金鑰不受影響。'),
         cap: 'SSL', code: tx('API gateway ──SSL──▶ clearing house\nCertificate error → check the SSL certificate first', 'API 閘道 ──SSL──▶ 清算中心\n憑證錯誤 → 先查 SSL 憑證') },
+
       { type: 'ext', short: tx('Other org', '他機構驗證'), title: tx('Clearing house forwards to the other org\'s IdP', '清算中心轉送他機構 IdP'),
+
         hops: [{ a: 'hub', b: 'idp', label: tx('forward', '轉送') }, { a: 'idp', b: 'hub', label: tx('accepted', '受理') }],
+
         desc: tx('The clearing house forwards the request to the customer\'s own IdP, where the customer completes verification.', '清算中心把請求轉給客戶所屬的他機構 IdP，客戶在那邊完成身分確認。'),
+
         cap: 'EXTERNAL', code: tx('Clearing house ──▶ other org IdP (identity provider)\nReplies to the clearing house once accepted', '清算中心 ──▶ 他機構 IdP（身分提供方）\n受理後回覆清算中心') },
+
       { type: 'resp', short: tx('Response', '回應'), title: tx('Response relays back to the app', '回應一路接力回 App'),
+
         hops: [{ a: 'hub', b: 'gw', label: plain }, { a: 'gw', b: 'svc', label: plain }, { a: 'svc', b: 'app', label: plain }],
+
         desc: tx('The response is plain text and travels back the same way. The actual verification result is pushed later by the clearing house.',
+
                  '發動驗證的回應是明文，原路回到 App。真正的驗證結果之後由清算中心主動回拋。'),
         cap: 'RESPONSE', code: tx('Start response: plain text\nQuery response: verify + decrypt\n\nFinal result: clearing house → POST /cross-verify/result',
+
                                   '發動回應：明文\n查詢回應：要驗章 + 解密\n\n最終結果：清算中心 → POST /cross-verify/result') }] };
+
   } },
   web3: { name: '', desc: '', doc: () => ({
     title: tx('Three-tier web request flow', '三層式網站請求流程'), subtitle: tx('Load balancing, check the cache first, then the database', '負載平衡分流、先查快取、沒有再查資料庫'),
+
     cards: [{ k: tx('App servers', 'AP 台數'), v: '2', type: 'req' }, { k: tx('Cache', '快取'), v: 'Redis', type: 'crypto' }, { k: tx('Database', '資料庫'), v: 'SQL Server', type: 'resp' }],
+
     plates: [{ id: 'z1', x: -110, y: 80, w: 200, d: 180, label: tx('Internet', '網際網路') }, { id: 'z2', x: 130, y: -30, w: 150, d: 200, label: 'DMZ' },
+
              { id: 'z3', x: 330, y: -130, w: 180, d: 420, label: tx('App tier', '應用層') }, { id: 'z4', x: 560, y: -80, w: 200, d: 420, label: tx('Data tier', '資料層') }],
+
     nodes: [{ id: 'u', type: 'users', x: -10, y: 170, name: tx('Users', '使用者'), sub: tx('Browser / App', '瀏覽器 / App'), size: .85 },
+
             { id: 'lb', type: 'gate', x: 205, y: 70, name: tx('Load balancer', '負載平衡'), sub: 'L7 LB', icon: 'LB' },
             { id: 'a1', type: 'hex', x: 420, y: -40, name: 'AP-01', sub: 'Web API', size: .85 },
             { id: 'a2', type: 'hex', x: 420, y: 190, name: 'AP-02', sub: 'Web API', size: .85 },
             { id: 'rd', type: 'box', x: 660, y: 0, name: tx('Cache', '快取'), sub: 'Redis', icon: '⚡', color: '#e8a0a0', size: .85 },
+
             { id: 'db', type: 'cyl', x: 660, y: 230, name: tx('Database', '資料庫'), sub: 'SQL Server' }],
     edges: [{ a: 'u', b: 'lb' }, { a: 'lb', b: 'a1' }, { a: 'lb', b: 'a2', dash: true }, { a: 'a1', b: 'rd' }, { a: 'a1', b: 'db', mode: 'ground-xy' }, { a: 'a2', b: 'db' }, { a: 'a2', b: 'rd', dash: true, mode: 'ground-yx' }],
+
     steps: [
       { type: 'req', short: tx('Request', '請求'), title: tx('User sends a request', '使用者送出請求'), hops: [{ a: 'u', b: 'lb', label: 'HTTPS' }], desc: tx('The request reaches the load balancer first.', '請求先到負載平衡。'), cap: 'REQUEST', code: 'GET /api/orders/42' },
+
       { type: 'req', short: tx('Route', '分流'), title: tx('Route to AP-01', '分流到 AP-01'), hops: [{ a: 'lb', b: 'a1', label: tx('forward', '轉送') }], desc: tx('Picks an app server by health check and weight.', '依健康檢查與權重挑一台 AP。'), cap: '', code: '' },
+
       { type: 'crypto', short: tx('Cache', '查快取'), title: tx('Check the cache first', '先查快取'), hops: [{ a: 'a1', b: 'rd', label: 'GET' }, { a: 'rd', b: 'a1', label: 'miss' }], desc: tx('The cache has no data (miss).', '快取沒有資料（miss）。'), cap: 'CACHE', code: 'GET order:42 → (nil)' },
+
       { type: 'resp', short: tx('Query DB', '查 DB'), title: tx('Query the database and refill the cache', '查資料庫並回填快取'), hops: [{ a: 'a1', b: 'db', label: 'SQL' }, { a: 'db', b: 'a1', label: tx('rows', '資料') }, { a: 'a1', b: 'rd', label: 'SET' }], desc: tx('Write the result back to the cache so the next request skips the DB.', '查到後寫回快取，下次就不用再查 DB。'), cap: 'SQL', code: 'SELECT * FROM Orders WHERE Id = 42' },
+
       { type: 'resp', short: tx('Response', '回應'), title: tx('Respond to the user', '回應使用者'), hops: [{ a: 'a1', b: 'lb', label: '200' }, { a: 'lb', b: 'u', label: '200' }], desc: tx('Back along the same path.', '原路回到使用者。'), cap: '', code: '' }] }) },
+
   file: { name: '', desc: '', doc: () => ({
     title: tx('Convert files into the core system', '檔案轉檔入核心'), subtitle: tx('Upstream drops a file → scheduled conversion → write to the core database', '上游丟檔 → 排程轉檔 → 寫入核心資料庫'),
+
     plates: [{ id: 'f1', x: -90, y: -90, w: 180, d: 180, label: tx('Upstream', '上游') }, { id: 'f2', x: 150, y: -90, w: 200, d: 180, label: tx('Converter', '轉檔服務') }, { id: 'f3', x: 410, y: -90, w: 200, d: 180, label: tx('Core', '核心') }],
+
     nodes: [{ id: 'up', type: 'file', x: 0, y: 0, name: tx('Upstream file', '上游檔案'), sub: tx('From file exchange', '檔案交換傳入') },
+
             { id: 'cv', type: 'server', x: 250, y: 0, name: tx('Conversion job', '轉檔排程'), sub: tx('Windows service', 'Windows 服務') },
+
             { id: 'core', type: 'cyl', x: 510, y: 0, name: tx('Core database', '核心資料庫'), sub: 'DB2' }],
     edges: [{ a: 'up', b: 'cv' }, { a: 'cv', b: 'core' }],
     steps: [
       { type: 'job', short: tx('Receive', '收檔'), title: tx('Receive the upstream file', '收到上游檔案'), hops: [{ a: 'up', b: 'cv', label: tx('file', '檔案') }], desc: tx('The job scans the folder and picks up new files.', '排程掃描資料夾，取得新檔。'), cap: '', code: '' },
+
       { type: 'req', short: tx('Write', '寫入'), title: tx('Convert and write to the core', '轉檔後寫入核心'), hops: [{ a: 'cv', b: 'core', label: tx('write', '寫入') }], desc: tx('Converts to the core format and writes it.', '轉成核心格式後寫入。'), cap: '', code: '' },
+
       { type: 'resp', short: tx('Report', '回報'), title: tx('Report the result', '回報結果'), hops: [{ a: 'core', b: 'cv', label: 'OK' }], desc: tx('The write succeeded; the job logs the result.', '寫入成功，排程記錄結果。'), cap: '', code: '' }] }) },
+
 };
 
 /* ---------- 狀態 ---------- */
@@ -1126,6 +2390,7 @@ const findE = id => doc.edges.find(e => e.id === id);
 const pj = () => ISO.proj(doc.rot);
 
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 1800); }
+
 function save() { try { localStorage.setItem(LS_KEY, last); } catch (e) { toast(T('toast.saveFail')); } }
 function commit() {
   const now = JSON.stringify(doc);
@@ -1148,13 +2413,16 @@ function loadDoc(d, fit = true) {
 }
 function applyTheme() { applyThemeVars(document.documentElement, themeOf(doc)); $('selTheme').value = doc.theme; }
 const themeOptions = cur => THEME_ORDER.map(k => `<option value="${k}" ${k === cur ? 'selected' : ''}>${esc(THEMES[k].name)}</option>`).join('') +
+
   `<option value="custom" ${cur === 'custom' ? 'selected' : ''}>${esc(T('theme.customPick'))}</option>`;
 /* 記住偏好：下次沒有存檔、或開新範本時，用你最後選的主題 */
 function savePref() { try { localStorage.setItem(LS_PREF, JSON.stringify({ theme: doc.theme, customTheme: doc.customTheme })); } catch (e) { } }
+
 function loadPref() { try { return JSON.parse(localStorage.getItem(LS_PREF) || 'null'); } catch (e) { return null; } }
 function setTheme(key) {
   const prev = doc.theme;
   if (key === 'custom' && !doc.customTheme.edited && prev !== 'custom') doc.customTheme = { ...customFrom(prev), edited: false };   // 第一次切自訂：以目前主題當起點
+
   doc.theme = key; commit(); savePref(); applyTheme(); draw(); refreshPanel();
   if (key === 'custom') { setTab('doc'); toast(T('toast.customHint')); }
   else toast(T('toast.theme', { name: THEMES[key].name }));
@@ -1171,22 +2439,27 @@ function drawTimeline() {
   const box = $('tlSteps');
   $('tlInfo').textContent = doc.steps.length ? T('tl.info', { n: doc.steps.length }) : T('tl.empty');
   box.innerHTML = doc.steps.map((s, i) => `<div class="tls ${tab === 'step' && i === stepSel ? 'on' : ''}" data-i="${i}" title="${esc(s.title)}"><b style="background:${STEP_TYPES[s.type].c}">${i + 1}</b>${esc(s.short || s.title || T('step.n', { n: i + 1 }))}</div>`).join('');
+
 }
 $('tlSteps').addEventListener('click', e => { const t = e.target.closest('.tls'); if (!t) return; stepSel = +t.dataset.i; setTab('step'); });
+
 $('bAddStep').onclick = () => addStep();
 
 /* ---------- 新增／刪除 ---------- */
 function addNode(type, wx, wy) {
   const def = SHAPES[type].def;
   const n = { id: uid('n'), type, x: Math.round(wx / GRID) * GRID, y: Math.round(wy / GRID) * GRID, h: def.h, size: 1, color: def.color, icon: def.icon, name: SHAPES[type].name, sub: '' };
+
   doc.nodes.push(n); sel = new Set([n.id]); setTab('prop', false); commit(); draw(); refreshPanel();
 }
 function addPlate(wx, wy) {
   const p = { id: uid('p'), x: Math.round((wx - 120) / GRID) * GRID, y: Math.round((wy - 120) / GRID) * GRID, w: 240, d: 240, label: T('new.plate'), color: '' };
+
   doc.plates.push(p); sel = new Set([p.id]); setTab('prop', false); commit(); draw(); refreshPanel();
 }
 function addStep() {
   doc.steps.push({ id: uid('s'), type: 'req', short: T('step.n', { n: doc.steps.length + 1 }), title: '', desc: '', cap: '', code: '', hops: [] });
+
   stepSel = doc.steps.length - 1; commit(); setTab('step');
   toast(T('toast.addStep'));
 }
@@ -1204,9 +2477,11 @@ function duplicateSel() {
   for (const id of sel) {
     const n = findN(id), p = findP(id);
     if (n) { const c = { ...n, id: uid('n'), x: n.x + 40, y: n.y + 40 }; map[n.id] = c.id; doc.nodes.push(c); add.push(c.id); }
+
     if (p) { const c = { ...p, id: uid('p'), x: p.x + 40, y: p.y + 40 }; doc.plates.push(c); add.push(c.id); }
   }
   for (const e of doc.edges.slice()) if (map[e.a] && map[e.b]) doc.edges.push({ ...e, id: uid('e'), a: map[e.a], b: map[e.b] });
+
   if (!add.length) return;
   sel = new Set(add); commit(); draw(); refreshPanel();
 }
@@ -1237,12 +2512,16 @@ function pasteClip(c) {
   const key = lastClickW ? lastClickW.join(',') : 'none';
   pasteN = key === pasteKey ? pasteN + 1 : 0; pasteKey = key;
   if (lastClickW) { dx = lastClickW[0] - cx + pasteN * 30; dy = lastClickW[1] - cy + pasteN * 30; }   // 貼在最後點擊處，同一點連貼會階梯排開
+
   else { dx = 40 * (pasteN + 1); dy = 40 * (pasteN + 1); }
   dx = Math.round(dx / GRID) * GRID; dy = Math.round(dy / GRID) * GRID;
   const map = {}, add = [];
   for (const n of src.nodes) { const c2 = { ...n, id: uid('n'), x: n.x + dx, y: n.y + dy }; map[n.id] = c2.id; doc.nodes.push(c2); add.push(c2.id); }
+
   for (const p of src.plates) { const c2 = { ...p, id: uid('p'), x: p.x + dx, y: p.y + dy }; doc.plates.push(c2); add.push(c2.id); }
+
   for (const e of src.edges) if (map[e.a] && map[e.b]) doc.edges.push({ ...e, id: uid('e'), a: map[e.a], b: map[e.b] });
+
   sel = new Set(add); commit(); draw(); refreshPanel();
   toast(T('toast.pasted', { n: add.length }));
 }
@@ -1258,6 +2537,7 @@ document.addEventListener('paste', e => {
   clearTimeout(pendingPaste); pendingPaste = null;
   let c = null;
   try { const j = JSON.parse(e.clipboardData.getData('text/plain')); if (j && j.kind === '25duml-clip') c = j; } catch (err) { }
+
   c = c || clip; if (!c) return;
   e.preventDefault(); pasteClip(c);
 });
@@ -1266,6 +2546,7 @@ document.addEventListener('paste', e => {
 function palIcon(type) {
   const tmp = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   const d = normalize({ nodes: [{ id: 'x', type, x: 0, y: 0, name: '', sub: '', icon: type === 'gate' ? '' : undefined }] });
+
   const r = render(tmp, d, {}), b = r.bounds;
   return `<svg viewBox="${b[0] - 6} ${b[1] - 6} ${b[2] - b[0] + 12} ${b[3] - b[1] + 12}">${tmp.innerHTML}</svg>`;
 }
@@ -1273,8 +2554,11 @@ const PAL_ICONS = Object.fromEntries(Object.keys(SHAPES).map(k => [k, palIcon(k)
 function buildPalette() {   // 換語言時重建（只換文字，圖示沿用）
   const dupName = nm => Object.values(SHAPES).filter(x => x.name === nm).length > 1;
   $('pal').innerHTML = Object.entries(SHAPES).map(([k, s]) => { const full = T('pal.shapeTitle', { name: s.name, desc: s.desc });
+
     return `<button data-type="${k}" title="${esc(full)}">${PAL_ICONS[k]}<span>${esc(dupName(s.name) ? full : s.name)}</span></button>`; }).join('');
+
   $('pal2').innerHTML = `<button data-type="plate" title="${esc(T('pal.plateTitle'))}"><svg viewBox="-100 -60 200 120"><polygon points="0,-50 87,0 0,50 -87,0" fill="#ece5d5" stroke="#2d2a24" stroke-width="3"/></svg><span>${esc(T('pal.plate'))}</span></button>`;
+
 }
 let palDrag = null;
 for (const box of [$('pal'), $('pal2')]) box.addEventListener('pointerdown', e => {
@@ -1337,6 +2621,7 @@ svg.addEventListener('pointerdown', e => {
     const n = findN(sid), p = findP(sid);
     if (n) move.set(n, { x: n.x, y: n.y });
     if (p) { move.set(p, { x: p.x, y: p.y }); if (!e.altKey) doc.nodes.forEach(nn => { if (nodeInPlate(nn, p)) move.set(nn, { x: nn.x, y: nn.y }); }); }
+
   }
   drag = { kind: 'move', w0: pj().un(sx, sy), move, moved: false };
 });
@@ -1348,6 +2633,7 @@ window.addEventListener('pointermove', e => {
     return;
   }
   if (pan) { if (Math.abs(e.clientX - pan[0]) + Math.abs(e.clientY - pan[1]) > 2) lastEmpty = 0; cam.panBy(e.clientX - pan[0], e.clientY - pan[1]); pan = [e.clientX, e.clientY]; return; }
+
   if (!drag && !link) return;
   const [sx, sy] = cam.toSvg(e.clientX, e.clientY);
   if (link) { link.to = [sx, sy]; draw(); return; }
@@ -1361,6 +2647,7 @@ window.addEventListener('pointermove', e => {
     const p = drag.p, o = drag.o, wx = snap(w[0], e.altKey), wy = snap(w[1], e.altKey);
     if (drag.h === 'p1') { p.w = Math.max(60, wx - o.x); p.d = Math.max(60, wy - o.y); }
     else { const ex = o.x + o.w, ey = o.y + o.d; p.x = Math.min(wx, ex - 60); p.y = Math.min(wy, ey - 60); p.w = ex - p.x; p.d = ey - p.y; }
+
     drag.moved = true; draw();
   }
 });
@@ -1382,6 +2669,7 @@ window.addEventListener('pointerup', e => {
     if (to && to !== from) {
       if (doc.edges.some(x => pairKey(x.a, x.b) === pairKey(from, to))) toast(T('toast.dupEdge'));
       else { const ed = { id: uid('e'), a: from, b: to, label: '', color: '', mode: 'air', dash: false }; doc.edges.push(ed); sel = new Set([ed.id]); commit(); refreshPanel(); }
+
     }
     draw(); return;
   }
@@ -1392,13 +2680,16 @@ function focusName(id) {
   sel = new Set([id]); setTab('prop', false); draw(); refreshPanel();
   // 等瀏覽器處理完這次按下（預設動作會把焦點拉回 body）再聚焦
   setTimeout(() => { const f = $('panel').querySelector('[data-f="name"],[data-f="label"]'); if (f) { f.focus(); f.select(); } }, 0);
+
 }
 svg.addEventListener('wheel', e => { e.preventDefault(); cam.zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY); }, { passive: false });
+
 svg.addEventListener('contextmenu', e => e.preventDefault());
 new ResizeObserver(() => cam.apply()).observe(svg);
 
 /* ---------- 鍵盤 ---------- */
 const typing = () => { const a = document.activeElement; return a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT'); };
+
 document.addEventListener('keydown', e => {
   if (!$('ov').hidden) { if (e.key === 'Escape') closePlay(); return; }
   const ctrl = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
@@ -1410,6 +2701,7 @@ document.addEventListener('keydown', e => {
   else if (ctrl && k === 'd') { e.preventDefault(); duplicateSel(); }
   else if (ctrl && k === 'c') { const c = collectClip(); if (c) clip = c; }   // 不擋預設動作，讓 copy 事件寫系統剪貼簿
   else if (ctrl && k === 'v') { clearTimeout(pendingPaste); pendingPaste = setTimeout(() => { pendingPaste = null; pasteClip(clip); }, 80); }   // paste 事件沒來（剪貼簿被擋）時的備援
+
   else if (ctrl && k === '0') { e.preventDefault(); cam.setZoom(1); }
   else if (ctrl && (k === '=' || k === '+')) { e.preventDefault(); cam.zoomAt(1.2); }
   else if (ctrl && (k === '-' || k === '_')) { e.preventDefault(); cam.zoomAt(1 / 1.2); }
@@ -1426,6 +2718,7 @@ document.addEventListener('keydown', e => {
   else if (k === 'f') fitView();
   else if (k === 'r') rotate(e.shiftKey ? -1 : 1);
   else if (k === 't') { const i = THEME_ORDER.indexOf(doc.theme); setTheme(THEME_ORDER[(i + (e.shiftKey ? -1 : 1) + THEME_ORDER.length) % THEME_ORDER.length]); }
+
   else if (k === 'p') openPlay();
   else if (e.key === '[') toggleSide('L');
   else if (e.key === ']') toggleSide('R');
@@ -1434,6 +2727,7 @@ document.addEventListener('keyup', e => { if (e.key === ' ') { spaceDown = false
 
 /* ---------- 工具列 ---------- */
 function rotate(dir) { doc.rot = (doc.rot + dir + 4) % 4; commit(); fitView(); toast(T('toast.rot', { deg: doc.rot * 90 })); }
+
 $('bRotL').onclick = () => rotate(-1);
 $('bRotR').onclick = () => rotate(1);
 $('bFit').onclick = fitView;
@@ -1443,6 +2737,7 @@ $('selTheme').onchange = e => { setTheme(e.target.value); e.target.blur(); };
 function toggleSide(w) {
   $('app').classList.toggle('hide' + w);
   try { localStorage.setItem(LS_UI, JSON.stringify({ L: $('app').classList.contains('hideL'), R: $('app').classList.contains('hideR') })); } catch (e) { }
+
   requestAnimationFrame(() => cam.apply());
 }
 $('bSideL').onclick = () => toggleSide('L'); $('bSideR').onclick = () => toggleSide('R');
@@ -1453,6 +2748,7 @@ function download(name, blob) {
 }
 const fname = ext => (doc.title || '2.5DUML').replace(/[\\/:*?"<>|\s]+/g, '_').slice(0, 60) + ext;
 function exportJSON() { download(fname('.json'), new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' })); toast(T('toast.jsonOut')); }
+
 $('bSave').onclick = exportJSON;
 $('bOpen').onclick = () => $('fileIn').click();
 $('fileIn').onchange = async () => {
@@ -1466,11 +2762,14 @@ $('fileIn').onchange = async () => {
 
 function buildViewerHTML(d, startStep) {
   const core = $('core').textContent, vcss = $('viewer-css').textContent, vjs = $('viewer-js').textContent, ccss = $('core-css').textContent;
+
   const json = JSON.stringify(d).replace(/</g, '\\u003c');
   const E = '</' + 'script>';
   const l10n = JSON.stringify(viewerL10n()).replace(/</g, '\\u003c');
   return '<!doctype html>\n<html lang="' + curLang + '">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+
     '<title>' + esc(d.title || T('doc.defTitle')) + '</title>\n<style>' + ccss + vcss + '</style>\n</head>\n<body>\n<div id="root"></div>\n' +
+
     '<script type="application/json" id="doc-json">' + json + E + '\n' +
     '<script>window.ISO_L10N=' + l10n + ';' + E + '\n' +
     (startStep ? '<script>window.ISO_START=' + (+startStep) + ';' + E + '\n' : '') +
@@ -1484,10 +2783,12 @@ async function exportPNG() {
   if (!isFinite(b[0])) { toast(T('toast.empty')); return; }
   const w = b[2] - b[0] + pad * 2, h = b[3] - b[1] + pad * 2, scale = 2;
   const src = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${b[0] - pad} ${b[1] - pad} ${w} ${h}" width="${w * scale}" height="${h * scale}" font-family="Cascadia Mono, Consolas, Microsoft JhengHei, monospace"><rect x="${b[0] - pad}" y="${b[1] - pad}" width="${w}" height="${h}" fill="${th.bg}"/>${[...tmp.childNodes].map(c => new XMLSerializer().serializeToString(c)).join('')}</svg>`;
+
   const img = new Image();
   const url = URL.createObjectURL(new Blob([src], { type: 'image/svg+xml' }));
   try {
     await new Promise((ok, bad) => { img.onload = ok; img.onerror = () => bad(new Error(T('err.svg'))); img.src = url; });
+
     const cv = document.createElement('canvas'); cv.width = Math.ceil(w * scale); cv.height = Math.ceil(h * scale);
     cv.getContext('2d').drawImage(img, 0, 0);
     const blob = await new Promise(ok => cv.toBlob(ok, 'image/png'));
@@ -1512,8 +2813,10 @@ $('bTpl').onclick = e => {
   e.stopPropagation(); closeMenu();
   const m = document.createElement('div'); m.className = 'menu'; m.id = 'tplMenu';
   m.innerHTML = Object.entries(TEMPLATES).map(([k, t]) => `<button data-k="${k}">${esc(t.name)}<small>${esc(t.desc)}</small></button>`).join('') + '<small style="padding:4px 12px">' + esc(T('tpl.undoNote')) + '</small>';
+
   const r = e.currentTarget.getBoundingClientRect(); m.style.left = r.left + 'px'; m.style.top = r.bottom + 4 + 'px';
   m.onclick = ev => { const b = ev.target.closest('button[data-k]'); if (!b) return; closeMenu(); const d = TEMPLATES[b.dataset.k].doc(); d.theme = doc.theme; d.customTheme = doc.customTheme; loadDoc(d); commit(); toast(T('toast.tpl', { name: TEMPLATES[b.dataset.k].name })); };
+
   document.body.appendChild(m);
 };
 function closeMenu() { const m = $('tplMenu'); if (m) m.remove(); }
@@ -1534,15 +2837,19 @@ function updHint() {
 }
 const fld = (label, html) => `<label class="f"><span>${label}</span>${html}</label>`;
 const inp = (f, v, type = 'text', extra = '') => `<input data-f="${f}" type="${type}" value="${esc(v ?? '')}" ${extra}>`;
+
 const txa = (f, v, rows = 3) => `<textarea data-f="${f}" rows="${rows}">${esc(v ?? '')}</textarea>`;
 const rng = (f, v, min, max, step) => `<div class="rng"><input data-f="${f}" type="range" min="${min}" max="${max}" step="${step}" value="${v}"><em data-show="${f}">${v}</em></div>`;
+
 const swatches = (f, v, allowAuto) => `<div class="sw">${allowAuto ? `<button class="auto" data-sw="" data-tf="${f}" title="${esc(T('sw.auto'))}"></button>` : ''}${PALETTE.map(c => `<button style="background:${c}" data-sw="${c}" data-tf="${f}" title="${c}"></button>`).join('')}<input type="color" data-f="${f}" value="${isHex(v) ? v : '#999999'}" title="${esc(T('sw.custom'))}"></div>`;
+
 function bind(root, obj) {
   root.querySelectorAll('[data-f]').forEach(el => {
     const f = el.dataset.f;
     el.addEventListener('input', () => {
       let v = el.type === 'checkbox' ? el.checked : el.value;
       if (el.type === 'number' || el.type === 'range' || el.dataset.num) { v = parseFloat(v); if (!isFinite(v)) return; }
+
       obj[f] = v;
       const show = root.querySelector(`[data-show="${f}"]`); if (show) show.textContent = v;
       draw();
@@ -1551,6 +2858,7 @@ function bind(root, obj) {
     el.addEventListener('change', () => { commit(); if (el.tagName === 'SELECT') refreshPanel(); });
   });
   root.querySelectorAll('[data-sw]').forEach(b => b.addEventListener('click', () => { obj[b.dataset.tf] = b.dataset.sw; commit(); draw(); refreshPanel(); }));
+
 }
 const nodeName = id => { const n = findN(id); return n ? (n.name || SHAPES[n.type].name) : '?'; };
 
@@ -1569,8 +2877,11 @@ function panelProp(P) {
   if (ids.length > 1) {
     P.innerHTML = `<div class="sec">${T('p.multi', { n: ids.length })}</div>
       ${fld(T('p.multiColor'), `<div class="sw">${PALETTE.map(c => `<button style="background:${c}" data-mc="${c}"></button>`).join('')}</div>`)}
+
       <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">${T('btn.dup')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>`;
+
     P.querySelectorAll('[data-mc]').forEach(b => b.onclick = () => { ids.forEach(id => { const n = findN(id); if (n) n.color = b.dataset.mc; }); commit(); draw(); });
+
     P.querySelector('[data-act=dup]').onclick = duplicateSel; P.querySelector('[data-act=del]').onclick = deleteSel;
     return;
   }
@@ -1578,6 +2889,7 @@ function panelProp(P) {
   if (n) {
     P.innerHTML = `<div class="sec">${T('p.shape')}</div>
       ${fld(T('f.type'), `<select data-f="type" data-custom="1">${Object.entries(SHAPES).map(([k, s]) => `<option value="${k}" ${k === n.type ? 'selected' : ''}>${esc(T('pal.shapeTitle', { name: s.name, desc: s.desc }))}</option>`).join('')}</select>`)}
+
       ${fld(T('f.name'), inp('name', n.name))}
       ${fld(T('f.sub'), inp('sub', n.sub))}
       ${fld(T('f.icon'), inp('icon', n.icon))}
@@ -1585,7 +2897,9 @@ function panelProp(P) {
       ${fld(T('f.size'), rng('size', n.size, .4, 2, .05))}
       ${fld(T('f.h'), rng('h', n.h, 4, 220, 2))}
       <div class="row2">${fld('X', inp('x', n.x, 'number', 'step="10"'))}${fld('Y', inp('y', n.y, 'number', 'step="10"'))}</div>
+
       <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">${T('btn.dup')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>
+
       <p class="muted" style="margin-top:12px">${T('p.shapeNote')}</p>`;
     const oldType = n.type;
     bind(P, n);
@@ -1600,9 +2914,12 @@ function panelProp(P) {
       <p><b>${esc(nodeName(e.a))}</b> → <b>${esc(nodeName(e.b))}</b></p>
       ${fld(T('f.label'), inp('label', e.label))}
       ${fld(T('f.mode'), `<select data-f="mode"><option value="air" ${e.mode === 'air' ? 'selected' : ''}>${T('mode.air')}</option><option value="ground-xy" ${e.mode === 'ground-xy' ? 'selected' : ''}>${T('mode.xy')}</option><option value="ground-yx" ${e.mode === 'ground-yx' ? 'selected' : ''}>${T('mode.yx')}</option></select>`)}
+
       ${fld(T('f.lineColor'), swatches('color', e.color, true))}
       <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="dash" ${e.dash ? 'checked' : ''}><span>${T('f.dash')}</span></label>
+
       <div style="display:flex;gap:6px"><button class="btn sm" data-act="swap">${T('btn.swap')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>
+
       <p class="muted" style="margin-top:12px">${T('p.edgeNote')}</p>`;
     bind(P, e);
     P.querySelector('[data-act=swap]').onclick = () => { [e.a, e.b] = [e.b, e.a]; commit(); draw(); refreshPanel(); };
@@ -1611,8 +2928,11 @@ function panelProp(P) {
       ${fld(T('f.plateLabel'), inp('label', p.label))}
       ${fld(T('f.plateColor'), swatches('color', p.color, true))}
       <div class="row2">${fld(T('f.w'), inp('w', p.w, 'number', 'step="10" min="40"'))}${fld(T('f.d'), inp('d', p.d, 'number', 'step="10" min="40"'))}</div>
+
       <div class="row2">${fld('X', inp('x', p.x, 'number', 'step="10"'))}${fld('Y', inp('y', p.y, 'number', 'step="10"'))}</div>
+
       <div style="display:flex;gap:6px"><button class="btn sm" data-act="dup">${T('btn.dup')}</button><button class="btn sm" data-act="del">${T('btn.del')}</button></div>
+
       <p class="muted" style="margin-top:12px">${T('p.plateNote')}</p>`;
     bind(P, p);
   }
@@ -1628,31 +2948,41 @@ function addHopFromEdge(eid, reverse) {
 }
 function panelStep(P) {
   const list = doc.steps.map((s, i) => `<div class="li ${i === stepSel ? 'on' : ''}" data-i="${i}"><span class="dot" style="background:${STEP_TYPES[s.type].c}"></span><span class="t">${i + 1}. ${esc(s.short || s.title || T('s.unnamed'))}</span>
+
     <button data-act="up" title="${T('s.up')}">↑</button><button data-act="down" title="${T('s.down')}">↓</button><button data-act="rm" title="${T('s.rm')}">✕</button></div>`).join('');
+
   const s = doc.steps[stepSel];
   let body = '';
   if (s) {
     const opts = doc.nodes.map(n => `<option value="${esc(n.id)}">${esc(n.name || SHAPES[n.type].name)}</option>`).join('');
+
     body = `<div class="sec">${T('step.n', { n: stepSel + 1 })}</div>
       <div class="row2">${fld(T('f.short'), inp('short', s.short))}${fld(T('f.stype'), `<select data-f="type">${Object.entries(STEP_TYPES).map(([k, t]) => `<option value="${k}" ${k === s.type ? 'selected' : ''}>${esc(t.n)}</option>`).join('')}</select>`)}</div>
+
       ${fld(T('f.title'), inp('title', s.title))}
       ${fld(T('f.desc'), txa('desc', s.desc, 3))}
       ${fld(T('f.cap'), inp('cap', s.cap))}
       ${fld(T('f.code'), txa('code', s.code, 4))}
       <div class="sec">${T('s.route')}</div>
       ${s.hops.length ? s.hops.map((h, j) => `<div class="hop" data-j="${j}"><span class="p" title="${esc(nodeName(h.a))} → ${esc(nodeName(h.b))}">${j + 1}. ${esc(nodeName(h.a))} → ${esc(nodeName(h.b))}</span>
+
         <input data-hl="${j}" value="${esc(h.label)}" placeholder="${T('s.pktPh')}"><span class="ops"><button data-act="hsw" title="${T('s.rev')}">⇄</button><button data-act="hup" title="${T('s.up')}">↑</button><button data-act="hrm" title="${T('s.hrm')}">✕</button></span></div>`).join('')
+
         : `<p class="muted">${T('s.noRoute')}</p>`}
       ${doc.nodes.length >= 2 ? `<div class="addhop"><select id="hopA">${opts}</select><span>→</span><select id="hopB">${opts}</select><button class="btn sm" data-act="hadd">${T('btn.add')}</button></div>
+
       <p class="muted" style="font-size:11.5px">${T('s.noEdgeOk')}</p>` : ''}`;
   }
   P.innerHTML = `<div class="sec">${T('s.list')}</div><div class="list">${list || `<p class="muted">${T('s.none')}</p>`}</div>
+
     <button class="btn sm" data-act="add">${T('tl.add')}</button>
     <button class="btn sm" data-act="play" ${doc.steps.length ? '' : 'disabled'}>${T('s.playFrom')}</button>${body}`;
   P.querySelector('.list').onclick = ev => {
     const li = ev.target.closest('.li'); if (!li) return; const i = +li.dataset.i, act = ev.target.dataset.act;
     if (act === 'up' && i > 0) { [doc.steps[i - 1], doc.steps[i]] = [doc.steps[i], doc.steps[i - 1]]; stepSel = i - 1; commit(); }
+
     else if (act === 'down' && i < doc.steps.length - 1) { [doc.steps[i + 1], doc.steps[i]] = [doc.steps[i], doc.steps[i + 1]]; stepSel = i + 1; commit(); }
+
     else if (act === 'rm') { doc.steps.splice(i, 1); stepSel = Math.min(stepSel, doc.steps.length - 1); commit(); }
     else stepSel = i;
     draw(); refreshPanel();
@@ -1690,31 +3020,41 @@ function panelDoc(P) {
     ${fld(T('f.subtitle'), inp('subtitle', doc.subtitle))}
     ${fld(T('f.tags'), `<input id="dTags" type="text" value="${esc(doc.tags.join(', '))}">`)}
     ${fld(T('f.cards'), `<textarea id="dCards" rows="5">${esc(doc.cards.map(c => [c.k, c.v, c.type].join('|')).join('\n'))}</textarea>`)}
+
     <p class="muted" style="font-size:11.5px;margin-top:-4px">${T('d.cardTypes', { types: Object.keys(STEP_TYPES).join(' / ') })}</p>
+
     <div class="sec">${T('d.play')}</div>
     ${fld(T('f.speed'), `<select data-f="speed" data-num="1">${(() => { const o = [[1600, T('speed.slow')], [1100, T('speed.mid')], [700, T('speed.fast')], [400, T('speed.vfast')]]; if (!o.some(x => x[0] === doc.speed)) o.push([doc.speed, T('speed.custom')]); return o; })().map(([v, l]) => `<option value="${v}" ${doc.speed === v ? 'selected' : ''}>${T('speed.opt', { name: l, ms: v })}</option>`).join('')}</select>`)}
+
     <label class="f" style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" data-f="autoplay" ${doc.autoplay ? 'checked' : ''}><span>${T('f.autoplay')}</span></label>
+
     <div class="sec">${T('d.look')}</div>
     ${fld(T('f.theme'), `<select id="dTheme">${themeOptions(doc.theme)}</select>`)}
     ${doc.theme === 'custom' ? `<div class="row2">${CUSTOM_FIELDS.map(([k, l]) => fld(esc(l), `<input type="color" data-ct="${k}" value="${doc.customTheme[k]}" style="width:100%;height:30px;border:1.5px solid var(--soft);border-radius:7px;background:var(--bg);padding:2px">`)).join('')}</div>
+
       ${fld(T('f.ctBase'), `<select id="dCtBase"><option value="">${T('d.ctPick')}</option>${THEME_ORDER.map(k => `<option value="${k}">${esc(THEMES[k].name)}</option>`).join('')}</select>`)}
+
       <p class="muted" style="font-size:11.5px;margin-top:-4px">${T('d.ctNote')}</p>` : ''}
     <p class="muted">${T('d.view', { deg: doc.rot * 90 })}</p>
     <div class="sec">${T('d.stats')}</div>
     <p class="muted">${T('d.statsLine', { n: doc.nodes.length, e: doc.edges.length, p: doc.plates.length, s: doc.steps.length })}</p>`;
+
   bind(P, doc);
   $('dTheme').onchange = e => setTheme(e.target.value);
   P.querySelectorAll('[data-ct]').forEach(el => {
     el.addEventListener('input', () => { doc.customTheme[el.dataset.ct] = el.value; doc.customTheme.edited = true; applyTheme(); draw(); });
+
     el.addEventListener('change', () => { commit(); savePref(); });
   });
   const ctb = $('dCtBase');
   if (ctb) ctb.onchange = () => { if (!ctb.value) return; doc.customTheme = { ...customFrom(ctb.value), edited: true }; commit(); savePref(); applyTheme(); draw(); refreshPanel(); };
+
   const tags = $('dTags'), cards = $('dCards');
   tags.addEventListener('input', () => { doc.tags = tags.value.split(/[,，]/).map(s => s.trim()).filter(Boolean); });
   tags.addEventListener('change', commit);
   cards.addEventListener('input', () => {
     doc.cards = cards.value.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const [k, v, t] = l.split('|').map(s => (s || '').trim()); return { k, v: v || '', type: STEP_TYPES[t] ? t : '' }; });
+
   });
   cards.addEventListener('change', commit);
 }
@@ -1727,9 +3067,11 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) commi
 /* 圖形、主題、步驟類型等表格的顯示名稱跟著語言換 */
 function localizeTables() {
   for (const k of Object.keys(SHAPES)) { SHAPES[k].name = T('shape.' + k); SHAPES[k].desc = T('shape.' + k + '.desc'); }
+
   for (const k of Object.keys(THEMES)) THEMES[k].name = T('theme.' + k);
   for (const k of Object.keys(STEP_TYPES)) STEP_TYPES[k].n = T('type.' + k);
   for (const k of Object.keys(TEMPLATES)) { TEMPLATES[k].name = T('tpl.' + k); TEMPLATES[k].desc = T('tpl.' + k + '.desc'); }
+
   CUSTOM_FIELDS.forEach(f => { f[1] = T('cust.' + f[0]); });
   ISO.TXT.untitled = T('doc.untitled');
 }
@@ -1737,6 +3079,7 @@ function localizeTables() {
 function viewerL10n() {
   const o = { lang: curLang, types: {} };
   for (const k of ['steps', 'zoomOut', 'fit', 'fitTitle', 'zoomIn', 'prev', 'next', 'play', 'pause', 'inFlow', 'step', 'badge', 'count']) o[k] = T('v.' + k);
+
   for (const k of Object.keys(STEP_TYPES)) o.types[k] = STEP_TYPES[k].n;
   return o;
 }
@@ -1755,6 +3098,7 @@ function applyLang(code) {
 }
 /* 畫布上的圖是使用者的內容，換語言不動它；只有「完全沒改過的內建範本」會換成新語言的版本 */
 const tplSig = d => { const n = normalize(d); return JSON.stringify({ ...n, theme: 0, customTheme: 0, rot: 0, speed: 0, autoplay: 0, steps: n.steps.map(({ id, ...r }) => r), edges: n.edges.map(({ id, ...r }) => r) }); };
+
 $('langSel').onchange = () => {
   const old = curLang, cur = doc ? tplSig(doc) : '';
   const tk = Object.keys(TEMPLATES).find(k => tplSig(TEMPLATES[k].doc()) === cur);   // 用舊語言比對
@@ -1762,6 +3106,7 @@ $('langSel').onchange = () => {
   try { localStorage.setItem(LANG_KEY, curLang); } catch (e) { /* 記不住就算了，這次照樣換 */ }
   if (tk && old !== curLang) {
     const d = TEMPLATES[tk].doc(); d.theme = doc.theme; d.customTheme = doc.customTheme; d.rot = doc.rot; d.speed = doc.speed; d.autoplay = doc.autoplay;
+
     loadDoc(d, false); commit();
   } else { applyTheme(); draw(); refreshPanel(); }
   $('langSel').blur();   // 焦點留在選單上，方向鍵會繼續換語言
@@ -1770,16 +3115,20 @@ $('langSel').onchange = () => {
 /* ---------- 啟動 ---------- */
 applyLang(savedLang());
 try { const u = JSON.parse(localStorage.getItem(LS_UI) || '{}'); if (u.L) $('app').classList.add('hideL'); if (u.R) $('app').classList.add('hideR'); } catch (e) { }
+
 let start = null;
 let corrupt = false;
 try { const raw = localStorage.getItem(LS_KEY); if (raw) { try { start = JSON.parse(raw); } catch (e) { corrupt = true; localStorage.setItem(LS_KEY + '-corrupt', raw); } } } catch (e) { start = null; }
+
 const pref = loadPref();
 if (!start) { start = TEMPLATES.xverify.doc(); if (pref) { start.theme = pref.theme; start.customTheme = pref.customTheme; } }
+
 loadDoc(start, false);
 last = JSON.stringify(doc); save(); updUndo();
 if (corrupt) setTimeout(() => toast(T('toast.corrupt', { key: LS_KEY + '-corrupt' })), 300);
 requestAnimationFrame(() => { cam.apply(); fitView(); });
 if (/[?&]test\b/.test(location.search)) window.__iso = { get doc() { return doc; }, get sel() { return sel; }, get lang() { return curLang; }, cam, buildViewerHTML, TEMPLATES, loadDoc, commit, undo, redo };
+
 })();
 </script>
 </body>
